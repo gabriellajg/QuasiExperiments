@@ -1,9 +1,21 @@
 --- 
-title: "YOUR TITLE HERE"
-author: "YOUR NAME HERE"
-date: "`r Sys.Date()`"
+title: "R Book for Quasi-Experimental Designs / Causal Inference"
+author: "Ge Jiang"
+date: "QUERIES, University of Illinois at Urbana-Champaign"
 site: bookdown::bookdown_site
 ---
 
-# Down the rabbit-hole
+# Course
+
+Welcome to Quasi-Experimental Designs! This course focuses on the analysis of some of the strongest quasi-experimental designs such as regression discontinuity, interrupted time series, propensity score matching, and instrumental variable methods.
+
+Social scientists have become increasingly interested in the causal effects of specific policies or practices. For example, an education researcher may want to know if curriculum A produces higher reading achievement scores than curriculum B does for third-graders. And if there is a difference in achievement scores between the two groups of students, what is the magnitude of the effect?
+
+Experiments (e.g., randomized control trials) are often referred to as the “gold standard” for determining the effect of a policy or practice (relative to some other policy or practice) on a population of interest. However, experimental designs can in some cases be time-consuming, costly, unethical, or otherwise impractical. Given these considerations and the wealth of already existing observational data, researchers have crafted careful approximations to randomized control trials that utilize the already existing data to learn more about social science phenomena. 
+
+This class of research designs is referred to as “quasi-experimental designs.” Causal research questions like “Did No Child Left Behind (NCLB) increase students’ achievement in reading and math?” or “Does retaining kindergartners for one year (instead of promoting them) result in negative effects on their future achievements?” are typically investigated using quasi-experimental designs. Specifically, we will learn about the assumptions, theories, and application of each of the prominent quasi-experimental methods. 
+
+This site is supposed to serve as a repository for R codes used in lab sessions of a graduate-level method course EPSY 574. 
+
+*Disclaimer: Opinions are my own and not the views of my employer.
 

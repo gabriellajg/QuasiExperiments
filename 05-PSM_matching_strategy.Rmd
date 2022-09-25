@@ -1,0 +1,109 @@
+# PSM Matching Strategy
+
+```{r, message=FALSE}
+library(Matching)
+library(MatchIt)
+library(optmatch)
+library(weights)
+library(cem)
+library(tcltk2)
+```
+
+## Data
+
+```{r data}
+data(lalonde)
+dim(lalonde)
+names(lalonde)
+```
+
+### Create dummy variable for race
+
+```{r}
+lalonde$black = ifelse(lalonde$race=='black', 1, 0)
+lalonde$hispan = ifelse(lalonde$race=='hispan', 1, 0)
+```
+
+## PSM Steps
+
+### Selection of covariates in X
+
+```{r}
+fm1 = treat ~ age + educ + black + hispan + married + I(re74/1000) + I(re75/1000)
+fm2 = treat ~ age + I(age^2) + I(age^3) + educ + black + hispan + married + I(re74/1000) + I(re75/1000)
+fm3 = treat ~ age + I(age^2) + I(age^3) + educ + I(educ^2) + black + hispan + married + I(re74/1000) + I(re75/1000)
+```
+
+### Calculation of propensity scores (p-scores)
+```{r}
+pscore <- glm(fm1, data = lalonde, family = 'binomial')
+head(pscore$fitted.values)
+hist(pscore$fitted.values[lalonde$treat==0],xlim=c(0,1))
+hist(pscore$fitted.values[lalonde$treat==1],xlim=c(0,1))
+lalonde$pscore = pscore$fitted.values
+```
+  
+try other formulas?
+
+### Matching based on p-sores
+
+all in one function matchit()
+
+```{r}
+set.seed(42)
+m.out <- matchit(data = lalonde,
+                 formula = fm1,
+                 distance = "logit",
+                 method = "nearest",
+                 replace = TRUE,
+                 caliper = 0.2, 
+                 discard = 'both'
+                 )
+```
+
+* m.out$match.matrix
+* m.out$distance
+* plot(m.out$distance, m.out$fitted.values) # same 
+* method: exact, subclass, optimal, full, cem
+* distance: pscore
+* plot(m.out, type = "qq", interactive=FALSE)
+
+```{r}
+plot(summary(m.out))
+```
+
+Balance for formula 2: 
+
+```{r}
+set.seed(42)
+m.out <- matchit(data = lalonde,
+                 formula = fm2,
+                 distance = "logit",
+                 method = "nearest",
+                 replace = TRUE,
+                 caliper = 0.2, 
+                 discard = 'both'
+                 )
+plot(summary(m.out))
+```
+
+Balance for formula 3: 
+
+```{r}
+set.seed(42)
+m.out <- matchit(data = lalonde,
+                 formula = fm3,
+                 distance = "logit",
+                 method = "nearest",
+                 replace = TRUE,
+                 caliper = 0.2, 
+                 discard = 'both'
+                 )
+plot(summary(m.out))
+```
+
+* matchit: https://kosukeimai.github.io/MatchIt/articles/MatchIt.html
+* manual: https://imai.fas.harvard.edu/research/files/matchit.pdf
+* starting from page 15
+* Let's play with the arguments! 
+

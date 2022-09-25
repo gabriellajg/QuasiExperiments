@@ -4,27 +4,25 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>YOUR TITLE HERE</title>
-  <meta name="description" content="YOUR TITLE HERE" />
-  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
+  <title>R Book for Quasi-Experimental Designs / Causal Inference</title>
+  <meta name="description" content="R Book for Quasi-Experimental Designs / Causal Inference" />
+  <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="YOUR TITLE HERE" />
+  <meta property="og:title" content="R Book for Quasi-Experimental Designs / Causal Inference" />
   <meta property="og:type" content="book" />
-  
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="YOUR TITLE HERE" />
+  <meta name="twitter:title" content="R Book for Quasi-Experimental Designs / Causal Inference" />
   
   
   
 
-<meta name="author" content="YOUR NAME HERE" />
+<meta name="author" content="Ge Jiang" />
 
 
-<meta name="date" content="2020-08-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +31,8 @@
   
 
 <link rel="next" href="the-pool-of-tears.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,6 +48,9 @@
 
 
 
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
 
@@ -69,7 +71,7 @@
 <li><a href="./">SHORT TITLE HERE</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Down the rabbit-hole</a></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Course</a></li>
 <li class="chapter" data-level="2" data-path="the-pool-of-tears.html"><a href="the-pool-of-tears.html"><i class="fa fa-check"></i><b>2</b> The pool of tears</a></li>
 <li class="chapter" data-level="3" data-path="a-caucus-race-and-a-long-tale.html"><a href="a-caucus-race-and-a-long-tale.html"><i class="fa fa-check"></i><b>3</b> A caucus-race and a long tale</a></li>
 <li class="divider"></li>
@@ -83,7 +85,7 @@
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">YOUR TITLE HERE</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Book for Quasi-Experimental Designs / Causal Inference</a>
           </h1>
         </div>
 
@@ -92,12 +94,18 @@
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">YOUR TITLE HERE</h1>
-<p class="author"><em>YOUR NAME HERE</em></p>
-<p class="date"><em>2020-08-10</em></p>
+<h1 class="title">R Book for Quasi-Experimental Designs / Causal Inference</h1>
+<p class="author"><em>Ge Jiang</em></p>
+<p class="date"><em>QUERIES, University of Illinois at Urbana-Champaign</em></p>
 </div>
-<div id="down-the-rabbit-hole" class="section level1">
-<h1><span class="header-section-number">Chapter 1</span> Down the rabbit-hole</h1>
+<div id="course" class="section level1 hasAnchor" number="1">
+<h1><span class="header-section-number">Chapter 1</span> Course<a href="index.html#course" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Welcome to Quasi-Experimental Designs! This course focuses on the analysis of some of the strongest quasi-experimental designs such as regression discontinuity, interrupted time series, propensity score matching, and instrumental variable methods.</p>
+<p>Social scientists have become increasingly interested in the causal effects of specific policies or practices. For example, an education researcher may want to know if curriculum A produces higher reading achievement scores than curriculum B does for third-graders. And if there is a difference in achievement scores between the two groups of students, what is the magnitude of the effect?</p>
+<p>Experiments (e.g., randomized control trials) are often referred to as the “gold standard” for determining the effect of a policy or practice (relative to some other policy or practice) on a population of interest. However, experimental designs can in some cases be time-consuming, costly, unethical, or otherwise impractical. Given these considerations and the wealth of already existing observational data, researchers have crafted careful approximations to randomized control trials that utilize the already existing data to learn more about social science phenomena.</p>
+<p>This class of research designs is referred to as “quasi-experimental designs.” Causal research questions like “Did No Child Left Behind (NCLB) increase students’ achievement in reading and math?” or “Does retaining kindergartners for one year (instead of promoting them) result in negative effects on their future achievements?” are typically investigated using quasi-experimental designs. Specifically, we will learn about the assumptions, theories, and application of each of the prominent quasi-experimental methods.</p>
+<p>This site is supposed to serve as a repository for R codes used in lab sessions of a graduate-level method course EPSY 574.</p>
+<p>*Disclaimer: Opinions are my own and not the views of my employer.</p>
 
 </div>
             </section>
@@ -110,7 +118,6 @@
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -129,6 +136,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -149,6 +157,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsection"
 }

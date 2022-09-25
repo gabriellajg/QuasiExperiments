@@ -1,0 +1,309 @@
+# Instrumental Variable
+
+In this lab, we will use Card (1995) to see how we can use an instrumental variable (distance to the nearest college) to estimate the effect of schooling on wage. 
+
+## Loading Data
+
+Load Stata file: 
+
+```{r, warning=FALSE, message=FALSE}
+library(psych)
+library(foreign)
+library(car)
+card.data<-read.dta("card.dta") 
+```
+
+See the description of the data here: https://www.ssc.wisc.edu/~bhansen/econometrics/Card1995_description.pdf 
+
+Preview the data: 
+
+```{r}
+attach(card.data)
+head(card.data)
+```
+
+
+## Setup
+
+* Treatment: educ (years of education)
+* Outcome: lwage (log_wage)
+* IV: nearc4 (whether live close to a four-year college or not)
+
+```{r}
+pairs.panels(card.data[,c('lwage','educ', 'nearc4')])
+```
+
+## Regression Approaches
+
+### Naive Regression: OLS estimate with treatment only
+
+```{r}
+m0<-lm(lwage~educ, data = card.data)
+summary(m0)
+```
+
+### Regression with covariates
+
+We find education is SSD, but we can make the case that it is endogenous.
+
+```{r}
+m1<-lm(lwage~educ+exper+expersq+black+south+smsa+reg661+reg662+reg663+
+         reg664+reg665+reg666+reg667+reg668+smsa66, data = card.data)
+summary(m1)
+```
+
+
+## IV: Does education effect wages when college proximity is used as the instrument? 
+
+Is college proximity an exogenous determinant of wages?
+
+### Stage 1: T on IV
+```{r}
+m2<-lm(educ~nearc4+exper+expersq+black+south+smsa+reg661+reg662+reg663+
+         reg664+reg665+reg666+reg667+reg668+smsa66, data = card.data)
+summary(m2)
+```
+
+Predicted part in T:
+
+```{r}
+educ_hat = fitted(m2)
+```
+
+#### test of weak instrument - rejected
+
+```{r}
+linearHypothesis(m2, c("nearc4=0"))
+```
+
+### Stage 2: Y on T_hat
+
+```{r}
+m2b = lm(lwage~ educ_hat+exper+expersq+black+south+smsa+reg661+reg662+reg663+
+           reg664+reg665+reg666+reg667+reg668+smsa66, data = card.data)
+summary(m2b)
+```
+
+### All-in-one function ivreg(): 
+
+```{r, message=FALSE}
+library(AER)
+m4<-ivreg(lwage~educ+exper+expersq+black+south+smsa+reg661+reg662+reg663+
+            reg664+reg665+reg666+reg667+reg668+smsa66 | nearc4+exper+expersq+black+south+smsa+reg661+reg662+reg663+
+            reg664+reg665+reg666+reg667+reg668+smsa66)
+```
+
+* formula, instruments	
+* formula specification(s) of the regression relationship and the instruments. 
+* instruments is missing and formula has three parts as in y ~ x1 + x2 | z1 + z2 + z3 (recommended)
+
+Alternatively: 
+
+```{r}
+m4<-ivreg(lwage~educ+exper+expersq+black+south+smsa+reg661+reg662+reg663+
+            reg664+reg665+reg666+reg667+reg668+smsa66 | .-educ+nearc4)
+```
+
+
+* to the left of |: outcome = lwage
+* to the left of |: variables = educ+exper+expersq+black+south+smsa+reg661+reg662+reg663+reg664+reg665+reg666+reg667+reg668+smsa66
+* to the right of |: variables = nearc4+exper+expersq+black+south+smsa+reg661+reg662+reg663+reg664+reg665+reg666+reg667+reg668+smsa66
+* to the right of |: outcome = educ
+
+* to the right of |: 1st stage of 2SLS
+* to the left of |: 2nd stage of 2SLS
+
+* '.' means all variables in the dataset besides the one to the left of lwage
+* - treatment variable 
+* + instrument 
+
+Test using sandwich standard errors:
+
+```{r}
+summary(m4, vcov = sandwich, diagnostics = TRUE)
+```
+
+### Diagnostic tests:
+
+```{r, eval=FALSE}
+                  df1  df2 statistic  p-value    
+Weak instruments    1 2994    14.214 0.000166 ***
+Wu-Hausman          1 2993     1.219 0.269649    
+Sargan              0   NA        NA       NA    
+```
+
+* Weak instruments means that the IV has a low correlation with the treatment variable. The null is that the IV is weak. If the null is rejected, so you can move forward with the assumption that the instrument is sufficiently strong.
+
+* Applied to 2SLS regression, the Wu–Hausman test is a test of endogenity. If all of the regressors are exogenous, then both the OLS and 2SLS estimators are consistent, and the OLS estimator is more efficient, but if one or more regressors are endogenous, then the OLS estimator is inconsistent. A large test statistic and small p-value suggests that the OLS estimator is inconsistent and the 2SLS estimator is therefore to be preferred.
+
+### Multiple IV
+
+```{r}
+#m5<-ivreg(lwage~educ | .-educ+nearc4+nearc2)
+m5<-ivreg(lwage~educ+exper+expersq+black+south+smsa+reg661+reg662+reg663+reg664+reg665+reg666+reg667+reg668+smsa66 | .-educ+nearc4+nearc2)
+summary(m5, vcov = sandwich, diagnostics = TRUE)
+```
+
+* Sargan tests overidentification restrictions. The idea is that if you have more than one instrument per endogenous variable, the model is overidentified, and you have some excess information. All of the instruments must be valid for the inferences to be correct. So it tests that all exogenous instruments are in fact exogenous, and uncorrelated with the model residuals. If it is significant, it means that you don't have valid instruments (somewhere in there, as this is a global test). If it is not significant (our case), this isn't a concern.
+
+
+### Compare with OLS:
+
+```{r, message=FALSE}
+library(stargazer)
+stargazer::stargazer(m0, m1, m2b, m4, 
+                     type = 'text', model.names = FALSE, 
+                     column.labels = c('Naive', 'OLS', '2SLS', 'IV'), 
+                     column.sep.width = "15pt", 
+                     omit.stat = c("f", "ser"))
+```
+
+## Take-home exercise
+
+### Does cigarette smoking have an effect on child birth weight (Wooldridge, 2002)?
+
+```{r, warning=FALSE, message=FALSE}
+bwght<-read.dta("bwght.dta")
+head(bwght)
+attach(bwght)
+```
+
+### Missing data
+
+```{r}
+colSums(apply(bwght, 2, is.na))
+```
+
+* https://rdrr.io/cran/wooldridge/man/bwght.html
+* A data.frame with 1388 observations on 14 variables:
+* cigtax: cig. tax in home state, 1988
+* cigprice: cig. price in home state, 1988 (tax already included)
+* faminc: 1988 family income, $1000s
+* lfaminc: log(faminc)
+* fatheduc: father's yrs of educ
+* motheduc: mother's yrs of educ
+* parity: birth order of child
+* male: =1 if male child
+* white: =1 if white
+* cigs: cigs smked per day while preg
+* packs: packs smked per day while preg
+* lbwght: log of bwght
+* bwghtlbs: birth weight, pounds
+* bwght: birth weight, ounces
+
+```{r}
+library(psych)
+pairs.panels(bwght[,c('faminc','lfaminc')]) # lfaminc is better
+pairs.panels(bwght[,c('cigs','packs')]) # same, go with cigs
+pairs.panels(bwght[,c('lbwght','bwghtlbs', 'bwght')]) # any is good, go with bwghtlbs
+
+pairs.panels(bwght[,c('cigs','bwghtlbs', 'cigprice')]) # low correlations
+
+pairs.panels(bwght[,c('cigs','bwghtlbs', 'cigprice', 'lfaminc', 'fatheduc', 'motheduc', 'parity', 'male', 'white')])
+```
+
+### Your turn now!!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Naive Regression: OLS Estimate with treatment only
+
+```{r}
+m0<-lm(bwghtlbs ~ cigs, data = bwght)
+summary(m0)
+```
+
+
+### Regression with covariates
+
+```{r}
+m1<-lm(bwghtlbs ~ cigs+lfaminc+fatheduc+motheduc+parity+male+white, data = bwght)
+summary(m1)
+```
+
+#### test of weak instrument - rejected
+
+```{r}
+m2<-lm(cigs ~ cigprice+lfaminc+fatheduc+motheduc+parity+male+white, data = bwght)
+summary(m2)
+library(car)
+linearHypothesis(m2, c("cigprice=0"))
+```
+
+* cigprice, tax included, penalizes the excessive use of cigarettes 
+* although cigprice affects cigs, cigprice is not a strong instrument
+
+### IV done manually
+
+```{r}
+bwght.comp = na.omit(bwght)
+bwght.comp$cig_hat = fitted(m2)
+m3 = lm(bwghtlbs ~ cig_hat+lfaminc+fatheduc+motheduc+parity+male+white, data = bwght.comp)
+summary(m3)
+```
+
+same coefficients with ivreg(), but incorrect standard errors
+
+### IVreg()
+
+```{r}
+library(AER)
+m4<-ivreg(bwghtlbs ~ cigs+lfaminc+fatheduc+motheduc+parity+male+white | .-cigs+cigprice)
+summary(m4, vcov = sandwich, diagnostics = TRUE)
+```
+
+### Model Comparison
+
+```{r}
+stargazer::stargazer(m0, m1, m3, m4, 
+                     type = 'text', model.names = FALSE, 
+                     column.labels = c('Naive', 'OLS', '2SLS', 'IV'), 
+                     column.sep.width = "15pt", 
+                     omit.stat = c("f", "ser"))
+```
+
+
+* Since cigprice is NOT a good instrument, we will favor m2 (OLS) over m4 in this case. 
+
+* Negative R2? 
+* https://www.stata.com/support/faqs/statistics/two-stage-least-squares/#:~:text=Stata's%20ivregress%20command%20suppresses%20the,the%20context%20of%202SLS%2FIV.
+
+* Missing R2s, negative R2s, and negative model sum of squares are all the same issue.
+
+* However, since our goal is to estimate the structural model, the actual values, not the instruments for the endogenous right-hand-side variables, are used to determine the model sum of squares (MSS). 
+
+* This means a constant-only model of the dependent variable is NOT nested within the two-stage least-squares model, even though the two-stage model estimates an intercept, and the residual sum of squares (RSS) is no longer constrained to be smaller than the total sum of squares (TSS). 
+
+* ybar is a better predictor of y (in the sum-of-squares sense) than Xb!
+
+* Is that a problem? You can easily develop simulations where the parameter estimates from two-stage are quite good while the MSS is negative. 
+
+* If our two-stage model produces estimates of these parameters with acceptable standard errors, we should be happy—regardless of MSS or R2. 
+
+

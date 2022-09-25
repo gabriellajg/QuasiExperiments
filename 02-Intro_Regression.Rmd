@@ -1,0 +1,58 @@
+# Regression Approach to Treatment Effect Estimation
+
+Suppose one would like to use a regression model to estimate the treatment effect of a SAT, but controlling for the covariate 'SES'. 
+
+Simulating data: 
+
+```{r}
+ID = c(1:6)
+Grp = rep(c(0, 1), each = 3)
+Score = c(550, 600, 650, 600, 720, 630)
+SES = c(1, 2, 2, 2, 3, 2)
+
+SATdat = data.frame(ID, Grp, Score, SES)
+SATdat$SES = factor(SATdat$SES)
+```
+
+## Regression w/ no confounder
+
+```{r}
+lm1 = lm(Score ~ Grp, data = SATdat)
+summary(lm1)
+```
+
+This is the same as a simple t-test: 
+
+```{r}
+t.test(SATdat$Score[SATdat$Grp==1], SATdat$Score[SATdat$Grp==0])
+```
+
+not sig -- sample size is too small
+
+## Including confounder SES
+
+```{r}
+ses.lm = lm(Score ~ Grp+SES, data = SATdat)
+summary(ses.lm)
+```
+
+The effect (-10) is assumed between groups WITHIN EACH SES LEVEL: 
+
+### low SES 
+```{r}
+predict(ses.lm, newdata = data.frame(Grp=0, SES=factor(1)))
+predict(ses.lm, newdata = data.frame(Grp=1, SES=factor(1)))
+```
+
+### middle SES 
+```{r}
+predict(ses.lm, newdata = data.frame(Grp=0, SES=factor(2)))
+predict(ses.lm, newdata = data.frame(Grp=1, SES=factor(2)))
+```
+
+### high SES 
+```{r}
+predict(ses.lm, newdata = data.frame(Grp=0, SES=factor(3)))
+predict(ses.lm, newdata = data.frame(Grp=1, SES=factor(3)))
+```
+

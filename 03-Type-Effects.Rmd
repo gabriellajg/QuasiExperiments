@@ -1,0 +1,125 @@
+# Types of Causal Effects
+
+Sometimes our experiments because quasi-experiments because of crossover or non-compliance. 
+
+Simulating data on assignment, compliance, and potential outcomes: 
+
+```{r}
+set.seed(1)
+assign = rbinom(100, 1, 0.5) # half half
+```
+
+Simulating non-compliance as a function of gender: 
+
+```{r}
+set.seed(101)
+gender = rbinom(100, 1, 0.4) # 40% are men
+comply = rep(); 
+comply[gender==1] = rbinom(sum(gender==1), 1, 0.5) # prob of men complying is 0.5
+comply[gender==0] = rbinom(sum(gender==0), 1, 0.7) # prob of women complying is 0.7
+```
+
+treatment effect: 100 (from 400 --> 500) fixed for everyone:
+ 
+```{r}
+notutor = rnorm(100, 400, 12) # Y0
+tutor = notutor + 100 + rnorm(100, 0, 20) # Y1
+simdata = data.frame(assign, notutor, tutor)
+head(simdata)
+```
+
+actual treatment:
+
+```{r}
+treat = ifelse(comply==1, assign, 1-assign)
+table(assign, treat)
+```
+
+observed value:
+
+```{r}
+obs = treat*tutor + (1-treat)*notutor # Y1 if T=1 and Y0 if T=0
+```
+* when treat=1: Y = 1*tutor + 0*notutor = Y1
+* when treat=0: Y = 0*tutor + 1*notutor = Y0
+
+Simulated data: 
+
+```{r}
+simdata = data.frame(assign, comply, treat, tutor, notutor, obs, gender)
+head(simdata)
+```
+
+
+## ATT, ATE, ATU, ... what the what? 
+
+* ATE/ACE: Average Treatment Effect in the population
+* ATT: Average Treatment Effect on the Treated
+* ATU: Average Treatment Effect on the Untreated
+* LATE: Local Average Treatment Effect for Compilers
+* CATE: Conditional Average Treatment Effect
+* ITT: Intention To Treat. Effect of simply the intention (instead of receipt) of treatment
+
+```{r}
+ATE = mean(simdata$tutor - simdata$notutor)  # whole population
+ATT = mean((simdata$tutor - simdata$notutor)[treat==1])
+ATU = mean((simdata$tutor - simdata$notutor)[treat==0])
+LATE = mean((simdata$tutor - simdata$notutor)[comply==1])
+CATE0 = mean((simdata$tutor - simdata$notutor)[gender==0])
+CATE1 = mean((simdata$tutor - simdata$notutor)[gender==1])
+```
+
+```{r}
+cbind(ATE, ATT, ATU, LATE, CATE0, CATE1)
+# all close to ATE
+```
+
+## Calculating different causal effects in practice
+
+* ATE
+```{r}
+ATE_obs = lm(obs ~ treat, data = simdata)
+coef(ATE_obs) # 99.82048 
+```
+
+* ATT & ATU
+
+no way to estimate ATT & ATU from data
+
+* LATE if compliance status is known
+
+```{r}
+LATE_obs = lm(obs ~ treat, data = simdata[simdata$comply==1,])
+coef(LATE_obs) # 101.1594 
+```
+
+* CATE if gender is included as a confounder:
+
+```{r}
+CATE0_obs = lm(obs ~ treat, data = simdata[simdata$gender==0,])
+coef(CATE0_obs) # 106.5414 
+
+CATE1_obs = lm(obs ~ treat, data = simdata[simdata$gender==1,])
+coef(CATE1_obs) # 90.71861 
+```
+
+* Intention To Treat (ITT)
+
+```{r}
+ITT = lm(obs ~ assign)
+coef(ITT) # 15.460 whereas the true effect is 100!!
+```
+
+* Intention To Treat on Compliers
+
+```{r}
+ITT_c = lm(obs ~ assign, data = simdata[simdata$comply==1,])
+coef(ITT_c) # 101.159 which is pretty close to the true effect 100
+```
+
+
+**Generally recommended: LATE or ITT on Compliers!** 
+
+
+
+
