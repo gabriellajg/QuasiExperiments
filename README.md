@@ -12,7 +12,10 @@ This site is supposed to serve as a repository for R codes used in lab sessions 
 
 - [ ] 3. Use `browseURL("docs/index.html")` to view your book locally (or just open `index.html` in a browser). usethis::browse_github() to browse the website. 
 
-- [ ] 4. If it looks good, commit and push all changed files to GitHub. 
+- [ ] 4. If it looks good, commit and push all changed files to GitHub.
+
+- [ ] 5. Alternatively, publish it to bookdown: bookdown::publish_book(render = "local", account = 'gejiang2')
+
 
 (You will need to repeat steps 2 and 4 every time you wish to update the book online.)
 

@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="regression-approach-to-treatment-effect-estimation.html"/>
-<link rel="next" href="a-caucus-race-and-a-long-tale.html"/>
+<link rel="next" href="instrumental-variable.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -151,9 +151,48 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1" data-path="types-of-causal-effects.html"><a href="types-of-causal-effects.html#att-ate-atu-what-the-what"><i class="fa fa-check"></i><b>3.1</b> ATT, ATE, ATU, … what the what?</a></li>
 <li class="chapter" data-level="3.2" data-path="types-of-causal-effects.html"><a href="types-of-causal-effects.html#calculating-different-causal-effects-in-practice"><i class="fa fa-check"></i><b>3.2</b> Calculating different causal effects in practice</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="a-caucus-race-and-a-long-tale.html"><a href="a-caucus-race-and-a-long-tale.html"><i class="fa fa-check"></i><b>4</b> A caucus-race and a long tale</a>
+<li class="chapter" data-level="4" data-path="instrumental-variable.html"><a href="instrumental-variable.html"><i class="fa fa-check"></i><b>4</b> Instrumental Variable</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="a-caucus-race-and-a-long-tale.html"><a href="a-caucus-race-and-a-long-tale.html#regression-w-no-confounder-1"><i class="fa fa-check"></i><b>4.1</b> Regression w/ no confounder</a></li>
+<li class="chapter" data-level="4.1" data-path="instrumental-variable.html"><a href="instrumental-variable.html#loading-data"><i class="fa fa-check"></i><b>4.1</b> Loading Data</a></li>
+<li class="chapter" data-level="4.2" data-path="instrumental-variable.html"><a href="instrumental-variable.html#setup"><i class="fa fa-check"></i><b>4.2</b> Setup</a></li>
+<li class="chapter" data-level="4.3" data-path="instrumental-variable.html"><a href="instrumental-variable.html#regression-approaches"><i class="fa fa-check"></i><b>4.3</b> Regression Approaches</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="instrumental-variable.html"><a href="instrumental-variable.html#naive-regression-ols-estimate-with-treatment-only"><i class="fa fa-check"></i><b>4.3.1</b> Naive Regression: OLS estimate with treatment only</a></li>
+<li class="chapter" data-level="4.3.2" data-path="instrumental-variable.html"><a href="instrumental-variable.html#regression-with-covariates"><i class="fa fa-check"></i><b>4.3.2</b> Regression with covariates</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="instrumental-variable.html"><a href="instrumental-variable.html#iv-does-education-effect-wages-when-college-proximity-is-used-as-the-instrument"><i class="fa fa-check"></i><b>4.4</b> IV: Does education effect wages when college proximity is used as the instrument?</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="instrumental-variable.html"><a href="instrumental-variable.html#stage-1-t-on-iv"><i class="fa fa-check"></i><b>4.4.1</b> Stage 1: T on IV</a></li>
+<li class="chapter" data-level="4.4.2" data-path="instrumental-variable.html"><a href="instrumental-variable.html#stage-2-y-on-t_hat"><i class="fa fa-check"></i><b>4.4.2</b> Stage 2: Y on T_hat</a></li>
+<li class="chapter" data-level="4.4.3" data-path="instrumental-variable.html"><a href="instrumental-variable.html#all-in-one-function-ivreg"><i class="fa fa-check"></i><b>4.4.3</b> All-in-one function ivreg():</a></li>
+<li class="chapter" data-level="4.4.4" data-path="instrumental-variable.html"><a href="instrumental-variable.html#diagnostic-tests"><i class="fa fa-check"></i><b>4.4.4</b> Diagnostic tests:</a></li>
+<li class="chapter" data-level="4.4.5" data-path="instrumental-variable.html"><a href="instrumental-variable.html#multiple-iv"><i class="fa fa-check"></i><b>4.4.5</b> Multiple IV</a></li>
+<li class="chapter" data-level="4.4.6" data-path="instrumental-variable.html"><a href="instrumental-variable.html#compare-with-ols"><i class="fa fa-check"></i><b>4.4.6</b> Compare with OLS:</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="instrumental-variable.html"><a href="instrumental-variable.html#take-home-exercise"><i class="fa fa-check"></i><b>4.5</b> Take-home exercise</a>
+<ul>
+<li class="chapter" data-level="4.5.1" data-path="instrumental-variable.html"><a href="instrumental-variable.html#does-cigarette-smoking-have-an-effect-on-child-birth-weight-wooldridge-2002"><i class="fa fa-check"></i><b>4.5.1</b> Does cigarette smoking have an effect on child birth weight (Wooldridge, 2002)?</a></li>
+<li class="chapter" data-level="4.5.2" data-path="instrumental-variable.html"><a href="instrumental-variable.html#missing-data"><i class="fa fa-check"></i><b>4.5.2</b> Missing data</a></li>
+<li class="chapter" data-level="4.5.3" data-path="instrumental-variable.html"><a href="instrumental-variable.html#your-turn-now"><i class="fa fa-check"></i><b>4.5.3</b> Your turn now!!!!</a></li>
+<li class="chapter" data-level="4.5.4" data-path="instrumental-variable.html"><a href="instrumental-variable.html#naive-regression-ols-estimate-with-treatment-only-1"><i class="fa fa-check"></i><b>4.5.4</b> Naive Regression: OLS Estimate with treatment only</a></li>
+<li class="chapter" data-level="4.5.5" data-path="instrumental-variable.html"><a href="instrumental-variable.html#regression-with-covariates-1"><i class="fa fa-check"></i><b>4.5.5</b> Regression with covariates</a></li>
+<li class="chapter" data-level="4.5.6" data-path="instrumental-variable.html"><a href="instrumental-variable.html#iv-done-manually"><i class="fa fa-check"></i><b>4.5.6</b> IV done manually</a></li>
+<li class="chapter" data-level="4.5.7" data-path="instrumental-variable.html"><a href="instrumental-variable.html#ivreg"><i class="fa fa-check"></i><b>4.5.7</b> IVreg()</a></li>
+<li class="chapter" data-level="4.5.8" data-path="instrumental-variable.html"><a href="instrumental-variable.html#model-comparison"><i class="fa fa-check"></i><b>4.5.8</b> Model Comparison</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html"><i class="fa fa-check"></i><b>5</b> PSM Matching Strategy</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#data"><i class="fa fa-check"></i><b>5.1</b> Data</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#create-dummy-variable-for-race"><i class="fa fa-check"></i><b>5.1.1</b> Create dummy variable for race</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#psm-steps"><i class="fa fa-check"></i><b>5.2</b> PSM Steps</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#selection-of-covariates-in-x"><i class="fa fa-check"></i><b>5.2.1</b> Selection of covariates in X</a></li>
+<li class="chapter" data-level="5.2.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#calculation-of-propensity-scores-p-scores"><i class="fa fa-check"></i><b>5.2.2</b> Calculation of propensity scores (p-scores)</a></li>
+<li class="chapter" data-level="5.2.3" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#matching-based-on-p-sores"><i class="fa fa-check"></i><b>5.2.3</b> Matching based on p-sores</a></li>
+</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -178,19 +217,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 3</span> Types of Causal Effects<a href="types-of-causal-effects.html#types-of-causal-effects" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Sometimes our experiments because quasi-experiments because of crossover or non-compliance.</p>
 <p>Simulating data on assignment, compliance, and potential outcomes:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="types-of-causal-effects.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb1-2"><a href="types-of-causal-effects.html#cb1-2" aria-hidden="true" tabindex="-1"></a>assign <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="co"># half half</span></span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="types-of-causal-effects.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb20-2"><a href="types-of-causal-effects.html#cb20-2" aria-hidden="true" tabindex="-1"></a>assign <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="co"># half half</span></span></code></pre></div>
 <p>Simulating non-compliance as a function of gender:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="types-of-causal-effects.html#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">101</span>)</span>
-<span id="cb2-2"><a href="types-of-causal-effects.html#cb2-2" aria-hidden="true" tabindex="-1"></a>gender <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.4</span>) <span class="co"># 40% are men</span></span>
-<span id="cb2-3"><a href="types-of-causal-effects.html#cb2-3" aria-hidden="true" tabindex="-1"></a>comply <span class="ot">=</span> <span class="fu">rep</span>(); </span>
-<span id="cb2-4"><a href="types-of-causal-effects.html#cb2-4" aria-hidden="true" tabindex="-1"></a>comply[gender<span class="sc">==</span><span class="dv">1</span>] <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="fu">sum</span>(gender<span class="sc">==</span><span class="dv">1</span>), <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="co"># prob of men complying is 0.5</span></span>
-<span id="cb2-5"><a href="types-of-causal-effects.html#cb2-5" aria-hidden="true" tabindex="-1"></a>comply[gender<span class="sc">==</span><span class="dv">0</span>] <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="fu">sum</span>(gender<span class="sc">==</span><span class="dv">0</span>), <span class="dv">1</span>, <span class="fl">0.7</span>) <span class="co"># prob of women complying is 0.7</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="types-of-causal-effects.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">101</span>)</span>
+<span id="cb21-2"><a href="types-of-causal-effects.html#cb21-2" aria-hidden="true" tabindex="-1"></a>gender <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.4</span>) <span class="co"># 40% are men</span></span>
+<span id="cb21-3"><a href="types-of-causal-effects.html#cb21-3" aria-hidden="true" tabindex="-1"></a>comply <span class="ot">=</span> <span class="fu">rep</span>(); </span>
+<span id="cb21-4"><a href="types-of-causal-effects.html#cb21-4" aria-hidden="true" tabindex="-1"></a>comply[gender<span class="sc">==</span><span class="dv">1</span>] <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="fu">sum</span>(gender<span class="sc">==</span><span class="dv">1</span>), <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="co"># prob of men complying is 0.5</span></span>
+<span id="cb21-5"><a href="types-of-causal-effects.html#cb21-5" aria-hidden="true" tabindex="-1"></a>comply[gender<span class="sc">==</span><span class="dv">0</span>] <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="fu">sum</span>(gender<span class="sc">==</span><span class="dv">0</span>), <span class="dv">1</span>, <span class="fl">0.7</span>) <span class="co"># prob of women complying is 0.7</span></span></code></pre></div>
 <p>treatment effect: 100 (from 400 –&gt; 500) fixed for everyone:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="types-of-causal-effects.html#cb3-1" aria-hidden="true" tabindex="-1"></a>notutor <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">400</span>, <span class="dv">12</span>) <span class="co"># Y0</span></span>
-<span id="cb3-2"><a href="types-of-causal-effects.html#cb3-2" aria-hidden="true" tabindex="-1"></a>tutor <span class="ot">=</span> notutor <span class="sc">+</span> <span class="dv">100</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">20</span>) <span class="co"># Y1</span></span>
-<span id="cb3-3"><a href="types-of-causal-effects.html#cb3-3" aria-hidden="true" tabindex="-1"></a>simdata <span class="ot">=</span> <span class="fu">data.frame</span>(assign, notutor, tutor)</span>
-<span id="cb3-4"><a href="types-of-causal-effects.html#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(simdata)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="types-of-causal-effects.html#cb22-1" aria-hidden="true" tabindex="-1"></a>notutor <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">400</span>, <span class="dv">12</span>) <span class="co"># Y0</span></span>
+<span id="cb22-2"><a href="types-of-causal-effects.html#cb22-2" aria-hidden="true" tabindex="-1"></a>tutor <span class="ot">=</span> notutor <span class="sc">+</span> <span class="dv">100</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">20</span>) <span class="co"># Y1</span></span>
+<span id="cb22-3"><a href="types-of-causal-effects.html#cb22-3" aria-hidden="true" tabindex="-1"></a>simdata <span class="ot">=</span> <span class="fu">data.frame</span>(assign, notutor, tutor)</span>
+<span id="cb22-4"><a href="types-of-causal-effects.html#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(simdata)</span></code></pre></div>
 <pre><code>##   assign  notutor    tutor
 ## 1      0 403.2168 499.9361
 ## 2      0 392.8935 465.2280
@@ -199,21 +238,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5      0 408.9611 533.1596
 ## 6      1 397.2339 515.1242</code></pre>
 <p>actual treatment:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="types-of-causal-effects.html#cb5-1" aria-hidden="true" tabindex="-1"></a>treat <span class="ot">=</span> <span class="fu">ifelse</span>(comply<span class="sc">==</span><span class="dv">1</span>, assign, <span class="dv">1</span><span class="sc">-</span>assign)</span>
-<span id="cb5-2"><a href="types-of-causal-effects.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(assign, treat)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="types-of-causal-effects.html#cb24-1" aria-hidden="true" tabindex="-1"></a>treat <span class="ot">=</span> <span class="fu">ifelse</span>(comply<span class="sc">==</span><span class="dv">1</span>, assign, <span class="dv">1</span><span class="sc">-</span>assign)</span>
+<span id="cb24-2"><a href="types-of-causal-effects.html#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(assign, treat)</span></code></pre></div>
 <pre><code>##       treat
 ## assign  0  1
 ##      0 31 21
 ##      1 22 26</code></pre>
 <p>observed value:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="types-of-causal-effects.html#cb7-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> treat<span class="sc">*</span>tutor <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>treat)<span class="sc">*</span>notutor <span class="co"># Y1 if T=1 and Y0 if T=0</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="types-of-causal-effects.html#cb26-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> treat<span class="sc">*</span>tutor <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>treat)<span class="sc">*</span>notutor <span class="co"># Y1 if T=1 and Y0 if T=0</span></span></code></pre></div>
 <ul>
 <li>when treat=1: Y = 1<em>tutor + 0</em>notutor = Y1</li>
 <li>when treat=0: Y = 0<em>tutor + 1</em>notutor = Y0</li>
 </ul>
 <p>Simulated data:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="types-of-causal-effects.html#cb8-1" aria-hidden="true" tabindex="-1"></a>simdata <span class="ot">=</span> <span class="fu">data.frame</span>(assign, comply, treat, tutor, notutor, obs, gender)</span>
-<span id="cb8-2"><a href="types-of-causal-effects.html#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(simdata)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="types-of-causal-effects.html#cb27-1" aria-hidden="true" tabindex="-1"></a>simdata <span class="ot">=</span> <span class="fu">data.frame</span>(assign, comply, treat, tutor, notutor, obs, gender)</span>
+<span id="cb27-2"><a href="types-of-causal-effects.html#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(simdata)</span></code></pre></div>
 <pre><code>##   assign comply treat    tutor  notutor      obs gender
 ## 1      0      1     0 499.9361 403.2168 403.2168      0
 ## 2      0      1     0 465.2280 392.8935 392.8935      0
@@ -231,24 +270,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>CATE: Conditional Average Treatment Effect</li>
 <li>ITT: Intention To Treat. Effect of simply the intention (instead of receipt) of treatment</li>
 </ul>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="types-of-causal-effects.html#cb10-1" aria-hidden="true" tabindex="-1"></a>ATE <span class="ot">=</span> <span class="fu">mean</span>(simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)  <span class="co"># whole population</span></span>
-<span id="cb10-2"><a href="types-of-causal-effects.html#cb10-2" aria-hidden="true" tabindex="-1"></a>ATT <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[treat<span class="sc">==</span><span class="dv">1</span>])</span>
-<span id="cb10-3"><a href="types-of-causal-effects.html#cb10-3" aria-hidden="true" tabindex="-1"></a>ATU <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[treat<span class="sc">==</span><span class="dv">0</span>])</span>
-<span id="cb10-4"><a href="types-of-causal-effects.html#cb10-4" aria-hidden="true" tabindex="-1"></a>LATE <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[comply<span class="sc">==</span><span class="dv">1</span>])</span>
-<span id="cb10-5"><a href="types-of-causal-effects.html#cb10-5" aria-hidden="true" tabindex="-1"></a>CATE0 <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[gender<span class="sc">==</span><span class="dv">0</span>])</span>
-<span id="cb10-6"><a href="types-of-causal-effects.html#cb10-6" aria-hidden="true" tabindex="-1"></a>CATE1 <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[gender<span class="sc">==</span><span class="dv">1</span>])</span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="types-of-causal-effects.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(ATE, ATT, ATU, LATE, CATE0, CATE1)</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="types-of-causal-effects.html#cb29-1" aria-hidden="true" tabindex="-1"></a>ATE <span class="ot">=</span> <span class="fu">mean</span>(simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)  <span class="co"># whole population</span></span>
+<span id="cb29-2"><a href="types-of-causal-effects.html#cb29-2" aria-hidden="true" tabindex="-1"></a>ATT <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[treat<span class="sc">==</span><span class="dv">1</span>])</span>
+<span id="cb29-3"><a href="types-of-causal-effects.html#cb29-3" aria-hidden="true" tabindex="-1"></a>ATU <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[treat<span class="sc">==</span><span class="dv">0</span>])</span>
+<span id="cb29-4"><a href="types-of-causal-effects.html#cb29-4" aria-hidden="true" tabindex="-1"></a>LATE <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[comply<span class="sc">==</span><span class="dv">1</span>])</span>
+<span id="cb29-5"><a href="types-of-causal-effects.html#cb29-5" aria-hidden="true" tabindex="-1"></a>CATE0 <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[gender<span class="sc">==</span><span class="dv">0</span>])</span>
+<span id="cb29-6"><a href="types-of-causal-effects.html#cb29-6" aria-hidden="true" tabindex="-1"></a>CATE1 <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[gender<span class="sc">==</span><span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="types-of-causal-effects.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(ATE, ATT, ATU, LATE, CATE0, CATE1)</span></code></pre></div>
 <pre><code>##           ATE      ATT      ATU     LATE    CATE0    CATE1
 ## [1,] 100.0414 101.1523 99.05629 99.88937 102.4829 97.28824</code></pre>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="types-of-causal-effects.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># all close to ATE</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="types-of-causal-effects.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># all close to ATE</span></span></code></pre></div>
 </div>
 <div id="calculating-different-causal-effects-in-practice" class="section level2 hasAnchor" number="3.2">
 <h2><span class="header-section-number">3.2</span> Calculating different causal effects in practice<a href="types-of-causal-effects.html#calculating-different-causal-effects-in-practice" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <ul>
 <li>ATE</li>
 </ul>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="types-of-causal-effects.html#cb14-1" aria-hidden="true" tabindex="-1"></a>ATE_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata)</span>
-<span id="cb14-2"><a href="types-of-causal-effects.html#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ATE_obs) <span class="co"># 99.82048 </span></span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="types-of-causal-effects.html#cb33-1" aria-hidden="true" tabindex="-1"></a>ATE_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata)</span>
+<span id="cb33-2"><a href="types-of-causal-effects.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ATE_obs) <span class="co"># 99.82048 </span></span></code></pre></div>
 <pre><code>## (Intercept)       treat 
 ##   400.12192    99.82048</code></pre>
 <ul>
@@ -258,33 +297,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>LATE if compliance status is known</li>
 </ul>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="types-of-causal-effects.html#cb16-1" aria-hidden="true" tabindex="-1"></a>LATE_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>comply<span class="sc">==</span><span class="dv">1</span>,])</span>
-<span id="cb16-2"><a href="types-of-causal-effects.html#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(LATE_obs) <span class="co"># 101.1594 </span></span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="types-of-causal-effects.html#cb35-1" aria-hidden="true" tabindex="-1"></a>LATE_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>comply<span class="sc">==</span><span class="dv">1</span>,])</span>
+<span id="cb35-2"><a href="types-of-causal-effects.html#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(LATE_obs) <span class="co"># 101.1594 </span></span></code></pre></div>
 <pre><code>## (Intercept)       treat 
 ##    398.5844    101.1594</code></pre>
 <ul>
 <li>CATE if gender is included as a confounder:</li>
 </ul>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="types-of-causal-effects.html#cb18-1" aria-hidden="true" tabindex="-1"></a>CATE0_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>gender<span class="sc">==</span><span class="dv">0</span>,])</span>
-<span id="cb18-2"><a href="types-of-causal-effects.html#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(CATE0_obs) <span class="co"># 106.5414 </span></span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="types-of-causal-effects.html#cb37-1" aria-hidden="true" tabindex="-1"></a>CATE0_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>gender<span class="sc">==</span><span class="dv">0</span>,])</span>
+<span id="cb37-2"><a href="types-of-causal-effects.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(CATE0_obs) <span class="co"># 106.5414 </span></span></code></pre></div>
 <pre><code>## (Intercept)       treat 
 ##    400.1959    106.5414</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="types-of-causal-effects.html#cb20-1" aria-hidden="true" tabindex="-1"></a>CATE1_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>gender<span class="sc">==</span><span class="dv">1</span>,])</span>
-<span id="cb20-2"><a href="types-of-causal-effects.html#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(CATE1_obs) <span class="co"># 90.71861 </span></span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="types-of-causal-effects.html#cb39-1" aria-hidden="true" tabindex="-1"></a>CATE1_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>gender<span class="sc">==</span><span class="dv">1</span>,])</span>
+<span id="cb39-2"><a href="types-of-causal-effects.html#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(CATE1_obs) <span class="co"># 90.71861 </span></span></code></pre></div>
 <pre><code>## (Intercept)       treat 
 ##   400.05067    90.71861</code></pre>
 <ul>
 <li>Intention To Treat (ITT)</li>
 </ul>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="types-of-causal-effects.html#cb22-1" aria-hidden="true" tabindex="-1"></a>ITT <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> assign)</span>
-<span id="cb22-2"><a href="types-of-causal-effects.html#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ITT) <span class="co"># 15.460 whereas the true effect is 100!!</span></span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="types-of-causal-effects.html#cb41-1" aria-hidden="true" tabindex="-1"></a>ITT <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> assign)</span>
+<span id="cb41-2"><a href="types-of-causal-effects.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ITT) <span class="co"># 15.460 whereas the true effect is 100!!</span></span></code></pre></div>
 <pre><code>## (Intercept)      assign 
 ##   439.61675    15.45999</code></pre>
 <ul>
 <li>Intention To Treat on Compliers</li>
 </ul>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="types-of-causal-effects.html#cb24-1" aria-hidden="true" tabindex="-1"></a>ITT_c <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> assign, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>comply<span class="sc">==</span><span class="dv">1</span>,])</span>
-<span id="cb24-2"><a href="types-of-causal-effects.html#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ITT_c) <span class="co"># 101.159 which is pretty close to the true effect 100</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="types-of-causal-effects.html#cb43-1" aria-hidden="true" tabindex="-1"></a>ITT_c <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> assign, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>comply<span class="sc">==</span><span class="dv">1</span>,])</span>
+<span id="cb43-2"><a href="types-of-causal-effects.html#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ITT_c) <span class="co"># 101.159 which is pretty close to the true effect 100</span></span></code></pre></div>
 <pre><code>## (Intercept)      assign 
 ##    398.5844    101.1594</code></pre>
 <p><strong>Generally recommended: LATE or ITT on Compliers!</strong></p>
@@ -297,7 +336,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="regression-approach-to-treatment-effect-estimation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="a-caucus-race-and-a-long-tale.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="instrumental-variable.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -351,6 +390,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

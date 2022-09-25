@@ -1,5 +1,5 @@
 --- 
-title: "R Book for Quasi-Experimental Designs / Causal Inference"
+title: "R Book for Quasi-Experimental Designs"
 author: "Ge Jiang"
 date: "QUERIES, University of Illinois at Urbana-Champaign"
 site: bookdown::bookdown_site
