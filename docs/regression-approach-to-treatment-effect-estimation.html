@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 2 Regression Approach to Treatment Effect Estimation | R Book for Quasi-Experimental Designs / Causal Inference</title>
-  <meta name="description" content="Chapter 2 Regression Approach to Treatment Effect Estimation | R Book for Quasi-Experimental Designs / Causal Inference" />
+  <title>Chapter 2 Regression Approach to Treatment Effect Estimation | R Book for Quasi-Experimental Designs</title>
+  <meta name="description" content="Chapter 2 Regression Approach to Treatment Effect Estimation | R Book for Quasi-Experimental Designs" />
   <meta name="generator" content="bookdown 0.28 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 2 Regression Approach to Treatment Effect Estimation | R Book for Quasi-Experimental Designs / Causal Inference" />
+  <meta property="og:title" content="Chapter 2 Regression Approach to Treatment Effect Estimation | R Book for Quasi-Experimental Designs" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 2 Regression Approach to Treatment Effect Estimation | R Book for Quasi-Experimental Designs / Causal Inference" />
+  <meta name="twitter:title" content="Chapter 2 Regression Approach to Treatment Effect Estimation | R Book for Quasi-Experimental Designs" />
   
   
   
@@ -132,7 +132,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">SHORT TITLE HERE</a></li>
+<li><a href="./">R for Quasi-exp Designs</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Course</a></li>
@@ -185,14 +185,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="5.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#data"><i class="fa fa-check"></i><b>5.1</b> Data</a>
 <ul>
-<li class="chapter" data-level="5.1.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#create-dummy-variable-for-race"><i class="fa fa-check"></i><b>5.1.1</b> Create dummy variable for race</a></li>
+<li class="chapter" data-level="5.1.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#create-dummy-variable-for-race-and-unemployment"><i class="fa fa-check"></i><b>5.1.1</b> Create dummy variable for race and unemployment</a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#psm-steps"><i class="fa fa-check"></i><b>5.2</b> PSM Steps</a>
+<li class="chapter" data-level="5.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#regression-estimates"><i class="fa fa-check"></i><b>5.2</b> Regression Estimates</a>
 <ul>
-<li class="chapter" data-level="5.2.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#selection-of-covariates-in-x"><i class="fa fa-check"></i><b>5.2.1</b> Selection of covariates in X</a></li>
-<li class="chapter" data-level="5.2.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#calculation-of-propensity-scores-p-scores"><i class="fa fa-check"></i><b>5.2.2</b> Calculation of propensity scores (p-scores)</a></li>
-<li class="chapter" data-level="5.2.3" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#matching-based-on-p-sores"><i class="fa fa-check"></i><b>5.2.3</b> Matching based on p-sores</a></li>
+<li class="chapter" data-level="5.2.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#naive-t-test-estimate"><i class="fa fa-check"></i><b>5.2.1</b> naive t-test estimate</a></li>
+<li class="chapter" data-level="5.2.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#regression-with-covariates-2"><i class="fa fa-check"></i><b>5.2.2</b> regression with covariates</a></li>
 </ul></li>
+<li class="chapter" data-level="5.3" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#psm-steps"><i class="fa fa-check"></i><b>5.3</b> PSM Steps</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#selection-of-covariates-in-x"><i class="fa fa-check"></i><b>5.3.1</b> Selection of covariates in X</a></li>
+<li class="chapter" data-level="5.3.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#calculation-of-propensity-scores-p-scores"><i class="fa fa-check"></i><b>5.3.2</b> Calculation of propensity scores (p-scores)</a></li>
+<li class="chapter" data-level="5.3.3" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#matching-based-on-p-sores"><i class="fa fa-check"></i><b>5.3.3</b> Matching based on p-sores</a></li>
+<li class="chapter" data-level="5.3.4" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#checking-balance-on-covariates"><i class="fa fa-check"></i><b>5.3.4</b> Checking balance on covariates:</a></li>
+<li class="chapter" data-level="5.3.5" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#estimation-of-treatment-effect"><i class="fa fa-check"></i><b>5.3.5</b> Estimation of treatment effect</a></li>
+<li class="chapter" data-level="5.3.6" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#hidden-bias-analysis"><i class="fa fa-check"></i><b>5.3.6</b> Hidden bias analysis</a></li>
+<li class="chapter" data-level="5.3.7" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#references"><i class="fa fa-check"></i><b>5.3.7</b> References:</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html"><i class="fa fa-check"></i><b>6</b> Propensity Score Analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#data-1"><i class="fa fa-check"></i><b>6.1</b> Data</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#create-dummy-variable-for-race-and-unemployment-1"><i class="fa fa-check"></i><b>6.1.1</b> Create dummy variable for race and unemployment</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#calculating-propensity-scores"><i class="fa fa-check"></i><b>6.2</b> Calculating Propensity Scores</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#different-formulas"><i class="fa fa-check"></i><b>6.2.1</b> Different formulas</a></li>
+<li class="chapter" data-level="6.2.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#calculation-of-propensity-scores-p-scores-1"><i class="fa fa-check"></i><b>6.2.2</b> Calculation of propensity scores (p-scores)</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#iptw-inverse-probability-treatment-weighting"><i class="fa fa-check"></i><b>6.3</b> IPTW: Inverse Probability Treatment Weighting</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#balance-check"><i class="fa fa-check"></i><b>6.3.1</b> Balance check</a></li>
+<li class="chapter" data-level="6.3.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#estimation-of-treatment-effect-1"><i class="fa fa-check"></i><b>6.3.2</b> Estimation of treatment effect</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#stratification"><i class="fa fa-check"></i><b>6.4</b> Stratification</a></li>
+<li class="chapter" data-level="6.5" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#adjustment"><i class="fa fa-check"></i><b>6.5</b> Adjustment</a></li>
+<li class="chapter" data-level="6.6" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#exercise"><i class="fa fa-check"></i><b>6.6</b> Exercise</a></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -205,7 +234,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Book for Quasi-Experimental Designs / Causal Inference</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Book for Quasi-Experimental Designs</a>
           </h1>
         </div>
 

@@ -7,22 +7,47 @@ library(optmatch)
 library(weights)
 library(cem)
 library(tcltk2)
+library(knitr)
+library(CBPS)
+library(jtools)
+library(cobalt)
+library(lmtest)
+library(sandwich) #vcovCL
+library(rbounds) #gamma
 ```
 
 ## Data
 
-```{r data}
-data(lalonde)
+```{r}
+#data(lalonde)
+lalonde = MatchIt::lalonde
 dim(lalonde)
 names(lalonde)
 ```
 
-### Create dummy variable for race
+### Create dummy variable for race and unemployment
 
 ```{r}
 lalonde$black = ifelse(lalonde$race=='black', 1, 0)
 lalonde$hispan = ifelse(lalonde$race=='hispan', 1, 0)
+lalonde$un74 = ifelse(lalonde$re74==0, 0, 1)
+lalonde$un75 = ifelse(lalonde$re75==0, 0, 1)
 ```
+
+## Regression Estimates
+### naive t-test estimate 
+
+```{r}
+reglm <- lm(re78 ~ treat, data = lalonde)
+summ(reglm)
+```
+
+### regression with covariates 
+```{r}
+reglm1 <- lm(re78 ~ treat + educ + age + black + hispan + married + nodegree + un74 + un75 + re74 + re75, data = lalonde)
+summ(reglm1)
+```
+
 
 ## PSM Steps
 
@@ -36,18 +61,26 @@ fm3 = treat ~ age + I(age^2) + I(age^3) + educ + I(educ^2) + black + hispan + ma
 
 ### Calculation of propensity scores (p-scores)
 ```{r}
-pscore <- glm(fm1, data = lalonde, family = 'binomial')
+pscore <- glm(fm2, data = lalonde, family = 'binomial')
 head(pscore$fitted.values)
 hist(pscore$fitted.values[lalonde$treat==0],xlim=c(0,1))
 hist(pscore$fitted.values[lalonde$treat==1],xlim=c(0,1))
 lalonde$pscore = pscore$fitted.values
 ```
-  
+
+Logistic regression:
+
+```{r}
+summ(pscore)
+```
+
 try other formulas?
+
+
 
 ### Matching based on p-sores
 
-all in one function matchit()
+all in one function matchit():
 
 ```{r}
 set.seed(42)
@@ -61,6 +94,12 @@ m.out <- matchit(data = lalonde,
                  )
 ```
 
+summary of matching results:
+
+```{r}
+summary(m.out)
+```
+
 * m.out$match.matrix
 * m.out$distance
 * plot(m.out$distance, m.out$fitted.values) # same 
@@ -68,11 +107,16 @@ m.out <- matchit(data = lalonde,
 * distance: pscore
 * plot(m.out, type = "qq", interactive=FALSE)
 
+### Checking balance on covariates:
+
+#### Balance for formula 1: 
+
 ```{r}
 plot(summary(m.out))
 ```
 
-Balance for formula 2: 
+
+#### Balance for formula 2: 
 
 ```{r}
 set.seed(42)
@@ -85,9 +129,34 @@ m.out <- matchit(data = lalonde,
                  discard = 'both'
                  )
 plot(summary(m.out))
+love.plot(m.out, binary = "std")
 ```
 
-Balance for formula 3: 
+Standardized mean differences (SMD): 
+
+```{r, eval=T}
+summary(m.out)
+#out = summary(m.out)
+#round(out$sum.all, 3)
+#round(out$sum.matched, 3)
+```
+
+```{r, eval=T}
+plot(m.out, type = "hist", interactive = F)
+plot(m.out, type = "jitter", interactive = F)
+love.plot(m.out, binary = "std")
+bal.plot(m.out, var.name = "distance", which = "both",
+         type = "histogram", mirror = TRUE)
+```
+
+who matched to whom?
+
+```{r}
+head(m.out$match.matrix, 10)
+```
+
+
+#### Balance for formula 3: 
 
 ```{r}
 set.seed(42)
@@ -100,7 +169,75 @@ m.out <- matchit(data = lalonde,
                  discard = 'both'
                  )
 plot(summary(m.out))
+love.plot(m.out, binary = "std")
 ```
+
+### Estimation of treatment effect
+
+I will use the matching results with fm3 because it yielded the best balance on the covariates between the matched groups. I also kept ratio = 1 and replace = FALSE to avoid the specification of weights for now: 
+
+```{r}
+set.seed(42)
+m.out <- matchit(data = lalonde,
+                 formula = fm3,
+                 distance = "logit",
+                 method = "nearest",
+                 replace = FALSE,
+                 ratio = 1, 
+                 caliper = 0.2, 
+                 discard = 'both'
+                 )
+plot(summary(m.out))
+love.plot(m.out, binary = "std")
+```
+
+Extract matched data: 
+
+```{r}
+m.data <- match.data(m.out)
+# m.data <- get_matches(m.out)
+```
+
+Linear model without covariates:
+
+```{r}
+fit1 <- lm(re78 ~ treat, data = m.data)
+summ(fit1)
+```
+
+Cluster-robust standard errors:
+
+```{r}
+coeftest(fit1, vcov. = vcovCL)
+```
+
+Linear model with covariates: double robust (use with caution)
+
+```{r}
+fit2 <- lm(re78 ~ treat + age + educ + black + hispan + married + nodegree + un74 + un75 + re74 + re75, data = m.data)
+summ(fit2)
+```
+
+```{r}
+coeftest(fit2, vcov. = vcovCL)
+```
+
+### Hidden bias analysis
+
+extract matched treatment and control units from m.data
+
+```{r}
+psens(x = m.data$re78[m.data$treat==1], 
+      y = m.data$re78[m.data$treat==0], 
+      Gamma = 3, GammaInc=0.1)
+```
+
+a gamma value with 1.6 or larger could lead to a change in the ATT estimate.
+
+
+
+
+### References:
 
 * matchit: https://kosukeimai.github.io/MatchIt/articles/MatchIt.html
 * manual: https://imai.fas.harvard.edu/research/files/matchit.pdf
