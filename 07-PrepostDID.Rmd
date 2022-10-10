@@ -1,0 +1,276 @@
+# Simple DID estimator
+
+In this lab, we will use propensity scores to perform other types of analyses (weighting, stratification, and covariate adjustment)
+
+```{r, message=FALSE}
+library(foreign)
+library(car)
+library(stargazer)
+#library(devtools)
+#devtools::install_github('ccolonescu/PoEdata')
+library(PoEdata)
+```
+
+<!------------------------------>
+## Data
+<!------------------------------>
+
+Getting sample data: 
+
+```{r}
+mydata = read.dta("http://dss.princeton.edu/training/Panel101.dta")
+head(mydata)
+```
+
+### scatterplot by country:
+
+```{r}
+scatterplot(y~year|country, boxplots=FALSE, smooth=TRUE, data = mydata)
+```
+
+### Create dummy variables 
+
+1. time: time when the treatment started
+
+Let's assume that treatment started in 1994. In this case, years before 1994 will have a value of 0 and 1994+ a 1. If you already have this skip this step.
+
+```{r}
+mydata$time = ifelse(mydata$year >= 1994, 1, 0)
+```
+
+2.treated: the group exposed to the treatment
+
+* In this example let's assumed that countries with code 5,6, and 7 were treated (=1). 
+* Countries 1-4 were not treated (=0). If you already have this skip this step.
+
+```{r}
+mydata$treated = ifelse(mydata$country == "E" |
+                          mydata$country == "F" |
+                          mydata$country == "G", 1, 0)
+```
+
+3.did: an interaction by multiplying time and treated. We will call this interaction ‘did’.
+
+```{r}
+mydata$did = mydata$time * mydata$treated
+```
+
+
+
+<!------------------------------>
+## The DID estimator
+<!------------------------------>
+
+```{r}
+didreg = lm(y ~ treated + time + did, data = mydata)
+summary(didreg)
+```
+
+* The coefficient for 'did' is the differences-in-differences estimator. 
+* The effect is significant at 10% with the treatment having a negative effect.
+
+
+<!------------------------------>
+## Card and Krueger (1994) from PoEdata
+<!------------------------------>
+
+* The "PoEdata"" package loads into R the data sets that accompany Principles of Econometrics 4e, by Carter Hill, William Griffiths, and Guay Lim.
+* by Dr. Constantin Colonescu
+* https://github.com/ccolonescu/PoEdata
+* https://bookdown.org/ccolonescu/RPoE4/indvars.html#the-difference-in-differences-estimator
+
+```{r}
+data("njmin3", package="PoEdata")
+?njmin3 # minimum wage example 
+```
+
+### Models
+
+```{r}
+mod1 <- lm(fte~nj*d, data=njmin3)
+mod2 <- lm(fte~nj*d+
+             kfc+roys+wendys+co_owned, data=njmin3)
+mod3 <- lm(fte~nj*d+
+             kfc+roys+wendys+co_owned+
+             southj+centralj+pa1, data=njmin3)
+```
+
+```{r}
+stargazer::stargazer(mod1, mod2, mod3, 
+                     type = 'text', model.names = FALSE, 
+                     header=FALSE, keep.stat="n",digits=2, 
+                     column.labels = c('DID', 'DIDw/Cov', 'DIDw/All'))
+```
+
+
+<!------------------------------>
+## Optional: Demo of HonestDiD (Rambachan & Roth, 2022)
+<!------------------------------>
+
+See original tutorial: https://github.com/asheshrambachan/HonestDiD
+
+```{r}
+library(here)
+library(dplyr)
+library(did)
+library(Rglpk)
+library(haven)
+library(ggplot2)
+library(fixest)
+library(HonestDiD)
+
+df <- read_dta("https://raw.githubusercontent.com/Mixtape-Sessions/Advanced-DID/main/Exercises/Data/ehec_data.dta")
+head(df,5)
+```
+
+### Estimate the baseline DiD
+
+```{r}
+#Keep years before 2016. Drop the 2016 cohort
+df_nonstaggered <- df %>% filter(year < 2016 & 
+                                 (is.na(yexp2)| yexp2 != 2015) )
+
+#Create a treatment dummy
+df_nonstaggered <- df_nonstaggered %>% mutate(D = case_when( yexp2 == 2014 ~ 1,
+                                                             T ~ 0)) 
+
+#Run the TWFE spec
+twfe_results <- fixest::feols(dins ~ i(year, D, ref = 2013) | stfips + year, 
+                        cluster = "stfips",
+                        data = df_nonstaggered)
+
+
+betahat <- summary(twfe_results)$coefficients #save the coefficients
+sigma <- summary(twfe_results)$cov.scaled #save the covariance matrix
+
+fixest::iplot(twfe_results)
+```
+
+### Sensitivity analysis using relative magnitudes restrictions
+
+```{r, warning=FALSE, message=FALSE}
+delta_rm_results <- 
+HonestDiD::createSensitivityResults_relativeMagnitudes(
+                                    betahat = betahat, #coefficients
+                                    sigma = sigma, #covariance matrix
+                                    numPrePeriods = 5, #num. of pre-treatment coefs
+                                    numPostPeriods = 2, #num. of post-treatment coefs
+                                    Mbarvec = seq(0.5,2,by=0.5) #values of Mbar
+                                    )
+
+delta_rm_results
+```
+
+```{r}
+originalResults <- HonestDiD::constructOriginalCS(betahat = betahat,
+                                                  sigma = sigma,
+                                                  numPrePeriods = 5,
+                                                  numPostPeriods = 2)
+
+HonestDiD::createSensitivityPlot_relativeMagnitudes(delta_rm_results, originalResults)
+```
+
+
+<!------------------------------>
+## Optional: Synthetic Control
+<!------------------------------>
+
+```{r, message=FALSE, warning=FALSE}
+library(devtools)
+devtools::install_github("edunford/tidysynth")
+library(tidysynth)
+```
+
+### Smoking data
+
+```{r}
+data("smoking")
+smoking %>% dplyr::glimpse()
+```
+
+### Generate Control
+
+The method aims to generate a synthetic California using information from a subset of control states (the “donor pool”) where a similar law was not implemented. The donor pool is the subset of case comparisons from which information is borrowed to generate a synthetic version of the treated unit (“California”).
+
+```{r,cache=T}
+smoking_out <-
+  
+  smoking %>%
+  
+  # initial the synthetic control object
+  synthetic_control(outcome = cigsale, # outcome
+                    unit = state, # unit index in the panel data
+                    time = year, # time index in the panel data
+                    i_unit = "California", # unit where the intervention occurred
+                    i_time = 1988, # time period when the intervention occurred
+                    generate_placebos=T # generate placebo synthetic controls (for inference)
+                    ) %>%
+  
+  # Generate the aggregate predictors used to fit the weights
+  
+  # average log income, retail price of cigarettes, and proportion of the
+  # population between 15 and 24 years of age from 1980 - 1988
+  generate_predictor(time_window = 1980:1988,
+                     ln_income = mean(lnincome, na.rm = T),
+                     ret_price = mean(retprice, na.rm = T),
+                     youth = mean(age15to24, na.rm = T)) %>%
+  
+  # average beer consumption in the donor pool from 1984 - 1988
+  generate_predictor(time_window = 1984:1988,
+                     beer_sales = mean(beer, na.rm = T)) %>%
+  
+  # Lagged cigarette sales 
+  generate_predictor(time_window = 1975,
+                     cigsale_1975 = cigsale) %>%
+  generate_predictor(time_window = 1980,
+                     cigsale_1980 = cigsale) %>%
+  generate_predictor(time_window = 1988,
+                     cigsale_1988 = cigsale) %>%
+  
+  
+  # Generate the fitted weights for the synthetic control
+  generate_weights(optimization_window = 1970:1988, # time to use in the optimization task
+                   margin_ipop = .02,sigf_ipop = 7,bound_ipop = 6 # optimizer options
+  ) %>%
+  
+  # Generate the synthetic control
+  generate_control()
+```
+
+Once the synthetic control is generated, one can easily assess the fit by comparing the trends of the synthetic and observed time series. The idea is that the trends in the pre-intervention period should map closely onto one another.
+
+```{r}
+smoking_out %>% plot_trends()
+```
+
+To capture the causal quantity (i.e. the difference between the observed and counterfactual), one can plot the differences using plot_differences()
+
+```{r}
+smoking_out %>% plot_differences()
+```
+
+In addition, one can easily examine the weighting of the units and variables in the fit. This allows one to see which cases were used, in part, to generate the synthetic control.
+
+```{r,fig.align="center",fig.width=10,fig.height=5,dpi=300}
+smoking_out %>% plot_weights()
+```
+
+Another useful way of evaluating the synthetic control is to look at how comparable the synthetic control is to the observed covariates of the treated unit.
+
+```{r}
+smoking_out %>% grab_balance_table()
+```
+
+### Inference 
+
+For inference, the method relies on repeating the method for every donor in the donor pool exactly as was done for the treated unit - i.e. generating _placebo_ synthetic controls). By setting `generate_placebos = TRUE` when initializing the synth pipeline with `synthetic_control()`, placebo cases are automatically generated when constructing the synthetic control of interest. This makes it easy to explore how unique difference between the observed and synthetic unit is when compared to the placebos. 
+
+```{r}
+smoking_out %>% plot_placebos()
+```
+
+there is a significance table that can be extracted with one of the many `grab_` prefix functions.
+```{r}
+smoking_out %>% grab_significance()
+```
+

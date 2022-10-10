@@ -15,6 +15,8 @@ library(rbounds) #gamma
 library(tidyr)
 library(tidyverse)
 library(janitor)
+#remotes::install_github("vdorie/treatSens")
+#library(treatSens)
 ```
 
 <!------------------------------>
@@ -33,8 +35,8 @@ names(lalonde)
 ```{r}
 lalonde$black = ifelse(lalonde$race=='black', 1, 0)
 lalonde$hispan = ifelse(lalonde$race=='hispan', 1, 0)
-lalonde$un74 = ifelse(lalonde$re74==0, 0, 1)
-lalonde$un75 = ifelse(lalonde$re75==0, 0, 1)
+lalonde$un74 = ifelse(lalonde$re74==0, 1, 0)
+lalonde$un75 = ifelse(lalonde$re75==0, 1, 0)
 ```
 
 <!------------------------------>
@@ -51,41 +53,75 @@ fm3 = treat ~ age + I(age^2) + I(age^3) + educ + I(educ^2) + black + hispan + ma
 
 ### Calculation of propensity scores (p-scores)
 ```{r}
-pscore <- glm(fm2, data = lalonde, family = 'binomial')
+pscore <- glm(fm3, data = lalonde, family = 'binomial')
 head(pscore$fitted.values)
 hist(pscore$fitted.values[lalonde$treat==0],xlim=c(0,1))
-hist(pscore$fitted.values[lalonde$treat==1],xlim=c(0,1))
+hist(pscore$fitted.values[lalonde$treat==1],xlim=c(0,1), add=F)
 lalonde$pscore = pscore$fitted.values
 ```
 
+```{r}
+hist(pscore$fitted.values[lalonde$treat==0],xlim=c(0,1), density = 20, angle = 45, main="Propensity Scores", xlab="Shaded = Untreated | Gray = Treated")
+hist(pscore$fitted.values[lalonde$treat==1],xlim=c(0,1), col=gray(0.4,0.25),add=T)
+```
 
 <!------------------------------>
 ## IPTW: Inverse Probability Treatment Weighting
 <!------------------------------>
 
-In the following code, the weight variable weightATE is created by using the ifelse() function to obtain the inverse of the propensity score for treated units or the inverse of 1 minus the propensity score for control units
+### weightATT
+
+weightATT is created by using the ifelse() function to obtain:
+* 1 for treated units
+* p/(1-p) for control units
+
+```{r}
+lalonde$weightATT <- with(lalonde, ifelse(treat==1, 1, pscore/(1-pscore)))
+```
+
+A summary of the ATT weights for treated and untreated groups:
+
+```{r}
+with(lalonde, by(pscore,treat,summary)) 
+```
+
+```{r}
+with(lalonde, by(weightATT,treat,summary)) 
+boxplot(lalonde$weightATT ~ lalonde$treat)
+```
+
+### weightATE
+
+weightATE is created by using the ifelse() function to obtain:
+* 1/p for treated units
+* 1/(1-p) for control units
 
 ```{r}
 lalonde$weightATE <- with(lalonde, ifelse(treat==1, 1/pscore, 1/(1-pscore)))
 ```
 
-A summary of the ATE weights for treated and untreated groups is obtained with the following: 
+A summary of the ATE weights for treated and untreated groups:
 
 ```{r}
 with(lalonde, by(weightATE,treat,summary)) 
 boxplot(lalonde$weightATE ~ lalonde$treat)
 ```
 
-* the maximum weight for the ATE is 117.417
-* Individuals with extreme weights for the ATE are those who are either very likely to participate in the treatment given their covariate values but did not or very unlikely to participate but did so.
+* the maximum weight for the ATE is 33.961 
 
-*  perform weight truncation
+### Weight truncation
+
 * Truncation can be performed by assigning the weight at a cutoff percentile to observations with weights above the cutoff.
 
 * The following code demonstrates weight truncation. More specifically, it uses the quantile function to calculate the weight at the 99th percentile and the ifelse function to assign this weight to any student whose weight exceeds the 99th percentile:
 
 ```{r}
 lalonde$weightATETruncated <- with(lalonde, ifelse(weightATE > quantile(weightATE, 0.99), quantile(weightATE, 0.99), weightATE))
+```
+
+```{r}
+with(lalonde, by(weightATETruncated,treat,summary)) 
+boxplot(lalonde$weightATETruncated ~ lalonde$treat)
 ```
 
 may truncate all above .05 quantiles if necessary
@@ -105,10 +141,10 @@ The bal.stat function of the twang package (Ridgeway et al., 2013) is useful for
 If there are no sampling weights, then sampw=1.
 
 ```{r}
-covariateNames <-names(lalonde)[3:14]
+covariateNames <-names(lalonde)[2:14]
 balanceTable <- bal.stat(lalonde, vars= covariateNames,
                          treat.var = "treat",
-                         w.all = lalonde$weightATETruncated, 
+                         w.all = lalonde$weightATE, 
                          get.ks=F,
                          sampw = 1,
                          estimand="ATE", multinom=F)
@@ -118,14 +154,14 @@ round(balanceTable,3)
 
 * std.eff.sz quantifies effect size
 * 0.2 small 0.5 medium 0.8 large
-* most of them are medium to large - balance was not achieved *
+* most of them are small (except nodegree and un74) - balance was somewhat achieved *
 
 ### Estimation of treatment effect
 
 the final weights are divided by the mean of weights to make them sum to the sample size, which is a process known as normalization.
 
 ```{r}
-lalonde$finalWeight <- lalonde$weightATETruncated/mean(lalonde$weightATETruncated)
+lalonde$finalWeight <- lalonde$weightATE/mean(lalonde$weightATE)
 ```
 
 Before the estimation can be performed, the surveyDesign object is created with the svydesign function to declare the names of the variables that contain cluster ids, strata ids, weights, and the data set: 
@@ -155,8 +191,14 @@ weightedMeans
 * The model formula using R notation is re78~treat. This formula can be expanded to include any covariates and interaction effects of interest
 
 ```{r}
-outcomeModel <- svyglm(re78~treat,surveyDesignBoot)
-summary(outcomeModel) # final model
+outcomeModel <- svyglm(re78~treat, design = surveyDesignBoot)
+summary(outcomeModel)
+```
+Double robust with the imbalanced covariates:
+
+```{r}
+outcomeModel <- svyglm(re78 ~ treat + age + un74 + hispan, design = surveyDesignBoot)
+summary(outcomeModel)
 ```
 
 
@@ -164,8 +206,12 @@ summary(outcomeModel) # final model
 ## Stratification
 <!------------------------------>
 
+### Manually creating subclasses
+
 * The following code used the cut function to create five strata of approximately the same size based on the quintiles of the distribution of propensity scores for both treated and untreated groups. 
 * The quintiles are obtained with the quantile function. The function levels is used to assign number labels from 1 to 5 to the strata, and then xtabs is used to display strata by treatment counts.
+* The number of strata is limited by the common support of the propensity score distributions of treated and untreated groups, because each stratum must have at least one treated and one untreated observation.
+
 
 ```{r}
 hist(lalonde$pscore)
@@ -177,8 +223,58 @@ levels(lalonde$subclass) <- 1:length(levels(lalonde$subclass))
 ntable <- xtabs(~treat+subclass,lalonde) 
 ntable
 
-surveyDesign <- svydesign(ids=~1, weights=~finalWeight, data = lalonde, nest=T) 
+surveyDesign <- svydesign(ids=~1, weights=~lalonde$finalWeight, 
+                          data = lalonde, nest=T) 
 ```
+
+### Stratification using matchit():
+
+```{r}
+set.seed(42)
+stratification <- matchit(data = lalonde,
+                 formula = fm2,
+                 distance = "logit",
+                 method = "subclass",
+                 subclass = 5)
+```
+
+
+### Covariate Balance Evaluation
+
+```{r}
+balance.stratification = summary(stratification)
+balance.stratification$qn
+```
+* It is noticeable in the cross-classification of treatment by strata shown above that the stratification based on the propensity scores of the treated resulted in a similar number of treated units within strata.
+
+* When using summary(), the default is to display balance only in aggregate using the subclassification weights. This balance output looks similar to that for other matching methods.
+
+```{r}
+round(balance.stratification$sum.across,3)
+```
+
+* If the goal is to estimate the treatment effect by pooling stratum-specific treatment effects, covariate balance should be evaluated and achieved within strata. * However, if the number of covariates is large, evaluation of covariate balance within strata can become cumbersome. 
+* Also, if the sample sizes of treated or untreated groups within strata are small, covariate balance evaluation can become very sensitive to outliers.
+
+* An additional option in summary(), subclass, allows us to request balance for individual subclasses. 
+* Below we call summary() and request balance to be displayed on all subclasses (setting un = FALSE to suppress balance in the original sample):
+
+```{r}
+summary(stratification, subclass = TRUE, un = FALSE)
+```
+
+* We can plot the standardized mean differences in a Love plot that also displays balance for the subclasses using plot.summary.matchit() on a summary.matchit() object with subclass = TRUE.
+
+
+```{r}
+balance.stratification2 <- summary(stratification, subclass = TRUE)
+plot(balance.stratification2, var.order = "unmatched", abs = FALSE)
+```
+
+* Note that for some variables, while the groups are balanced in aggregate (black dots), the individual subclasses (gray numbers) may not be balanced, in which case unadjusted effect estimates within these subclasses should not be interpreted as unbiased.
+
+
+### Calculate the stratum weights
 
 To use bootstrap methods with the survey package, the surveyDesign object created above should be modified to include weights for each replication. The following code takes the surveyDesign object and adds weights for 1,000 bootstrapped samples:
 
@@ -200,12 +296,16 @@ subclassMeans
 
 To obtain the ATE or ATT by pooling stratum-specific effects, svycontrast is used with the weights
 
-First, use ntable to obtain the weights
+First, use ntable to obtain the weights:
+
+* For estimating the ATE, the stratum weight is wk = nk/n, which is the stratum size divided by the total sample size. 
+* For estimating the ATT, the stratum weight is, wk = n1k/n1 which is the treated sample size within the stratum divided by the total treated sample size.
 
 ```{r}
-ntable
-colSums(ntable)/sum(ntable)
-ATTw = colSums(ntable)/sum(ntable)
+subclass_table = balance.stratification2$qn[1:2,1:5]
+ATEw = colSums(subclass_table)/sum(subclass_table)
+ATTw = subclass_table[2,]/sum(subclass_table[2,])
+subclass_table; ATEw; ATTw
 ```
 
 This won't work: 
@@ -214,25 +314,31 @@ This won't work:
 pooledEffects <- svycontrast(subclassMeans, contrasts = list(ATT=ATTw)) 
 ```
 
-
-* ATTw needs to be specified for EVERY group within EVERY stratum
-* in our case, 9 groups (no treatment in first stratum so 2*5-1 = 9)
+* ATEw and ATTw needs to be specified for EVERY group within EVERY stratum
+* in our case, 10 groups (2*5 = 10)
 * Control groups get negative weights and treatment group gets positive weights: 
 
 ```{r}
-ATTw2 <- c(-ATTw[1], ATTw[1], # first stratum, just control
-           -ATTw[2], ATTw[2],  # second stratum
-           -ATTw[3], ATTw[3],  # third stratum
-           -ATTw[4], ATTw[4],  # fourth stratum
-           -ATTw[4], ATTw[5])  # fifth stratum
-subclassMeans$ATTw2 <- ATTw2
+subclassMeans$ATEsw <- c(-ATEw[1], ATEw[1], # first stratum, 
+                         -ATEw[2], ATEw[2],  # second stratum
+                         -ATEw[3], ATEw[3],  # third stratum
+                         -ATEw[4], ATEw[4],  # fourth stratum
+                         -ATEw[4], ATEw[5])  # fifth stratum
+subclassMeans$ATTsw <- c(-ATTw[1], ATTw[1], # first stratum, 
+                         -ATTw[2], ATTw[2],  # second stratum
+                         -ATTw[3], ATTw[3],  # third stratum
+                         -ATTw[4], ATTw[4],  # fourth stratum
+                         -ATTw[4], ATTw[5])  # fifth stratum
+subclassMeans
 ```
+
+### Estimation of Treatment Effects
 
 view ATTw2 here:
 
 ```{r}
-subclassMeans
-pooledEffects <- svycontrast(subclassMeans, list(ATT=as.numeric(ATTw2))) 
+pooledEffects <- svycontrast(subclassMeans, 
+                             list(ATE = subclassMeans$ATTsw, ATT = subclassMeans$ATEsw)) 
 pooledEffects
 ```
 

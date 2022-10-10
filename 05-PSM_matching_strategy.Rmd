@@ -30,8 +30,8 @@ names(lalonde)
 ```{r}
 lalonde$black = ifelse(lalonde$race=='black', 1, 0)
 lalonde$hispan = ifelse(lalonde$race=='hispan', 1, 0)
-lalonde$un74 = ifelse(lalonde$re74==0, 0, 1)
-lalonde$un75 = ifelse(lalonde$re75==0, 0, 1)
+lalonde$un74 = ifelse(lalonde$re74==0, 1, 0)
+lalonde$un75 = ifelse(lalonde$re75==0, 1, 0)
 ```
 
 ## Regression Estimates
@@ -164,10 +164,18 @@ m.out <- matchit(data = lalonde,
                  formula = fm3,
                  distance = "logit",
                  method = "nearest",
-                 replace = TRUE,
+                 replace = FALSE,
                  caliper = 0.2, 
                  discard = 'both'
                  )
+```
+
+```{r}
+summary(m.out)
+```
+
+
+```{r}
 plot(summary(m.out))
 love.plot(m.out, binary = "std")
 ```
@@ -182,10 +190,11 @@ m.out <- matchit(data = lalonde,
                  formula = fm3,
                  distance = "logit",
                  method = "nearest",
-                 replace = FALSE,
+                 replace = TRUE,
                  ratio = 1, 
                  caliper = 0.2, 
-                 discard = 'both'
+                 discard = 'both',
+                 estimand = 'ATC'
                  )
 plot(summary(m.out))
 love.plot(m.out, binary = "std")
@@ -196,9 +205,11 @@ Extract matched data:
 ```{r}
 m.data <- match.data(m.out)
 # m.data <- get_matches(m.out)
+tail(m.data)
+dim(m.data)
 ```
 
-Linear model without covariates:
+#### Linear model without covariates:
 
 ```{r}
 fit1 <- lm(re78 ~ treat, data = m.data)
@@ -211,10 +222,25 @@ Cluster-robust standard errors:
 coeftest(fit1, vcov. = vcovCL)
 ```
 
-Linear model with covariates: double robust (use with caution)
+Alternatively, use weighted Student's t-test: 
+
+```{r}
+res <- wtd.t.test(m.data$re78[m.data$treat == 1],
+                  m.data$re78[m.data$treat == 0],
+                  weight = m.data$weights[m.data$treat == 1],
+                  weighty = m.data$weights[m.data$treat == 0])
+print(res)
+mu <- res$additional[1]
+std <- res$additional[4]
+cat("Confidence interval: ", sapply(qt(c(0.025, 0.975), coef(res)["df"]), function(x){return(mu+x*std)}), "\n")
+```
+
+#### Linear model with covariates: double robust (use with caution)
 
 ```{r}
 fit2 <- lm(re78 ~ treat + age + educ + black + hispan + married + nodegree + un74 + un75 + re74 + re75, data = m.data)
+# include only the covariate that is not balanced
+fit2 <- lm(re78 ~ treat + I(educ^2), data = m.data)
 summ(fit2)
 ```
 
@@ -241,6 +267,7 @@ a gamma value with 1.6 or larger could lead to a change in the ATT estimate.
 
 * matchit: https://kosukeimai.github.io/MatchIt/articles/MatchIt.html
 * manual: https://imai.fas.harvard.edu/research/files/matchit.pdf
+* https://cran.r-project.org/web/packages/MatchIt/vignettes/assessing-balance.html 
 * starting from page 15
 * Let's play with the arguments! 
 

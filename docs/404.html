@@ -91,7 +91,7 @@ code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
 code span.at { color: #7d9029; } /* Attribute */
 code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
+code span.bu { color: #008000; } /* BuiltIn */
 code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
 code span.ch { color: #4070a0; } /* Char */
 code span.cn { color: #880000; } /* Constant */
@@ -104,7 +104,7 @@ code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
 code span.fl { color: #40a070; } /* Float */
 code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
+code span.im { color: #008000; font-weight: bold; } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 code span.kw { color: #007020; font-weight: bold; } /* Keyword */
 code span.op { color: #666666; } /* Operator */
@@ -216,12 +216,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="6.3" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#iptw-inverse-probability-treatment-weighting"><i class="fa fa-check"></i><b>6.3</b> IPTW: Inverse Probability Treatment Weighting</a>
 <ul>
-<li class="chapter" data-level="6.3.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#balance-check"><i class="fa fa-check"></i><b>6.3.1</b> Balance check</a></li>
-<li class="chapter" data-level="6.3.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#estimation-of-treatment-effect-1"><i class="fa fa-check"></i><b>6.3.2</b> Estimation of treatment effect</a></li>
+<li class="chapter" data-level="6.3.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#weightatt"><i class="fa fa-check"></i><b>6.3.1</b> weightATT</a></li>
+<li class="chapter" data-level="6.3.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#weightate"><i class="fa fa-check"></i><b>6.3.2</b> weightATE</a></li>
+<li class="chapter" data-level="6.3.3" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#weight-truncation"><i class="fa fa-check"></i><b>6.3.3</b> Weight truncation</a></li>
+<li class="chapter" data-level="6.3.4" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#balance-check"><i class="fa fa-check"></i><b>6.3.4</b> Balance check</a></li>
+<li class="chapter" data-level="6.3.5" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#estimation-of-treatment-effect-1"><i class="fa fa-check"></i><b>6.3.5</b> Estimation of treatment effect</a></li>
 </ul></li>
-<li class="chapter" data-level="6.4" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#stratification"><i class="fa fa-check"></i><b>6.4</b> Stratification</a></li>
+<li class="chapter" data-level="6.4" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#stratification"><i class="fa fa-check"></i><b>6.4</b> Stratification</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#manually-creating-subclasses"><i class="fa fa-check"></i><b>6.4.1</b> Manually creating subclasses</a></li>
+<li class="chapter" data-level="6.4.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#stratification-using-matchit"><i class="fa fa-check"></i><b>6.4.2</b> Stratification using matchit():</a></li>
+<li class="chapter" data-level="6.4.3" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#covariate-balance-evaluation"><i class="fa fa-check"></i><b>6.4.3</b> Covariate Balance Evaluation</a></li>
+<li class="chapter" data-level="6.4.4" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#calculate-the-stratum-weights"><i class="fa fa-check"></i><b>6.4.4</b> Calculate the stratum weights</a></li>
+<li class="chapter" data-level="6.4.5" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#estimation-of-treatment-effects"><i class="fa fa-check"></i><b>6.4.5</b> Estimation of Treatment Effects</a></li>
+</ul></li>
 <li class="chapter" data-level="6.5" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#adjustment"><i class="fa fa-check"></i><b>6.5</b> Adjustment</a></li>
 <li class="chapter" data-level="6.6" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#exercise"><i class="fa fa-check"></i><b>6.6</b> Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html"><i class="fa fa-check"></i><b>7</b> Simple DID estimator</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#data-2"><i class="fa fa-check"></i><b>7.1</b> Data</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#scatterplot-by-country"><i class="fa fa-check"></i><b>7.1.1</b> scatterplot by country:</a></li>
+<li class="chapter" data-level="7.1.2" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#create-dummy-variables"><i class="fa fa-check"></i><b>7.1.2</b> Create dummy variables</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#the-did-estimator"><i class="fa fa-check"></i><b>7.2</b> The DID estimator</a></li>
+<li class="chapter" data-level="7.3" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#card-and-krueger-1994-from-poedata"><i class="fa fa-check"></i><b>7.3</b> Card and Krueger (1994) from PoEdata</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#models"><i class="fa fa-check"></i><b>7.3.1</b> Models</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#optional-demo-of-honestdid-rambachan-roth-2022"><i class="fa fa-check"></i><b>7.4</b> Optional: Demo of HonestDiD (Rambachan &amp; Roth, 2022)</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#estimate-the-baseline-did"><i class="fa fa-check"></i><b>7.4.1</b> Estimate the baseline DiD</a></li>
+<li class="chapter" data-level="7.4.2" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#sensitivity-analysis-using-relative-magnitudes-restrictions"><i class="fa fa-check"></i><b>7.4.2</b> Sensitivity analysis using relative magnitudes restrictions</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#optional-synthetic-control"><i class="fa fa-check"></i><b>7.5</b> Optional: Synthetic Control</a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#smoking-data"><i class="fa fa-check"></i><b>7.5.1</b> Smoking data</a></li>
+<li class="chapter" data-level="7.5.2" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#generate-control"><i class="fa fa-check"></i><b>7.5.2</b> Generate Control</a></li>
+<li class="chapter" data-level="7.5.3" data-path="simple-did-estimator.html"><a href="simple-did-estimator.html#inference"><i class="fa fa-check"></i><b>7.5.3</b> Inference</a></li>
+</ul></li>
 </ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -308,20 +342,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:")
-      if (/^https?:/.test(src))
-        src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>
