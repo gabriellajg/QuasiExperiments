@@ -1,4 +1,4 @@
-# Simple DID estimator
+# Difference-in-differences (DID)
 
 In this lab, we will use propensity scores to perform other types of analyses (weighting, stratification, and covariate adjustment)
 
@@ -22,7 +22,7 @@ mydata = read.dta("http://dss.princeton.edu/training/Panel101.dta")
 head(mydata)
 ```
 
-### scatterplot by country:
+### Scatterplot by country:
 
 ```{r}
 scatterplot(y~year|country, boxplots=FALSE, smooth=TRUE, data = mydata)
@@ -84,7 +84,7 @@ data("njmin3", package="PoEdata")
 ?njmin3 # minimum wage example 
 ```
 
-### Models
+### Regression models
 
 ```{r}
 mod1 <- lm(fte~nj*d, data=njmin3)
@@ -104,7 +104,7 @@ stargazer::stargazer(mod1, mod2, mod3,
 
 
 <!------------------------------>
-## Optional: Demo of HonestDiD (Rambachan & Roth, 2022)
+## Demo of HonestDiD (Rambachan & Roth, 2022)
 <!------------------------------>
 
 See original tutorial: https://github.com/asheshrambachan/HonestDiD
@@ -172,7 +172,7 @@ HonestDiD::createSensitivityPlot_relativeMagnitudes(delta_rm_results, originalRe
 
 
 <!------------------------------>
-## Optional: Synthetic Control
+## Synthetic Control
 <!------------------------------>
 
 ```{r, message=FALSE, warning=FALSE}
@@ -182,6 +182,8 @@ library(tidysynth)
 ```
 
 ### Smoking data
+
+See original tutorial: https://github.com/edunford/tidysynth
 
 ```{r}
 data("smoking")

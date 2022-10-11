@@ -1,10 +1,3 @@
-base
-methods
-datasets
-utils
-grDevices
-graphics
-stats
 usethis
 devtools
 tidysynth
@@ -27,7 +20,6 @@ Formula
 ggplot2
 Hmisc
 weights
-tcltk
 cem
 tcltk2
 knitr
@@ -39,7 +31,6 @@ CBPS
 jtools
 cobalt
 rbounds
-grid
 survey
 twang
 tidyr
@@ -61,7 +52,6 @@ fixest
 CVXR
 foreach
 iterators
-parallel
 doParallel
 latex2exp
 lpSolveAPI
