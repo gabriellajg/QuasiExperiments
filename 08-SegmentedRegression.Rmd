@@ -1,0 +1,139 @@
+# Interupted Time Series (ITS) (1)
+
+* In this lab, we will see how to use Segmented Regression to analyze ITS data. 
+* Source: "Global Health Research: Design + Methods". By Dr. Eric Green
+
+```{r, message=FALSE}
+library(ggplot2)
+library(forecast)
+library(sandwich)
+library(lmtest)
+```
+
+<!------------------------------>
+## Data
+<!------------------------------>
+
+Generating sample data:
+
+```{r}
+dat <- data.frame(month=seq(from=1, to=24), post=c(rep(0, 12), rep(1, 12)),
+                  monthpost=c(rep(0, 12), seq(from=1, to=12)), 
+                  outcome=c(50, 60, 45, 47, 50, 55, 53, 51, 48, 50, 47, 48,
+                            55, 60, 63, 67, 65, 69, 72, 68, 74, 71, 76, 70))
+head(dat)
+```
+
+### Line plot
+
+
+```{r}
+p1 <- ggplot(data = dat, mapping = aes(x = month, y = outcome)) +
+  geom_line(color = 'red') + 
+  geom_point(fill="white", shape=21) + theme_bw() + 
+  geom_vline(xintercept = 12.5, color = 'blue', linetype = "longdash")
+p1
+```
+
+<!------------------------------>
+## OLS Segmented Regression
+<!------------------------------>
+
+```{r}
+lmFit1 <- lm(outcome ~ month + post + monthpost, data=dat) 
+summary(lmFit1)
+```
+
+* change in intercept:  b2 = 9.6876   p = 0.004144 ** 
+* change in slope:      b3 = 1.7832   p = 0.000515 ***
+
+### Regression diagnostics 
+
+```{r}
+par(mfrow=c(2,2), mar = c(2, 4, 4, 4))
+plot(lmFit1)
+par(mfrow=c(1,1))
+```
+
+nothing abnormal.
+
+### Overplot prediction
+
+```{r}
+dat$predicted = predict(lmFit1, data = dat)
+p1 + 
+  geom_line(data = dat[dat$post==0,], aes(x=month, y=predicted), color="green") +
+  geom_line(data = dat[dat$post==1,], aes(x=month, y=predicted), color="green")
+```
+
+
+<!------------------------------>
+## OLS Segmented Regression with Polynomial term
+<!------------------------------>
+
+**outcome=Time+Time^{2}** **+Treat+delta_Time+delta_Time^{2}**
+
+```{r}
+lmFit2 <- lm(outcome ~ month + I(month^2) + post + monthpost + I(monthpost^2), data=dat) 
+summary(lmFit2)
+```
+
+* change in intercept:  b3 = 4.52947   p = 0.31411 ** 
+* change in slope:      b4 = 4.76623   p = 0.00998 ** 
+* change in slope^2:    b5 = -0.15385  p = 0.26332
+
+
+### Overplot prediction
+
+```{r}
+dat$predicted2 = predict(lmFit2, data = dat)
+p1 + 
+  geom_line(data = dat[dat$post==0,], aes(x=month, y=predicted2), color="green") +
+  geom_line(data = dat[dat$post==1,], aes(x=month, y=predicted2), color="green")
+```
+
+
+<!------------------------------>
+## Autocorrelation
+<!------------------------------>
+
+ACF and PACF of residuals:
+
+```{r}
+par(mfrow=c(2,2), mar = c(2, 4, 4, 4))
+acf(dat$outcome, lag.max = 23) # for Y
+pacf(dat$outcome, lag.max = 23) # for Y
+acf(resid(lmFit2)) # for e
+pacf(resid(lmFit2)) # for e
+```
+
+```{r}
+checkresiduals(lmFit2)
+```
+
+* the Breusch-Godfrey test for jointly testing up to 9th order autocorrelation.
+* The residual plot shows some changing variation over time, but is not remarkable (p = 0.06696). 
+* The histogram shows that the residuals seem to be slightly skewed, which may also affect the standard errors of the residuals.
+* The autocorrelation plot (ACF) shows no significant spike beyond the dashed blue line. Even up to lag 8, there is not quite enough evidence for the Breusch-Godfrey to be significant at the 5% level. The autocorrelations are not particularly large, and will be unlikely to have any noticeable impact on the forecasts or the prediction intervals.
+* We are good with segmented regression...
+* But for illustration purposes...
+
+
+<!------------------------------>
+## Segmented Regression with HAC correction for standard errors
+<!------------------------------>
+
+### OLS: 
+
+```{r}
+round(vcov(lmFit2), 2) # original
+summary(lmFit2)
+```
+
+### HAC: 
+
+```{r}
+round(vcovHAC(lmFit2), 2)  # HAC corrected
+coeftest(lmFit2, vcov = vcovHAC(lmFit2))
+```
+

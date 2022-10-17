@@ -3,11 +3,12 @@
 In this lab, we will use propensity scores to perform other types of analyses (weighting, stratification, and covariate adjustment)
 
 ```{r, message=FALSE}
+library(dplyr)
 library(foreign)
 library(car)
 library(stargazer)
-#library(devtools)
-#devtools::install_github('ccolonescu/PoEdata')
+library(devtools)
+devtools::install_github('ccolonescu/PoEdata')
 library(PoEdata)
 ```
 
@@ -111,12 +112,12 @@ See original tutorial: https://github.com/asheshrambachan/HonestDiD
 
 ```{r}
 library(here)
-library(dplyr)
 library(did)
 library(Rglpk)
 library(haven)
 library(ggplot2)
 library(fixest)
+#devtools::install_github("asheshrambachan/HonestDiD")
 library(HonestDiD)
 
 df <- read_dta("https://raw.githubusercontent.com/Mixtape-Sessions/Advanced-DID/main/Exercises/Data/ehec_data.dta")
@@ -175,9 +176,9 @@ HonestDiD::createSensitivityPlot_relativeMagnitudes(delta_rm_results, originalRe
 ## Synthetic Control
 <!------------------------------>
 
-```{r, message=FALSE, warning=FALSE}
+```{r syn_pkgs, message=FALSE, warning=FALSE}
 library(devtools)
-devtools::install_github("edunford/tidysynth")
+#devtools::install_github("edunford/tidysynth")
 library(tidysynth)
 ```
 
@@ -194,7 +195,7 @@ smoking %>% dplyr::glimpse()
 
 The method aims to generate a synthetic California using information from a subset of control states (the “donor pool”) where a similar law was not implemented. The donor pool is the subset of case comparisons from which information is borrowed to generate a synthetic version of the treated unit (“California”).
 
-```{r,cache=T}
+```{r,cache=F}
 smoking_out <-
   
   smoking %>%

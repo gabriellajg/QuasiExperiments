@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 3 Types of Causal Effects | R Book for Quasi-Experimental Designs</title>
-  <meta name="description" content="Chapter 3 Types of Causal Effects | R Book for Quasi-Experimental Designs" />
+  <title>Chapter 8 Interupted Time Series (ITS) (1) | R Book for Quasi-Experimental Designs</title>
+  <meta name="description" content="Chapter 8 Interupted Time Series (ITS) (1) | R Book for Quasi-Experimental Designs" />
   <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 3 Types of Causal Effects | R Book for Quasi-Experimental Designs" />
+  <meta property="og:title" content="Chapter 8 Interupted Time Series (ITS) (1) | R Book for Quasi-Experimental Designs" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 3 Types of Causal Effects | R Book for Quasi-Experimental Designs" />
+  <meta name="twitter:title" content="Chapter 8 Interupted Time Series (ITS) (1) | R Book for Quasi-Experimental Designs" />
   
   
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="regression-approach-to-treatment-effect-estimation.html"/>
-<link rel="next" href="instrumental-variable.html"/>
+<link rel="prev" href="difference-in-differences-did.html"/>
+
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -298,121 +298,225 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="types-of-causal-effects" class="section level1 hasAnchor" number="3">
-<h1><span class="header-section-number">Chapter 3</span> Types of Causal Effects<a href="types-of-causal-effects.html#types-of-causal-effects" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>Sometimes our experiments because quasi-experiments because of crossover or non-compliance.</p>
-<p>Simulating data on assignment, compliance, and potential outcomes:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="types-of-causal-effects.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb20-2"><a href="types-of-causal-effects.html#cb20-2" aria-hidden="true" tabindex="-1"></a>assign <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="co"># half half</span></span></code></pre></div>
-<p>Simulating non-compliance as a function of gender:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="types-of-causal-effects.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">101</span>)</span>
-<span id="cb21-2"><a href="types-of-causal-effects.html#cb21-2" aria-hidden="true" tabindex="-1"></a>gender <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="dv">1</span>, <span class="fl">0.4</span>) <span class="co"># 40% are men</span></span>
-<span id="cb21-3"><a href="types-of-causal-effects.html#cb21-3" aria-hidden="true" tabindex="-1"></a>comply <span class="ot">=</span> <span class="fu">rep</span>(); </span>
-<span id="cb21-4"><a href="types-of-causal-effects.html#cb21-4" aria-hidden="true" tabindex="-1"></a>comply[gender<span class="sc">==</span><span class="dv">1</span>] <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="fu">sum</span>(gender<span class="sc">==</span><span class="dv">1</span>), <span class="dv">1</span>, <span class="fl">0.5</span>) <span class="co"># prob of men complying is 0.5</span></span>
-<span id="cb21-5"><a href="types-of-causal-effects.html#cb21-5" aria-hidden="true" tabindex="-1"></a>comply[gender<span class="sc">==</span><span class="dv">0</span>] <span class="ot">=</span> <span class="fu">rbinom</span>(<span class="fu">sum</span>(gender<span class="sc">==</span><span class="dv">0</span>), <span class="dv">1</span>, <span class="fl">0.7</span>) <span class="co"># prob of women complying is 0.7</span></span></code></pre></div>
-<p>treatment effect: 100 (from 400 –&gt; 500) fixed for everyone:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="types-of-causal-effects.html#cb22-1" aria-hidden="true" tabindex="-1"></a>notutor <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">400</span>, <span class="dv">12</span>) <span class="co"># Y0</span></span>
-<span id="cb22-2"><a href="types-of-causal-effects.html#cb22-2" aria-hidden="true" tabindex="-1"></a>tutor <span class="ot">=</span> notutor <span class="sc">+</span> <span class="dv">100</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">0</span>, <span class="dv">20</span>) <span class="co"># Y1</span></span>
-<span id="cb22-3"><a href="types-of-causal-effects.html#cb22-3" aria-hidden="true" tabindex="-1"></a>simdata <span class="ot">=</span> <span class="fu">data.frame</span>(assign, notutor, tutor)</span>
-<span id="cb22-4"><a href="types-of-causal-effects.html#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(simdata)</span></code></pre></div>
-<pre><code>##   assign  notutor    tutor
-## 1      0 403.2168 499.9361
-## 2      0 392.8935 465.2280
-## 3      1 425.6018 534.0721
-## 4      1 414.0730 498.2632
-## 5      0 408.9611 533.1596
-## 6      1 397.2339 515.1242</code></pre>
-<p>actual treatment:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="types-of-causal-effects.html#cb24-1" aria-hidden="true" tabindex="-1"></a>treat <span class="ot">=</span> <span class="fu">ifelse</span>(comply<span class="sc">==</span><span class="dv">1</span>, assign, <span class="dv">1</span><span class="sc">-</span>assign)</span>
-<span id="cb24-2"><a href="types-of-causal-effects.html#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(assign, treat)</span></code></pre></div>
-<pre><code>##       treat
-## assign  0  1
-##      0 31 21
-##      1 22 26</code></pre>
-<p>observed value:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="types-of-causal-effects.html#cb26-1" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">=</span> treat<span class="sc">*</span>tutor <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>treat)<span class="sc">*</span>notutor <span class="co"># Y1 if T=1 and Y0 if T=0</span></span></code></pre></div>
+<div id="interupted-time-series-its-1" class="section level1 hasAnchor" number="8">
+<h1><span class="header-section-number">Chapter 8</span> Interupted Time Series (ITS) (1)<a href="interupted-time-series-its-1.html#interupted-time-series-its-1" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <ul>
-<li>when treat=1: Y = 1<em>tutor + 0</em>notutor = Y1</li>
-<li>when treat=0: Y = 0<em>tutor + 1</em>notutor = Y0</li>
+<li>In this lab, we will see how to use Segmented Regression to analyze ITS data.</li>
+<li>Source: “Global Health Research: Design + Methods”. By Dr. Eric Green</li>
 </ul>
-<p>Simulated data:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="types-of-causal-effects.html#cb27-1" aria-hidden="true" tabindex="-1"></a>simdata <span class="ot">=</span> <span class="fu">data.frame</span>(assign, comply, treat, tutor, notutor, obs, gender)</span>
-<span id="cb27-2"><a href="types-of-causal-effects.html#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(simdata)</span></code></pre></div>
-<pre><code>##   assign comply treat    tutor  notutor      obs gender
-## 1      0      1     0 499.9361 403.2168 403.2168      0
-## 2      0      1     0 465.2280 392.8935 392.8935      0
-## 3      1      0     0 534.0721 425.6018 425.6018      1
-## 4      1      0     0 498.2632 414.0730 414.0730      1
-## 5      0      1     0 533.1596 408.9611 408.9611      0
-## 6      1      1     1 515.1242 397.2339 515.1242      0</code></pre>
-<div id="att-ate-atu-what-the-what" class="section level2 hasAnchor" number="3.1">
-<h2><span class="header-section-number">3.1</span> ATT, ATE, ATU, … what the what?<a href="types-of-causal-effects.html#att-ate-atu-what-the-what" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<ul>
-<li>ATE/ACE: Average Treatment Effect in the population</li>
-<li>ATT: Average Treatment Effect on the Treated</li>
-<li>ATU: Average Treatment Effect on the Untreated</li>
-<li>LATE: Local Average Treatment Effect for Compilers</li>
-<li>CATE: Conditional Average Treatment Effect</li>
-<li>ITT: Intention To Treat. Effect of simply the intention (instead of receipt) of treatment</li>
-</ul>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="types-of-causal-effects.html#cb29-1" aria-hidden="true" tabindex="-1"></a>ATE <span class="ot">=</span> <span class="fu">mean</span>(simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)  <span class="co"># whole population</span></span>
-<span id="cb29-2"><a href="types-of-causal-effects.html#cb29-2" aria-hidden="true" tabindex="-1"></a>ATT <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[treat<span class="sc">==</span><span class="dv">1</span>])</span>
-<span id="cb29-3"><a href="types-of-causal-effects.html#cb29-3" aria-hidden="true" tabindex="-1"></a>ATU <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[treat<span class="sc">==</span><span class="dv">0</span>])</span>
-<span id="cb29-4"><a href="types-of-causal-effects.html#cb29-4" aria-hidden="true" tabindex="-1"></a>LATE <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[comply<span class="sc">==</span><span class="dv">1</span>])</span>
-<span id="cb29-5"><a href="types-of-causal-effects.html#cb29-5" aria-hidden="true" tabindex="-1"></a>CATE0 <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[gender<span class="sc">==</span><span class="dv">0</span>])</span>
-<span id="cb29-6"><a href="types-of-causal-effects.html#cb29-6" aria-hidden="true" tabindex="-1"></a>CATE1 <span class="ot">=</span> <span class="fu">mean</span>((simdata<span class="sc">$</span>tutor <span class="sc">-</span> simdata<span class="sc">$</span>notutor)[gender<span class="sc">==</span><span class="dv">1</span>])</span></code></pre></div>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="types-of-causal-effects.html#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(ATE, ATT, ATU, LATE, CATE0, CATE1)</span></code></pre></div>
-<pre><code>##           ATE      ATT      ATU     LATE    CATE0    CATE1
-## [1,] 100.0414 101.1523 99.05629 99.88937 102.4829 97.28824</code></pre>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="types-of-causal-effects.html#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># all close to ATE</span></span></code></pre></div>
+<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="interupted-time-series-its-1.html#cb305-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb305-2"><a href="interupted-time-series-its-1.html#cb305-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb305-3"><a href="interupted-time-series-its-1.html#cb305-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
+<span id="cb305-4"><a href="interupted-time-series-its-1.html#cb305-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span></code></pre></div>
+<!------------------------------>
+<div id="data-3" class="section level2 hasAnchor" number="8.1">
+<h2><span class="header-section-number">8.1</span> Data<a href="interupted-time-series-its-1.html#data-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!------------------------------>
+<p>Generating sample data:</p>
+<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="interupted-time-series-its-1.html#cb306-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">month=</span><span class="fu">seq</span>(<span class="at">from=</span><span class="dv">1</span>, <span class="at">to=</span><span class="dv">24</span>), <span class="at">post=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">12</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">12</span>)),</span>
+<span id="cb306-2"><a href="interupted-time-series-its-1.html#cb306-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">monthpost=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">12</span>), <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">1</span>, <span class="at">to=</span><span class="dv">12</span>)), </span>
+<span id="cb306-3"><a href="interupted-time-series-its-1.html#cb306-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">outcome=</span><span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">53</span>, <span class="dv">51</span>, <span class="dv">48</span>, <span class="dv">50</span>, <span class="dv">47</span>, <span class="dv">48</span>,</span>
+<span id="cb306-4"><a href="interupted-time-series-its-1.html#cb306-4" aria-hidden="true" tabindex="-1"></a>                            <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">63</span>, <span class="dv">67</span>, <span class="dv">65</span>, <span class="dv">69</span>, <span class="dv">72</span>, <span class="dv">68</span>, <span class="dv">74</span>, <span class="dv">71</span>, <span class="dv">76</span>, <span class="dv">70</span>))</span>
+<span id="cb306-5"><a href="interupted-time-series-its-1.html#cb306-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code></pre></div>
+<pre><code>##   month post monthpost outcome
+## 1     1    0         0      50
+## 2     2    0         0      60
+## 3     3    0         0      45
+## 4     4    0         0      47
+## 5     5    0         0      50
+## 6     6    0         0      55</code></pre>
+<div id="line-plot" class="section level3 hasAnchor" number="8.1.1">
+<h3><span class="header-section-number">8.1.1</span> Line plot<a href="interupted-time-series-its-1.html#line-plot" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="interupted-time-series-its-1.html#cb308-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dat, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> outcome)) <span class="sc">+</span></span>
+<span id="cb308-2"><a href="interupted-time-series-its-1.html#cb308-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&#39;red&#39;</span>) <span class="sc">+</span> </span>
+<span id="cb308-3"><a href="interupted-time-series-its-1.html#cb308-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">fill=</span><span class="st">&quot;white&quot;</span>, <span class="at">shape=</span><span class="dv">21</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb308-4"><a href="interupted-time-series-its-1.html#cb308-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">12.5</span>, <span class="at">color =</span> <span class="st">&#39;blue&#39;</span>, <span class="at">linetype =</span> <span class="st">&quot;longdash&quot;</span>)</span>
+<span id="cb308-5"><a href="interupted-time-series-its-1.html#cb308-5" aria-hidden="true" tabindex="-1"></a>p1</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-129-1.png" width="672" /></p>
+<!------------------------------>
 </div>
-<div id="calculating-different-causal-effects-in-practice" class="section level2 hasAnchor" number="3.2">
-<h2><span class="header-section-number">3.2</span> Calculating different causal effects in practice<a href="types-of-causal-effects.html#calculating-different-causal-effects-in-practice" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+</div>
+<div id="ols-segmented-regression" class="section level2 hasAnchor" number="8.2">
+<h2><span class="header-section-number">8.2</span> OLS Segmented Regression<a href="interupted-time-series-its-1.html#ols-segmented-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!------------------------------>
+<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="interupted-time-series-its-1.html#cb309-1" aria-hidden="true" tabindex="-1"></a>lmFit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> month <span class="sc">+</span> post <span class="sc">+</span> monthpost, <span class="at">data=</span>dat) </span>
+<span id="cb309-2"><a href="interupted-time-series-its-1.html#cb309-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit1)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = outcome ~ month + post + monthpost, data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.5326 -1.6935 -0.3939  2.3747  8.1247 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  52.5606     2.2450  23.412 5.24e-16 ***
+## month        -0.3427     0.3050  -1.123 0.274605    
+## post          9.6876     2.9940   3.236 0.004144 ** 
+## monthpost     1.7832     0.4314   4.134 0.000515 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.648 on 20 degrees of freedom
+## Multiple R-squared:  0.8867, Adjusted R-squared:  0.8697 
+## F-statistic: 52.15 on 3 and 20 DF,  p-value: 1.227e-09</code></pre>
 <ul>
-<li>ATE</li>
+<li>change in intercept: b2 = 9.6876 p = 0.004144 **</li>
+<li>change in slope: b3 = 1.7832 p = 0.000515 ***</li>
 </ul>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="types-of-causal-effects.html#cb33-1" aria-hidden="true" tabindex="-1"></a>ATE_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata)</span>
-<span id="cb33-2"><a href="types-of-causal-effects.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ATE_obs) <span class="co"># 99.82048 </span></span></code></pre></div>
-<pre><code>## (Intercept)       treat 
-##   400.12192    99.82048</code></pre>
+<div id="regression-diagnostics" class="section level3 hasAnchor" number="8.2.1">
+<h3><span class="header-section-number">8.2.1</span> Regression diagnostics<a href="interupted-time-series-its-1.html#regression-diagnostics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="interupted-time-series-its-1.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb311-2"><a href="interupted-time-series-its-1.html#cb311-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lmFit1)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-131-1.png" width="672" /></p>
+<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="interupted-time-series-its-1.html#cb312-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
+<p>nothing abnormal.</p>
+</div>
+<div id="overplot-prediction" class="section level3 hasAnchor" number="8.2.2">
+<h3><span class="header-section-number">8.2.2</span> Overplot prediction<a href="interupted-time-series-its-1.html#overplot-prediction" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="interupted-time-series-its-1.html#cb313-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>predicted <span class="ot">=</span> <span class="fu">predict</span>(lmFit1, <span class="at">data =</span> dat)</span>
+<span id="cb313-2"><a href="interupted-time-series-its-1.html#cb313-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> </span>
+<span id="cb313-3"><a href="interupted-time-series-its-1.html#cb313-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">0</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted), <span class="at">color=</span><span class="st">&quot;green&quot;</span>) <span class="sc">+</span></span>
+<span id="cb313-4"><a href="interupted-time-series-its-1.html#cb313-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted), <span class="at">color=</span><span class="st">&quot;green&quot;</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-132-1.png" width="672" /></p>
+<!------------------------------>
+</div>
+</div>
+<div id="ols-segmented-regression-with-polynomial-term" class="section level2 hasAnchor" number="8.3">
+<h2><span class="header-section-number">8.3</span> OLS Segmented Regression with Polynomial term<a href="interupted-time-series-its-1.html#ols-segmented-regression-with-polynomial-term" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!------------------------------>
+<p><strong>outcome=Time+Time^{2}</strong> <strong>+Treat+delta_Time+delta_Time^{2}</strong></p>
+<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="interupted-time-series-its-1.html#cb314-1" aria-hidden="true" tabindex="-1"></a>lmFit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> month <span class="sc">+</span> <span class="fu">I</span>(month<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> post <span class="sc">+</span> monthpost <span class="sc">+</span> <span class="fu">I</span>(monthpost<span class="sc">^</span><span class="dv">2</span>), <span class="at">data=</span>dat) </span>
+<span id="cb314-2"><a href="interupted-time-series-its-1.html#cb314-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit2)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = outcome ~ month + I(month^2) + post + monthpost + 
+##     I(monthpost^2), data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.5190 -1.5350  0.1249  1.5789  8.4660 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    51.31818    3.55724  14.426 2.47e-11 ***
+## month           0.18981    1.25812   0.151  0.88176    
+## I(month^2)     -0.04096    0.09421  -0.435  0.66891    
+## post            4.52947    4.37383   1.036  0.31411    
+## monthpost       4.76623    1.65520   2.880  0.00998 ** 
+## I(monthpost^2) -0.15385    0.13324  -1.155  0.26332    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.442 on 18 degrees of freedom
+## Multiple R-squared:  0.9092, Adjusted R-squared:  0.884 
+## F-statistic: 36.04 on 5 and 18 DF,  p-value: 9.126e-09</code></pre>
 <ul>
-<li>ATT &amp; ATU</li>
+<li>change in intercept: b3 = 4.52947 p = 0.31411 **</li>
+<li>change in slope: b4 = 4.76623 p = 0.00998 **</li>
+<li>change in slope^2: b5 = -0.15385 p = 0.26332</li>
 </ul>
-<p>no way to estimate ATT &amp; ATU from data</p>
+<div id="overplot-prediction-1" class="section level3 hasAnchor" number="8.3.1">
+<h3><span class="header-section-number">8.3.1</span> Overplot prediction<a href="interupted-time-series-its-1.html#overplot-prediction-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="interupted-time-series-its-1.html#cb316-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>predicted2 <span class="ot">=</span> <span class="fu">predict</span>(lmFit2, <span class="at">data =</span> dat)</span>
+<span id="cb316-2"><a href="interupted-time-series-its-1.html#cb316-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> </span>
+<span id="cb316-3"><a href="interupted-time-series-its-1.html#cb316-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">0</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted2), <span class="at">color=</span><span class="st">&quot;green&quot;</span>) <span class="sc">+</span></span>
+<span id="cb316-4"><a href="interupted-time-series-its-1.html#cb316-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted2), <span class="at">color=</span><span class="st">&quot;green&quot;</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-134-1.png" width="672" /></p>
+<!------------------------------>
+</div>
+</div>
+<div id="autocorrelation" class="section level2 hasAnchor" number="8.4">
+<h2><span class="header-section-number">8.4</span> Autocorrelation<a href="interupted-time-series-its-1.html#autocorrelation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!------------------------------>
+<p>ACF and PACF of residuals:</p>
+<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb317-1"><a href="interupted-time-series-its-1.html#cb317-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb317-2"><a href="interupted-time-series-its-1.html#cb317-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(dat<span class="sc">$</span>outcome, <span class="at">lag.max =</span> <span class="dv">23</span>) <span class="co"># for Y</span></span>
+<span id="cb317-3"><a href="interupted-time-series-its-1.html#cb317-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(dat<span class="sc">$</span>outcome, <span class="at">lag.max =</span> <span class="dv">23</span>) <span class="co"># for Y</span></span>
+<span id="cb317-4"><a href="interupted-time-series-its-1.html#cb317-4" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">resid</span>(lmFit2)) <span class="co"># for e</span></span>
+<span id="cb317-5"><a href="interupted-time-series-its-1.html#cb317-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(<span class="fu">resid</span>(lmFit2)) <span class="co"># for e</span></span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-135-1.png" width="672" /></p>
+<div class="sourceCode" id="cb318"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb318-1"><a href="interupted-time-series-its-1.html#cb318-1" aria-hidden="true" tabindex="-1"></a><span class="fu">checkresiduals</span>(lmFit2)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-136-1.png" width="672" /></p>
+<pre><code>## 
+##  Breusch-Godfrey test for serial correlation of order up to 9
+## 
+## data:  Residuals
+## LM test = 15.996, df = 9, p-value = 0.06696</code></pre>
 <ul>
-<li>LATE if compliance status is known</li>
+<li>the Breusch-Godfrey test for jointly testing up to 9th order autocorrelation.</li>
+<li>The residual plot shows some changing variation over time, but is not remarkable (p = 0.06696).</li>
+<li>The histogram shows that the residuals seem to be slightly skewed, which may also affect the standard errors of the residuals.</li>
+<li>The autocorrelation plot (ACF) shows no significant spike beyond the dashed blue line. Even up to lag 8, there is not quite enough evidence for the Breusch-Godfrey to be significant at the 5% level. The autocorrelations are not particularly large, and will be unlikely to have any noticeable impact on the forecasts or the prediction intervals.</li>
+<li>We are good with segmented regression…</li>
+<li>But for illustration purposes…</li>
 </ul>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="types-of-causal-effects.html#cb35-1" aria-hidden="true" tabindex="-1"></a>LATE_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>comply<span class="sc">==</span><span class="dv">1</span>,])</span>
-<span id="cb35-2"><a href="types-of-causal-effects.html#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(LATE_obs) <span class="co"># 101.1594 </span></span></code></pre></div>
-<pre><code>## (Intercept)       treat 
-##    398.5844    101.1594</code></pre>
-<ul>
-<li>CATE if gender is included as a confounder:</li>
-</ul>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="types-of-causal-effects.html#cb37-1" aria-hidden="true" tabindex="-1"></a>CATE0_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>gender<span class="sc">==</span><span class="dv">0</span>,])</span>
-<span id="cb37-2"><a href="types-of-causal-effects.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(CATE0_obs) <span class="co"># 106.5414 </span></span></code></pre></div>
-<pre><code>## (Intercept)       treat 
-##    400.1959    106.5414</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="types-of-causal-effects.html#cb39-1" aria-hidden="true" tabindex="-1"></a>CATE1_obs <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> treat, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>gender<span class="sc">==</span><span class="dv">1</span>,])</span>
-<span id="cb39-2"><a href="types-of-causal-effects.html#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(CATE1_obs) <span class="co"># 90.71861 </span></span></code></pre></div>
-<pre><code>## (Intercept)       treat 
-##   400.05067    90.71861</code></pre>
-<ul>
-<li>Intention To Treat (ITT)</li>
-</ul>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="types-of-causal-effects.html#cb41-1" aria-hidden="true" tabindex="-1"></a>ITT <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> assign)</span>
-<span id="cb41-2"><a href="types-of-causal-effects.html#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ITT) <span class="co"># 15.460 whereas the true effect is 100!!</span></span></code></pre></div>
-<pre><code>## (Intercept)      assign 
-##   439.61675    15.45999</code></pre>
-<ul>
-<li>Intention To Treat on Compliers</li>
-</ul>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="types-of-causal-effects.html#cb43-1" aria-hidden="true" tabindex="-1"></a>ITT_c <span class="ot">=</span> <span class="fu">lm</span>(obs <span class="sc">~</span> assign, <span class="at">data =</span> simdata[simdata<span class="sc">$</span>comply<span class="sc">==</span><span class="dv">1</span>,])</span>
-<span id="cb43-2"><a href="types-of-causal-effects.html#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(ITT_c) <span class="co"># 101.159 which is pretty close to the true effect 100</span></span></code></pre></div>
-<pre><code>## (Intercept)      assign 
-##    398.5844    101.1594</code></pre>
-<p><strong>Generally recommended: LATE or ITT on Compliers!</strong></p>
+<!------------------------------>
+</div>
+<div id="segmented-regression-with-hac-correction-for-standard-errors" class="section level2 hasAnchor" number="8.5">
+<h2><span class="header-section-number">8.5</span> Segmented Regression with HAC correction for standard errors<a href="interupted-time-series-its-1.html#segmented-regression-with-hac-correction-for-standard-errors" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<!------------------------------>
+<div id="ols" class="section level3 hasAnchor" number="8.5.1">
+<h3><span class="header-section-number">8.5.1</span> OLS:<a href="interupted-time-series-its-1.html#ols" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb320-1"><a href="interupted-time-series-its-1.html#cb320-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">vcov</span>(lmFit2), <span class="dv">2</span>) <span class="co"># original</span></span></code></pre></div>
+<pre><code>##                (Intercept) month I(month^2)  post monthpost I(monthpost^2)
+## (Intercept)          12.65 -4.04       0.27 -2.96     -2.42          -0.27
+## month                -4.04  1.58      -0.12  1.66      1.19           0.12
+## I(month^2)            0.27 -0.12       0.01 -0.16     -0.10          -0.01
+## post                 -2.96  1.66      -0.16 19.13     -1.79           0.43
+## monthpost            -2.42  1.19      -0.10 -1.79      2.74          -0.02
+## I(monthpost^2)       -0.27  0.12      -0.01  0.43     -0.02           0.02</code></pre>
+<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="interupted-time-series-its-1.html#cb322-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit2)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = outcome ~ month + I(month^2) + post + monthpost + 
+##     I(monthpost^2), data = dat)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.5190 -1.5350  0.1249  1.5789  8.4660 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    51.31818    3.55724  14.426 2.47e-11 ***
+## month           0.18981    1.25812   0.151  0.88176    
+## I(month^2)     -0.04096    0.09421  -0.435  0.66891    
+## post            4.52947    4.37383   1.036  0.31411    
+## monthpost       4.76623    1.65520   2.880  0.00998 ** 
+## I(monthpost^2) -0.15385    0.13324  -1.155  0.26332    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.442 on 18 degrees of freedom
+## Multiple R-squared:  0.9092, Adjusted R-squared:  0.884 
+## F-statistic: 36.04 on 5 and 18 DF,  p-value: 9.126e-09</code></pre>
+</div>
+<div id="hac" class="section level3 hasAnchor" number="8.5.2">
+<h3><span class="header-section-number">8.5.2</span> HAC:<a href="interupted-time-series-its-1.html#hac" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb324-1"><a href="interupted-time-series-its-1.html#cb324-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">vcovHAC</span>(lmFit2), <span class="dv">2</span>)  <span class="co"># HAC corrected</span></span></code></pre></div>
+<pre><code>##                (Intercept) month I(month^2)  post monthpost I(monthpost^2)
+## (Intercept)           9.81 -2.55       0.15 -0.65     -0.99          -0.15
+## month                -2.55  1.14      -0.08  0.87      0.84           0.08
+## I(month^2)            0.15 -0.08       0.01 -0.08     -0.07          -0.01
+## post                 -0.65  0.87      -0.08  2.26      0.66           0.10
+## monthpost            -0.99  0.84      -0.07  0.66      0.95           0.06
+## I(monthpost^2)       -0.15  0.08      -0.01  0.10      0.06           0.01</code></pre>
+<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="interupted-time-series-its-1.html#cb326-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(lmFit2, <span class="at">vcov =</span> <span class="fu">vcovHAC</span>(lmFit2))</span></code></pre></div>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                 Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)    51.318182   3.132281 16.3836 2.919e-12 ***
+## month           0.189810   1.067497  0.1778 0.8608590    
+## I(month^2)     -0.040959   0.079998 -0.5120 0.6148763    
+## post            4.529471   1.504238  3.0111 0.0075014 ** 
+## monthpost       4.766234   0.974371  4.8916 0.0001175 ***
+## I(monthpost^2) -0.153846   0.084921 -1.8116 0.0867621 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 
+</div>
 </div>
 </div>
             </section>
@@ -420,8 +524,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="regression-approach-to-treatment-effect-estimation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="instrumental-variable.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="difference-in-differences-did.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -452,7 +556,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/master/03-Type-Effects.Rmd",
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/master/08-SegmentedRegression.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -460,7 +564,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/master/03-Type-Effects.Rmd",
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/master/08-SegmentedRegression.Rmd",
 "text": null
 },
 "download": null,

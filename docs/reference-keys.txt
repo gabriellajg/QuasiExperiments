@@ -85,3 +85,15 @@ synthetic-control
 smoking-data
 generate-control
 inference
+interupted-time-series-its-1
+data-3
+line-plot
+ols-segmented-regression
+regression-diagnostics
+overplot-prediction
+ols-segmented-regression-with-polynomial-term
+overplot-prediction-1
+autocorrelation
+segmented-regression-with-hac-correction-for-standard-errors
+ols
+hac
