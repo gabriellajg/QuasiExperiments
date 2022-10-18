@@ -184,13 +184,13 @@ love.plot(m.out, binary = "std")
 
 I will use the matching results with fm3 because it yielded the best balance on the covariates between the matched groups. I also kept ratio = 1 and replace = FALSE to avoid the specification of weights for now: 
 
-```{r}
+```{r, warning=FALSE}
 set.seed(42)
 m.out <- matchit(data = lalonde,
                  formula = fm3,
                  distance = "logit",
                  method = "nearest",
-                 replace = TRUE,
+                 replace = FALSE,
                  ratio = 1, 
                  caliper = 0.2, 
                  discard = 'both',
@@ -205,8 +205,8 @@ Extract matched data:
 ```{r}
 m.data <- match.data(m.out)
 # m.data <- get_matches(m.out)
-tail(m.data)
 dim(m.data)
+head(m.data)
 ```
 
 #### Linear model without covariates:
@@ -222,9 +222,11 @@ Cluster-robust standard errors:
 coeftest(fit1, vcov. = vcovCL)
 ```
 
-Alternatively, use weighted Student's t-test: 
+#### Weighted t-test 
 
-```{r}
+Alternatively, we use weighted Student's t-test if ratio > 1 or replacement is allowed:
+
+```{r, warning=FALSE}
 res <- wtd.t.test(m.data$re78[m.data$treat == 1],
                   m.data$re78[m.data$treat == 0],
                   weight = m.data$weights[m.data$treat == 1],
@@ -235,10 +237,10 @@ std <- res$additional[4]
 cat("Confidence interval: ", sapply(qt(c(0.025, 0.975), coef(res)["df"]), function(x){return(mu+x*std)}), "\n")
 ```
 
-#### Linear model with covariates: double robust (use with caution)
+#### Linear model with covariates: double robust (include just a few imbalanced covariates)
 
 ```{r}
-fit2 <- lm(re78 ~ treat + age + educ + black + hispan + married + nodegree + un74 + un75 + re74 + re75, data = m.data)
+fit2 <- lm(re78 ~ treat + educ, data = m.data)
 # include only the covariate that is not balanced
 fit2 <- lm(re78 ~ treat + I(educ^2), data = m.data)
 summ(fit2)
@@ -250,15 +252,15 @@ coeftest(fit2, vcov. = vcovCL)
 
 ### Hidden bias analysis
 
-extract matched treatment and control units from m.data
+extract matched treatment and control units from m.data:
 
-```{r}
+```{r, warning=FALSE}
 psens(x = m.data$re78[m.data$treat==1], 
       y = m.data$re78[m.data$treat==0], 
       Gamma = 3, GammaInc=0.1)
 ```
 
-a gamma value with 1.6 or larger could lead to a change in the ATT estimate.
+a gamma value with 1.3 or larger could lead to a change in the ATT estimate.
 
 
 

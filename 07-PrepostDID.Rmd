@@ -2,6 +2,8 @@
 
 In this lab, we will use propensity scores to perform other types of analyses (weighting, stratification, and covariate adjustment)
 
+Install and load the following packages:
+
 ```{r, message=FALSE}
 library(dplyr)
 library(foreign)

@@ -48,7 +48,8 @@ balance-for-formula-2
 balance-for-formula-3
 estimation-of-treatment-effect
 linear-model-without-covariates
-linear-model-with-covariates-double-robust-use-with-caution
+weighted-t-test
+linear-model-with-covariates-double-robust-include-just-a-few-imbalanced-covariates
 hidden-bias-analysis
 references
 propensity-score-analysis
@@ -97,3 +98,11 @@ autocorrelation
 segmented-regression-with-hac-correction-for-standard-errors
 ols
 hac
+interupted-time-series-its-2
+data-4
+step-1-plot-data-to-visualize-time-series
+step-2-plot-the-differenced-data
+step-3-view-acfpacf-plots-of-differencedseasonally-differenced-data
+step-4-build-arima-model
+step-5-check-residuals
+step-6-calculate-forecasts

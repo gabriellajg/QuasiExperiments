@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="difference-in-differences-did.html"/>
-
+<link rel="next" href="interupted-time-series-its-2.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -279,6 +279,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="8.5.2" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#hac"><i class="fa fa-check"></i><b>8.5.2</b> HAC:</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="9" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html"><i class="fa fa-check"></i><b>9</b> Interupted Time Series (ITS) (2)</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#data-4"><i class="fa fa-check"></i><b>9.1</b> Data</a></li>
+<li class="chapter" data-level="9.2" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-1-plot-data-to-visualize-time-series"><i class="fa fa-check"></i><b>9.2</b> Step 1: Plot data to visualize time series</a></li>
+<li class="chapter" data-level="9.3" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-2-plot-the-differenced-data"><i class="fa fa-check"></i><b>9.3</b> Step 2: Plot the differenced data</a></li>
+<li class="chapter" data-level="9.4" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-3-view-acfpacf-plots-of-differencedseasonally-differenced-data"><i class="fa fa-check"></i><b>9.4</b> Step 3: View ACF/PACF plots of differenced/seasonally differenced data</a></li>
+<li class="chapter" data-level="9.5" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-4-build-arima-model"><i class="fa fa-check"></i><b>9.5</b> Step 4: Build ARIMA model</a></li>
+<li class="chapter" data-level="9.6" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-5-check-residuals"><i class="fa fa-check"></i><b>9.6</b> Step 5: Check residuals</a></li>
+<li class="chapter" data-level="9.7" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-6-calculate-forecasts"><i class="fa fa-check"></i><b>9.7</b> Step 6: Calculate forecasts</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -304,20 +314,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>In this lab, we will see how to use Segmented Regression to analyze ITS data.</li>
 <li>Source: “Global Health Research: Design + Methods”. By Dr. Eric Green</li>
 </ul>
-<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="interupted-time-series-its-1.html#cb305-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb305-2"><a href="interupted-time-series-its-1.html#cb305-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
-<span id="cb305-3"><a href="interupted-time-series-its-1.html#cb305-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
-<span id="cb305-4"><a href="interupted-time-series-its-1.html#cb305-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span></code></pre></div>
+<p>Install and load the following packages:</p>
+<div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="interupted-time-series-its-1.html#cb260-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb260-2"><a href="interupted-time-series-its-1.html#cb260-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb260-3"><a href="interupted-time-series-its-1.html#cb260-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
+<span id="cb260-4"><a href="interupted-time-series-its-1.html#cb260-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span></code></pre></div>
 <!------------------------------>
 <div id="data-3" class="section level2 hasAnchor" number="8.1">
 <h2><span class="header-section-number">8.1</span> Data<a href="interupted-time-series-its-1.html#data-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
 <p>Generating sample data:</p>
-<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="interupted-time-series-its-1.html#cb306-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">month=</span><span class="fu">seq</span>(<span class="at">from=</span><span class="dv">1</span>, <span class="at">to=</span><span class="dv">24</span>), <span class="at">post=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">12</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">12</span>)),</span>
-<span id="cb306-2"><a href="interupted-time-series-its-1.html#cb306-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">monthpost=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">12</span>), <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">1</span>, <span class="at">to=</span><span class="dv">12</span>)), </span>
-<span id="cb306-3"><a href="interupted-time-series-its-1.html#cb306-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">outcome=</span><span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">53</span>, <span class="dv">51</span>, <span class="dv">48</span>, <span class="dv">50</span>, <span class="dv">47</span>, <span class="dv">48</span>,</span>
-<span id="cb306-4"><a href="interupted-time-series-its-1.html#cb306-4" aria-hidden="true" tabindex="-1"></a>                            <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">63</span>, <span class="dv">67</span>, <span class="dv">65</span>, <span class="dv">69</span>, <span class="dv">72</span>, <span class="dv">68</span>, <span class="dv">74</span>, <span class="dv">71</span>, <span class="dv">76</span>, <span class="dv">70</span>))</span>
-<span id="cb306-5"><a href="interupted-time-series-its-1.html#cb306-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code></pre></div>
+<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb261-1"><a href="interupted-time-series-its-1.html#cb261-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">month=</span><span class="fu">seq</span>(<span class="at">from=</span><span class="dv">1</span>, <span class="at">to=</span><span class="dv">24</span>), <span class="at">post=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">12</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">12</span>)),</span>
+<span id="cb261-2"><a href="interupted-time-series-its-1.html#cb261-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">monthpost=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">12</span>), <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">1</span>, <span class="at">to=</span><span class="dv">12</span>)), </span>
+<span id="cb261-3"><a href="interupted-time-series-its-1.html#cb261-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">outcome=</span><span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">53</span>, <span class="dv">51</span>, <span class="dv">48</span>, <span class="dv">50</span>, <span class="dv">47</span>, <span class="dv">48</span>,</span>
+<span id="cb261-4"><a href="interupted-time-series-its-1.html#cb261-4" aria-hidden="true" tabindex="-1"></a>                            <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">63</span>, <span class="dv">67</span>, <span class="dv">65</span>, <span class="dv">69</span>, <span class="dv">72</span>, <span class="dv">68</span>, <span class="dv">74</span>, <span class="dv">71</span>, <span class="dv">76</span>, <span class="dv">70</span>))</span>
+<span id="cb261-5"><a href="interupted-time-series-its-1.html#cb261-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code></pre></div>
 <pre><code>##   month post monthpost outcome
 ## 1     1    0         0      50
 ## 2     2    0         0      60
@@ -327,11 +338,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 6     6    0         0      55</code></pre>
 <div id="line-plot" class="section level3 hasAnchor" number="8.1.1">
 <h3><span class="header-section-number">8.1.1</span> Line plot<a href="interupted-time-series-its-1.html#line-plot" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="interupted-time-series-its-1.html#cb308-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dat, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> outcome)) <span class="sc">+</span></span>
-<span id="cb308-2"><a href="interupted-time-series-its-1.html#cb308-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&#39;red&#39;</span>) <span class="sc">+</span> </span>
-<span id="cb308-3"><a href="interupted-time-series-its-1.html#cb308-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">fill=</span><span class="st">&quot;white&quot;</span>, <span class="at">shape=</span><span class="dv">21</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb308-4"><a href="interupted-time-series-its-1.html#cb308-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">12.5</span>, <span class="at">color =</span> <span class="st">&#39;blue&#39;</span>, <span class="at">linetype =</span> <span class="st">&quot;longdash&quot;</span>)</span>
-<span id="cb308-5"><a href="interupted-time-series-its-1.html#cb308-5" aria-hidden="true" tabindex="-1"></a>p1</span></code></pre></div>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="interupted-time-series-its-1.html#cb263-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dat, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> outcome)) <span class="sc">+</span></span>
+<span id="cb263-2"><a href="interupted-time-series-its-1.html#cb263-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&#39;red&#39;</span>) <span class="sc">+</span> </span>
+<span id="cb263-3"><a href="interupted-time-series-its-1.html#cb263-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">fill=</span><span class="st">&quot;white&quot;</span>, <span class="at">shape=</span><span class="dv">21</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb263-4"><a href="interupted-time-series-its-1.html#cb263-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">12.5</span>, <span class="at">color =</span> <span class="st">&#39;blue&#39;</span>, <span class="at">linetype =</span> <span class="st">&quot;longdash&quot;</span>)</span>
+<span id="cb263-5"><a href="interupted-time-series-its-1.html#cb263-5" aria-hidden="true" tabindex="-1"></a>p1</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-129-1.png" width="672" /></p>
 <!------------------------------>
 </div>
@@ -339,8 +350,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="ols-segmented-regression" class="section level2 hasAnchor" number="8.2">
 <h2><span class="header-section-number">8.2</span> OLS Segmented Regression<a href="interupted-time-series-its-1.html#ols-segmented-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
-<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="interupted-time-series-its-1.html#cb309-1" aria-hidden="true" tabindex="-1"></a>lmFit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> month <span class="sc">+</span> post <span class="sc">+</span> monthpost, <span class="at">data=</span>dat) </span>
-<span id="cb309-2"><a href="interupted-time-series-its-1.html#cb309-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit1)</span></code></pre></div>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="interupted-time-series-its-1.html#cb264-1" aria-hidden="true" tabindex="-1"></a>lmFit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> month <span class="sc">+</span> post <span class="sc">+</span> monthpost, <span class="at">data=</span>dat) </span>
+<span id="cb264-2"><a href="interupted-time-series-its-1.html#cb264-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = outcome ~ month + post + monthpost, data = dat)
@@ -367,18 +378,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div id="regression-diagnostics" class="section level3 hasAnchor" number="8.2.1">
 <h3><span class="header-section-number">8.2.1</span> Regression diagnostics<a href="interupted-time-series-its-1.html#regression-diagnostics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="interupted-time-series-its-1.html#cb311-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))</span>
-<span id="cb311-2"><a href="interupted-time-series-its-1.html#cb311-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lmFit1)</span></code></pre></div>
+<div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="interupted-time-series-its-1.html#cb266-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb266-2"><a href="interupted-time-series-its-1.html#cb266-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lmFit1)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-131-1.png" width="672" /></p>
-<div class="sourceCode" id="cb312"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb312-1"><a href="interupted-time-series-its-1.html#cb312-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="interupted-time-series-its-1.html#cb267-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
 <p>nothing abnormal.</p>
 </div>
 <div id="overplot-prediction" class="section level3 hasAnchor" number="8.2.2">
 <h3><span class="header-section-number">8.2.2</span> Overplot prediction<a href="interupted-time-series-its-1.html#overplot-prediction" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="interupted-time-series-its-1.html#cb313-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>predicted <span class="ot">=</span> <span class="fu">predict</span>(lmFit1, <span class="at">data =</span> dat)</span>
-<span id="cb313-2"><a href="interupted-time-series-its-1.html#cb313-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> </span>
-<span id="cb313-3"><a href="interupted-time-series-its-1.html#cb313-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">0</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted), <span class="at">color=</span><span class="st">&quot;green&quot;</span>) <span class="sc">+</span></span>
-<span id="cb313-4"><a href="interupted-time-series-its-1.html#cb313-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted), <span class="at">color=</span><span class="st">&quot;green&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb268"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb268-1"><a href="interupted-time-series-its-1.html#cb268-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>predicted <span class="ot">=</span> <span class="fu">predict</span>(lmFit1, <span class="at">data =</span> dat)</span>
+<span id="cb268-2"><a href="interupted-time-series-its-1.html#cb268-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> </span>
+<span id="cb268-3"><a href="interupted-time-series-its-1.html#cb268-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">0</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted), <span class="at">color=</span><span class="st">&quot;green&quot;</span>) <span class="sc">+</span></span>
+<span id="cb268-4"><a href="interupted-time-series-its-1.html#cb268-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted), <span class="at">color=</span><span class="st">&quot;green&quot;</span>)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-132-1.png" width="672" /></p>
 <!------------------------------>
 </div>
@@ -387,8 +398,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">8.3</span> OLS Segmented Regression with Polynomial term<a href="interupted-time-series-its-1.html#ols-segmented-regression-with-polynomial-term" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
 <p><strong>outcome=Time+Time^{2}</strong> <strong>+Treat+delta_Time+delta_Time^{2}</strong></p>
-<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="interupted-time-series-its-1.html#cb314-1" aria-hidden="true" tabindex="-1"></a>lmFit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> month <span class="sc">+</span> <span class="fu">I</span>(month<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> post <span class="sc">+</span> monthpost <span class="sc">+</span> <span class="fu">I</span>(monthpost<span class="sc">^</span><span class="dv">2</span>), <span class="at">data=</span>dat) </span>
-<span id="cb314-2"><a href="interupted-time-series-its-1.html#cb314-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit2)</span></code></pre></div>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="interupted-time-series-its-1.html#cb269-1" aria-hidden="true" tabindex="-1"></a>lmFit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> month <span class="sc">+</span> <span class="fu">I</span>(month<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> post <span class="sc">+</span> monthpost <span class="sc">+</span> <span class="fu">I</span>(monthpost<span class="sc">^</span><span class="dv">2</span>), <span class="at">data=</span>dat) </span>
+<span id="cb269-2"><a href="interupted-time-series-its-1.html#cb269-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit2)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = outcome ~ month + I(month^2) + post + monthpost + 
@@ -419,10 +430,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div id="overplot-prediction-1" class="section level3 hasAnchor" number="8.3.1">
 <h3><span class="header-section-number">8.3.1</span> Overplot prediction<a href="interupted-time-series-its-1.html#overplot-prediction-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb316"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb316-1"><a href="interupted-time-series-its-1.html#cb316-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>predicted2 <span class="ot">=</span> <span class="fu">predict</span>(lmFit2, <span class="at">data =</span> dat)</span>
-<span id="cb316-2"><a href="interupted-time-series-its-1.html#cb316-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> </span>
-<span id="cb316-3"><a href="interupted-time-series-its-1.html#cb316-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">0</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted2), <span class="at">color=</span><span class="st">&quot;green&quot;</span>) <span class="sc">+</span></span>
-<span id="cb316-4"><a href="interupted-time-series-its-1.html#cb316-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted2), <span class="at">color=</span><span class="st">&quot;green&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="interupted-time-series-its-1.html#cb271-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>predicted2 <span class="ot">=</span> <span class="fu">predict</span>(lmFit2, <span class="at">data =</span> dat)</span>
+<span id="cb271-2"><a href="interupted-time-series-its-1.html#cb271-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> </span>
+<span id="cb271-3"><a href="interupted-time-series-its-1.html#cb271-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">0</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted2), <span class="at">color=</span><span class="st">&quot;green&quot;</span>) <span class="sc">+</span></span>
+<span id="cb271-4"><a href="interupted-time-series-its-1.html#cb271-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted2), <span class="at">color=</span><span class="st">&quot;green&quot;</span>)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-134-1.png" width="672" /></p>
 <!------------------------------>
 </div>
@@ -431,13 +442,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">8.4</span> Autocorrelation<a href="interupted-time-series-its-1.html#autocorrelation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
 <p>ACF and PACF of residuals:</p>
-<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb317-1"><a href="interupted-time-series-its-1.html#cb317-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))</span>
-<span id="cb317-2"><a href="interupted-time-series-its-1.html#cb317-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(dat<span class="sc">$</span>outcome, <span class="at">lag.max =</span> <span class="dv">23</span>) <span class="co"># for Y</span></span>
-<span id="cb317-3"><a href="interupted-time-series-its-1.html#cb317-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(dat<span class="sc">$</span>outcome, <span class="at">lag.max =</span> <span class="dv">23</span>) <span class="co"># for Y</span></span>
-<span id="cb317-4"><a href="interupted-time-series-its-1.html#cb317-4" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">resid</span>(lmFit2)) <span class="co"># for e</span></span>
-<span id="cb317-5"><a href="interupted-time-series-its-1.html#cb317-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(<span class="fu">resid</span>(lmFit2)) <span class="co"># for e</span></span></code></pre></div>
+<div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="interupted-time-series-its-1.html#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb272-2"><a href="interupted-time-series-its-1.html#cb272-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(dat<span class="sc">$</span>outcome, <span class="at">lag.max =</span> <span class="dv">23</span>) <span class="co"># for Y</span></span>
+<span id="cb272-3"><a href="interupted-time-series-its-1.html#cb272-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(dat<span class="sc">$</span>outcome, <span class="at">lag.max =</span> <span class="dv">23</span>) <span class="co"># for Y</span></span>
+<span id="cb272-4"><a href="interupted-time-series-its-1.html#cb272-4" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">resid</span>(lmFit2)) <span class="co"># for e</span></span>
+<span id="cb272-5"><a href="interupted-time-series-its-1.html#cb272-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(<span class="fu">resid</span>(lmFit2)) <span class="co"># for e</span></span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-135-1.png" width="672" /></p>
-<div class="sourceCode" id="cb318"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb318-1"><a href="interupted-time-series-its-1.html#cb318-1" aria-hidden="true" tabindex="-1"></a><span class="fu">checkresiduals</span>(lmFit2)</span></code></pre></div>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="interupted-time-series-its-1.html#cb273-1" aria-hidden="true" tabindex="-1"></a><span class="fu">checkresiduals</span>(lmFit2)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-136-1.png" width="672" /></p>
 <pre><code>## 
 ##  Breusch-Godfrey test for serial correlation of order up to 9
@@ -459,7 +470,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!------------------------------>
 <div id="ols" class="section level3 hasAnchor" number="8.5.1">
 <h3><span class="header-section-number">8.5.1</span> OLS:<a href="interupted-time-series-its-1.html#ols" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb320"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb320-1"><a href="interupted-time-series-its-1.html#cb320-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">vcov</span>(lmFit2), <span class="dv">2</span>) <span class="co"># original</span></span></code></pre></div>
+<div class="sourceCode" id="cb275"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb275-1"><a href="interupted-time-series-its-1.html#cb275-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">vcov</span>(lmFit2), <span class="dv">2</span>) <span class="co"># original</span></span></code></pre></div>
 <pre><code>##                (Intercept) month I(month^2)  post monthpost I(monthpost^2)
 ## (Intercept)          12.65 -4.04       0.27 -2.96     -2.42          -0.27
 ## month                -4.04  1.58      -0.12  1.66      1.19           0.12
@@ -467,7 +478,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## post                 -2.96  1.66      -0.16 19.13     -1.79           0.43
 ## monthpost            -2.42  1.19      -0.10 -1.79      2.74          -0.02
 ## I(monthpost^2)       -0.27  0.12      -0.01  0.43     -0.02           0.02</code></pre>
-<div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="interupted-time-series-its-1.html#cb322-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit2)</span></code></pre></div>
+<div class="sourceCode" id="cb277"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb277-1"><a href="interupted-time-series-its-1.html#cb277-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit2)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = outcome ~ month + I(month^2) + post + monthpost + 
@@ -494,7 +505,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="hac" class="section level3 hasAnchor" number="8.5.2">
 <h3><span class="header-section-number">8.5.2</span> HAC:<a href="interupted-time-series-its-1.html#hac" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb324-1"><a href="interupted-time-series-its-1.html#cb324-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">vcovHAC</span>(lmFit2), <span class="dv">2</span>)  <span class="co"># HAC corrected</span></span></code></pre></div>
+<div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="interupted-time-series-its-1.html#cb279-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">vcovHAC</span>(lmFit2), <span class="dv">2</span>)  <span class="co"># HAC corrected</span></span></code></pre></div>
 <pre><code>##                (Intercept) month I(month^2)  post monthpost I(monthpost^2)
 ## (Intercept)           9.81 -2.55       0.15 -0.65     -0.99          -0.15
 ## month                -2.55  1.14      -0.08  0.87      0.84           0.08
@@ -502,7 +513,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## post                 -0.65  0.87      -0.08  2.26      0.66           0.10
 ## monthpost            -0.99  0.84      -0.07  0.66      0.95           0.06
 ## I(monthpost^2)       -0.15  0.08      -0.01  0.10      0.06           0.01</code></pre>
-<div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="interupted-time-series-its-1.html#cb326-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(lmFit2, <span class="at">vcov =</span> <span class="fu">vcovHAC</span>(lmFit2))</span></code></pre></div>
+<div class="sourceCode" id="cb281"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb281-1"><a href="interupted-time-series-its-1.html#cb281-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(lmFit2, <span class="at">vcov =</span> <span class="fu">vcovHAC</span>(lmFit2))</span></code></pre></div>
 <pre><code>## 
 ## t test of coefficients:
 ## 
@@ -524,8 +535,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="difference-in-differences-did.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="difference-in-differences-did.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="interupted-time-series-its-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

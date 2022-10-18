@@ -3,6 +3,8 @@
 * In this lab, we will see how to use Segmented Regression to analyze ITS data. 
 * Source: "Global Health Research: Design + Methods". By Dr. Eric Green
 
+Install and load the following packages:
+
 ```{r, message=FALSE}
 library(ggplot2)
 library(forecast)
