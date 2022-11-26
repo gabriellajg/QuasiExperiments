@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 6 Propensity Score Analysis | R Book for Quasi-Experimental Designs</title>
   <meta name="description" content="Chapter 6 Propensity Score Analysis | R Book for Quasi-Experimental Designs" />
-  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 6 Propensity Score Analysis | R Book for Quasi-Experimental Designs" />
   <meta property="og:type" content="book" />
@@ -289,6 +289,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.6" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-5-check-residuals"><i class="fa fa-check"></i><b>9.6</b> Step 5: Check residuals</a></li>
 <li class="chapter" data-level="9.7" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-6-calculate-forecasts"><i class="fa fa-check"></i><b>9.7</b> Step 6: Calculate forecasts</a></li>
 </ul></li>
+<li class="chapter" data-level="10" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html"><i class="fa fa-check"></i><b>10</b> Regression Discontinuity Designs (RDD)</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#data-5"><i class="fa fa-check"></i><b>10.1</b> Data</a></li>
+<li class="chapter" data-level="10.2" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#segmented-regression"><i class="fa fa-check"></i><b>10.2</b> Segmented regression</a></li>
+<li class="chapter" data-level="10.3" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#ik-estimator"><i class="fa fa-check"></i><b>10.3</b> IK estimator</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="rdd-2.html"><a href="rdd-2.html"><i class="fa fa-check"></i><b>11</b> RDD (2)</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="rdd-2.html"><a href="rdd-2.html#step-1-determine-if-process-of-assigning-treatment-is-rule-based"><i class="fa fa-check"></i><b>11.1</b> Step 1: Determine if process of assigning treatment is rule-based</a></li>
+<li class="chapter" data-level="11.2" data-path="rdd-2.html"><a href="rdd-2.html#step-2-determine-if-the-design-is-fuzzy-or-sharp"><i class="fa fa-check"></i><b>11.2</b> Step 2: Determine if the design is fuzzy or sharp</a></li>
+<li class="chapter" data-level="11.3" data-path="rdd-2.html"><a href="rdd-2.html#step-3-check-for-discontinuity-in-running-variable-around-cutpoint"><i class="fa fa-check"></i><b>11.3</b> Step 3: Check for discontinuity in running variable around cutpoint</a></li>
+<li class="chapter" data-level="11.4" data-path="rdd-2.html"><a href="rdd-2.html#step-4-check-for-discontinuity-in-outcome-across-running-variable"><i class="fa fa-check"></i><b>11.4</b> Step 4: Check for discontinuity in outcome across running variable</a></li>
+<li class="chapter" data-level="11.5" data-path="rdd-2.html"><a href="rdd-2.html#step-5-measure-the-size-of-the-effect"><i class="fa fa-check"></i><b>11.5</b> Step 5: Measure the size of the effect</a>
+<ul>
+<li class="chapter" data-level="11.5.1" data-path="rdd-2.html"><a href="rdd-2.html#parametric-estimation"><i class="fa fa-check"></i><b>11.5.1</b> Parametric estimation</a></li>
+<li class="chapter" data-level="11.5.2" data-path="rdd-2.html"><a href="rdd-2.html#nonparametric-estimation"><i class="fa fa-check"></i><b>11.5.2</b> Nonparametric estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="11.6" data-path="rdd-2.html"><a href="rdd-2.html#step-6-compare-all-the-effects"><i class="fa fa-check"></i><b>11.6</b> Step 6: Compare all the effects</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -311,37 +330,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="propensity-score-analysis" class="section level1 hasAnchor" number="6">
 <h1><span class="header-section-number">Chapter 6</span> Propensity Score Analysis<a href="propensity-score-analysis.html#propensity-score-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>In this lab, we will use propensity scores to perform other types of analyses (weighting, stratification, and covariate adjustment)</p>
-<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="propensity-score-analysis.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(weights)</span>
-<span id="cb154-2"><a href="propensity-score-analysis.html#cb154-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
-<span id="cb154-3"><a href="propensity-score-analysis.html#cb154-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(twang)</span>
-<span id="cb154-4"><a href="propensity-score-analysis.html#cb154-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CBPS)</span>
-<span id="cb154-5"><a href="propensity-score-analysis.html#cb154-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cobalt)</span>
-<span id="cb154-6"><a href="propensity-score-analysis.html#cb154-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jtools)</span>
-<span id="cb154-7"><a href="propensity-score-analysis.html#cb154-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
-<span id="cb154-8"><a href="propensity-score-analysis.html#cb154-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich) <span class="co">#vcovCL</span></span>
-<span id="cb154-9"><a href="propensity-score-analysis.html#cb154-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rbounds) <span class="co">#gamma</span></span>
-<span id="cb154-10"><a href="propensity-score-analysis.html#cb154-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
-<span id="cb154-11"><a href="propensity-score-analysis.html#cb154-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb154-12"><a href="propensity-score-analysis.html#cb154-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
-<span id="cb154-13"><a href="propensity-score-analysis.html#cb154-13" aria-hidden="true" tabindex="-1"></a><span class="co">#remotes::install_github(&quot;vdorie/treatSens&quot;)</span></span>
-<span id="cb154-14"><a href="propensity-score-analysis.html#cb154-14" aria-hidden="true" tabindex="-1"></a><span class="co">#library(treatSens)</span></span></code></pre></div>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="propensity-score-analysis.html#cb151-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(weights)</span>
+<span id="cb151-2"><a href="propensity-score-analysis.html#cb151-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
+<span id="cb151-3"><a href="propensity-score-analysis.html#cb151-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(twang)</span>
+<span id="cb151-4"><a href="propensity-score-analysis.html#cb151-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CBPS)</span>
+<span id="cb151-5"><a href="propensity-score-analysis.html#cb151-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cobalt)</span>
+<span id="cb151-6"><a href="propensity-score-analysis.html#cb151-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jtools)</span>
+<span id="cb151-7"><a href="propensity-score-analysis.html#cb151-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb151-8"><a href="propensity-score-analysis.html#cb151-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich) <span class="co">#vcovCL</span></span>
+<span id="cb151-9"><a href="propensity-score-analysis.html#cb151-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rbounds) <span class="co">#gamma</span></span>
+<span id="cb151-10"><a href="propensity-score-analysis.html#cb151-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb151-11"><a href="propensity-score-analysis.html#cb151-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb151-12"><a href="propensity-score-analysis.html#cb151-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb151-13"><a href="propensity-score-analysis.html#cb151-13" aria-hidden="true" tabindex="-1"></a><span class="co">#remotes::install_github(&quot;vdorie/treatSens&quot;)</span></span>
+<span id="cb151-14"><a href="propensity-score-analysis.html#cb151-14" aria-hidden="true" tabindex="-1"></a><span class="co">#library(treatSens)</span></span></code></pre></div>
 <!------------------------------>
 <div id="data-1" class="section level2 hasAnchor" number="6.1">
 <h2><span class="header-section-number">6.1</span> Data<a href="propensity-score-analysis.html#data-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
-<div class="sourceCode" id="cb155"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb155-1"><a href="propensity-score-analysis.html#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data(lalonde)</span></span>
-<span id="cb155-2"><a href="propensity-score-analysis.html#cb155-2" aria-hidden="true" tabindex="-1"></a>lalonde <span class="ot">=</span> MatchIt<span class="sc">::</span>lalonde</span>
-<span id="cb155-3"><a href="propensity-score-analysis.html#cb155-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(lalonde)</span></code></pre></div>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="propensity-score-analysis.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data(lalonde)</span></span>
+<span id="cb152-2"><a href="propensity-score-analysis.html#cb152-2" aria-hidden="true" tabindex="-1"></a>lalonde <span class="ot">=</span> MatchIt<span class="sc">::</span>lalonde</span>
+<span id="cb152-3"><a href="propensity-score-analysis.html#cb152-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(lalonde)</span></code></pre></div>
 <pre><code>## [1] 614   9</code></pre>
-<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="propensity-score-analysis.html#cb157-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lalonde)</span></code></pre></div>
+<div class="sourceCode" id="cb154"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="propensity-score-analysis.html#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lalonde)</span></code></pre></div>
 <pre><code>## [1] &quot;treat&quot;    &quot;age&quot;      &quot;educ&quot;     &quot;race&quot;     &quot;married&quot;  &quot;nodegree&quot; &quot;re74&quot;     &quot;re75&quot;    
 ## [9] &quot;re78&quot;</code></pre>
 <div id="create-dummy-variable-for-race-and-unemployment-1" class="section level3 hasAnchor" number="6.1.1">
 <h3><span class="header-section-number">6.1.1</span> Create dummy variable for race and unemployment<a href="propensity-score-analysis.html#create-dummy-variable-for-race-and-unemployment-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="propensity-score-analysis.html#cb159-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>black <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>race<span class="sc">==</span><span class="st">&#39;black&#39;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb159-2"><a href="propensity-score-analysis.html#cb159-2" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>hispan <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>race<span class="sc">==</span><span class="st">&#39;hispan&#39;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb159-3"><a href="propensity-score-analysis.html#cb159-3" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>un74 <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>re74<span class="sc">==</span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb159-4"><a href="propensity-score-analysis.html#cb159-4" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>un75 <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>re75<span class="sc">==</span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb156"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="propensity-score-analysis.html#cb156-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>black <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>race<span class="sc">==</span><span class="st">&#39;black&#39;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb156-2"><a href="propensity-score-analysis.html#cb156-2" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>hispan <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>race<span class="sc">==</span><span class="st">&#39;hispan&#39;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb156-3"><a href="propensity-score-analysis.html#cb156-3" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>un74 <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>re74<span class="sc">==</span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb156-4"><a href="propensity-score-analysis.html#cb156-4" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>un75 <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>re75<span class="sc">==</span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span></code></pre></div>
 <!------------------------------>
 </div>
 </div>
@@ -350,23 +369,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!------------------------------>
 <div id="different-formulas" class="section level3 hasAnchor" number="6.2.1">
 <h3><span class="header-section-number">6.2.1</span> Different formulas<a href="propensity-score-analysis.html#different-formulas" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="propensity-score-analysis.html#cb160-1" aria-hidden="true" tabindex="-1"></a>fm1 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> educ <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span>
-<span id="cb160-2"><a href="propensity-score-analysis.html#cb160-2" aria-hidden="true" tabindex="-1"></a>fm2 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> educ <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span>
-<span id="cb160-3"><a href="propensity-score-analysis.html#cb160-3" aria-hidden="true" tabindex="-1"></a>fm3 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> educ <span class="sc">+</span> <span class="fu">I</span>(educ<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb157"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb157-1"><a href="propensity-score-analysis.html#cb157-1" aria-hidden="true" tabindex="-1"></a>fm1 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> educ <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span>
+<span id="cb157-2"><a href="propensity-score-analysis.html#cb157-2" aria-hidden="true" tabindex="-1"></a>fm2 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> educ <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span>
+<span id="cb157-3"><a href="propensity-score-analysis.html#cb157-3" aria-hidden="true" tabindex="-1"></a>fm3 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> educ <span class="sc">+</span> <span class="fu">I</span>(educ<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span></code></pre></div>
 </div>
 <div id="calculation-of-propensity-scores-p-scores-1" class="section level3 hasAnchor" number="6.2.2">
 <h3><span class="header-section-number">6.2.2</span> Calculation of propensity scores (p-scores)<a href="propensity-score-analysis.html#calculation-of-propensity-scores-p-scores-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="propensity-score-analysis.html#cb161-1" aria-hidden="true" tabindex="-1"></a>pscore <span class="ot">&lt;-</span> <span class="fu">glm</span>(fm3, <span class="at">data =</span> lalonde, <span class="at">family =</span> <span class="st">&#39;binomial&#39;</span>)</span>
-<span id="cb161-2"><a href="propensity-score-analysis.html#cb161-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pscore<span class="sc">$</span>fitted.values)</span></code></pre></div>
+<div class="sourceCode" id="cb158"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="propensity-score-analysis.html#cb158-1" aria-hidden="true" tabindex="-1"></a>pscore <span class="ot">&lt;-</span> <span class="fu">glm</span>(fm3, <span class="at">data =</span> lalonde, <span class="at">family =</span> <span class="st">&#39;binomial&#39;</span>)</span>
+<span id="cb158-2"><a href="propensity-score-analysis.html#cb158-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pscore<span class="sc">$</span>fitted.values)</span></code></pre></div>
 <pre><code>##      NSW1      NSW2      NSW3      NSW4      NSW5      NSW6 
 ## 0.6664569 0.3896185 0.9237414 0.9345017 0.9434150 0.8771158</code></pre>
-<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="propensity-score-analysis.html#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">0</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb160"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="propensity-score-analysis.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">0</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-75-1.png" width="672" /></p>
-<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="propensity-score-analysis.html#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">1</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">add=</span>F)</span></code></pre></div>
+<div class="sourceCode" id="cb161"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb161-1"><a href="propensity-score-analysis.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">1</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">add=</span>F)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-75-2.png" width="672" /></p>
-<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="propensity-score-analysis.html#cb165-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>pscore <span class="ot">=</span> pscore<span class="sc">$</span>fitted.values</span></code></pre></div>
-<div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="propensity-score-analysis.html#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">0</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">density =</span> <span class="dv">20</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">main=</span><span class="st">&quot;Propensity Scores&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Shaded = Untreated | Gray = Treated&quot;</span>)</span>
-<span id="cb166-2"><a href="propensity-score-analysis.html#cb166-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">1</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.4</span>,<span class="fl">0.25</span>),<span class="at">add=</span>T)</span></code></pre></div>
+<div class="sourceCode" id="cb162"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="propensity-score-analysis.html#cb162-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>pscore <span class="ot">=</span> pscore<span class="sc">$</span>fitted.values</span></code></pre></div>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="propensity-score-analysis.html#cb163-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">0</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">density =</span> <span class="dv">20</span>, <span class="at">angle =</span> <span class="dv">45</span>, <span class="at">main=</span><span class="st">&quot;Propensity Scores&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Shaded = Untreated | Gray = Treated&quot;</span>)</span>
+<span id="cb163-2"><a href="propensity-score-analysis.html#cb163-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">1</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">col=</span><span class="fu">gray</span>(<span class="fl">0.4</span>,<span class="fl">0.25</span>),<span class="at">add=</span>T)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-76-1.png" width="672" /></p>
 <!------------------------------>
 </div>
@@ -379,25 +398,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>weightATT is created by using the ifelse() function to obtain:
 * 1 for treated units
 * p/(1-p) for control units</p>
-<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="propensity-score-analysis.html#cb167-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>weightATT <span class="ot">&lt;-</span> <span class="fu">with</span>(lalonde, <span class="fu">ifelse</span>(treat<span class="sc">==</span><span class="dv">1</span>, <span class="dv">1</span>, pscore<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pscore)))</span></code></pre></div>
+<div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="propensity-score-analysis.html#cb164-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>weightATT <span class="ot">&lt;-</span> <span class="fu">with</span>(lalonde, <span class="fu">ifelse</span>(treat<span class="sc">==</span><span class="dv">1</span>, <span class="dv">1</span>, pscore<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pscore)))</span></code></pre></div>
 <p>A summary of the ATT weights for treated and untreated groups:</p>
-<div class="sourceCode" id="cb168"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="propensity-score-analysis.html#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(lalonde, <span class="fu">by</span>(pscore,treat,summary)) </span></code></pre></div>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="propensity-score-analysis.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(lalonde, <span class="fu">by</span>(pscore,treat,summary)) </span></code></pre></div>
 <pre><code>## treat: 0
 ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 ## 0.0000492 0.0241907 0.0611922 0.1537662 0.1617857 0.9441648 
-## ------------------------------------------------------------------------ 
+## --------------------------------------------------------------------------- 
 ## treat: 1
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ## 0.02584 0.47624 0.69596 0.64343 0.87791 0.95468</code></pre>
-<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="propensity-score-analysis.html#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(lalonde, <span class="fu">by</span>(weightATT,treat,summary)) </span></code></pre></div>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="propensity-score-analysis.html#cb167-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(lalonde, <span class="fu">by</span>(weightATT,treat,summary)) </span></code></pre></div>
 <pre><code>## treat: 0
 ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 ##  0.000049  0.024790  0.065181  0.444293  0.193012 16.909853 
-## ------------------------------------------------------------------------ 
+## --------------------------------------------------------------------------- 
 ## treat: 1
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##       1       1       1       1       1       1</code></pre>
-<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="propensity-score-analysis.html#cb172-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(lalonde<span class="sc">$</span>weightATT <span class="sc">~</span> lalonde<span class="sc">$</span>treat)</span></code></pre></div>
+<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="propensity-score-analysis.html#cb169-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(lalonde<span class="sc">$</span>weightATT <span class="sc">~</span> lalonde<span class="sc">$</span>treat)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-79-1.png" width="672" /></p>
 </div>
 <div id="weightate" class="section level3 hasAnchor" number="6.3.2">
@@ -405,17 +424,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>weightATE is created by using the ifelse() function to obtain:
 * 1/p for treated units
 * 1/(1-p) for control units</p>
-<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="propensity-score-analysis.html#cb173-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>weightATE <span class="ot">&lt;-</span> <span class="fu">with</span>(lalonde, <span class="fu">ifelse</span>(treat<span class="sc">==</span><span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span>pscore, <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pscore)))</span></code></pre></div>
+<div class="sourceCode" id="cb170"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="propensity-score-analysis.html#cb170-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>weightATE <span class="ot">&lt;-</span> <span class="fu">with</span>(lalonde, <span class="fu">ifelse</span>(treat<span class="sc">==</span><span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span>pscore, <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>pscore)))</span></code></pre></div>
 <p>A summary of the ATE weights for treated and untreated groups:</p>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="propensity-score-analysis.html#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(lalonde, <span class="fu">by</span>(weightATE,treat,summary)) </span></code></pre></div>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="propensity-score-analysis.html#cb171-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(lalonde, <span class="fu">by</span>(weightATE,treat,summary)) </span></code></pre></div>
 <pre><code>## treat: 0
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   1.000   1.025   1.065   1.444   1.193  17.910 
-## ------------------------------------------------------------------------ 
+## --------------------------------------------------------------------------- 
 ## treat: 1
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   1.047   1.139   1.437   3.015   2.100  38.703</code></pre>
-<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="propensity-score-analysis.html#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(lalonde<span class="sc">$</span>weightATE <span class="sc">~</span> lalonde<span class="sc">$</span>treat)</span></code></pre></div>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="propensity-score-analysis.html#cb173-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(lalonde<span class="sc">$</span>weightATE <span class="sc">~</span> lalonde<span class="sc">$</span>treat)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-81-1.png" width="672" /></p>
 <ul>
 <li>the maximum weight for the ATE is 33.961</li>
@@ -427,27 +446,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>Truncation can be performed by assigning the weight at a cutoff percentile to observations with weights above the cutoff.</p></li>
 <li><p>The following code demonstrates weight truncation. More specifically, it uses the quantile function to calculate the weight at the 99th percentile and the ifelse function to assign this weight to any student whose weight exceeds the 99th percentile:</p></li>
 </ul>
-<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="propensity-score-analysis.html#cb177-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>weightATETruncated <span class="ot">&lt;-</span> <span class="fu">with</span>(lalonde, <span class="fu">ifelse</span>(weightATE <span class="sc">&gt;</span> <span class="fu">quantile</span>(weightATE, <span class="fl">0.99</span>), <span class="fu">quantile</span>(weightATE, <span class="fl">0.99</span>), weightATE))</span></code></pre></div>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="propensity-score-analysis.html#cb174-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>weightATETruncated <span class="ot">&lt;-</span> <span class="fu">with</span>(lalonde, <span class="fu">ifelse</span>(weightATE <span class="sc">&gt;</span> <span class="fu">quantile</span>(weightATE, <span class="fl">0.99</span>), <span class="fu">quantile</span>(weightATE, <span class="fl">0.99</span>), weightATE))</span></code></pre></div>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="propensity-score-analysis.html#cb175-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(lalonde, <span class="fu">by</span>(weightATETruncated,treat,summary)) </span></code></pre></div>
+<pre><code>## treat: 0
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.000   1.025   1.065   1.440   1.193  15.888 
+## --------------------------------------------------------------------------- 
+## treat: 1
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.047   1.139   1.437   2.571   2.100  15.888</code></pre>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="propensity-score-analysis.html#cb177-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(lalonde<span class="sc">$</span>weightATETruncated <span class="sc">~</span> lalonde<span class="sc">$</span>treat)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-83-1.png" width="672" /></p>
+<p>may truncate all above .05 quantiles if necessary</p>
 <div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="propensity-score-analysis.html#cb178-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(lalonde, <span class="fu">by</span>(weightATETruncated,treat,summary)) </span></code></pre></div>
 <pre><code>## treat: 0
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   1.000   1.025   1.065   1.440   1.193  15.888 
-## ------------------------------------------------------------------------ 
+## --------------------------------------------------------------------------- 
 ## treat: 1
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   1.047   1.139   1.437   2.571   2.100  15.888</code></pre>
 <div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="propensity-score-analysis.html#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(lalonde<span class="sc">$</span>weightATETruncated <span class="sc">~</span> lalonde<span class="sc">$</span>treat)</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-83-1.png" width="672" /></p>
-<p>may truncate all above .05 quantiles if necessary</p>
-<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="propensity-score-analysis.html#cb181-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(lalonde, <span class="fu">by</span>(weightATETruncated,treat,summary)) </span></code></pre></div>
-<pre><code>## treat: 0
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   1.000   1.025   1.065   1.440   1.193  15.888 
-## ------------------------------------------------------------------------ 
-## treat: 1
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   1.047   1.139   1.437   2.571   2.100  15.888</code></pre>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="propensity-score-analysis.html#cb183-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(lalonde<span class="sc">$</span>weightATETruncated <span class="sc">~</span> lalonde<span class="sc">$</span>treat)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-84-1.png" width="672" /></p>
 </div>
 <div id="balance-check" class="section level3 hasAnchor" number="6.3.4">
@@ -455,15 +474,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In this section, covariate balance evaluation is performed by comparing the standardized difference between the weighted means of the treated and untreated groups.</p>
 <p>The bal.stat function of the twang package (Ridgeway et al., 2013) is useful for covariate balance evaluation.</p>
 <p>If there are no sampling weights, then sampw=1.</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="propensity-score-analysis.html#cb184-1" aria-hidden="true" tabindex="-1"></a>covariateNames <span class="ot">&lt;-</span><span class="fu">names</span>(lalonde)[<span class="dv">2</span><span class="sc">:</span><span class="dv">14</span>]</span>
-<span id="cb184-2"><a href="propensity-score-analysis.html#cb184-2" aria-hidden="true" tabindex="-1"></a>balanceTable <span class="ot">&lt;-</span> <span class="fu">bal.stat</span>(lalonde, <span class="at">vars=</span> covariateNames,</span>
-<span id="cb184-3"><a href="propensity-score-analysis.html#cb184-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">treat.var =</span> <span class="st">&quot;treat&quot;</span>,</span>
-<span id="cb184-4"><a href="propensity-score-analysis.html#cb184-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">w.all =</span> lalonde<span class="sc">$</span>weightATE, </span>
-<span id="cb184-5"><a href="propensity-score-analysis.html#cb184-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">get.ks=</span>F,</span>
-<span id="cb184-6"><a href="propensity-score-analysis.html#cb184-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">sampw =</span> <span class="dv">1</span>,</span>
-<span id="cb184-7"><a href="propensity-score-analysis.html#cb184-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">estimand=</span><span class="st">&quot;ATE&quot;</span>, <span class="at">multinom=</span>F)</span>
-<span id="cb184-8"><a href="propensity-score-analysis.html#cb184-8" aria-hidden="true" tabindex="-1"></a>balanceTable <span class="ot">&lt;-</span> balanceTable<span class="sc">$</span>results</span>
-<span id="cb184-9"><a href="propensity-score-analysis.html#cb184-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(balanceTable,<span class="dv">3</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="propensity-score-analysis.html#cb181-1" aria-hidden="true" tabindex="-1"></a>covariateNames <span class="ot">&lt;-</span><span class="fu">names</span>(lalonde)[<span class="dv">2</span><span class="sc">:</span><span class="dv">14</span>]</span>
+<span id="cb181-2"><a href="propensity-score-analysis.html#cb181-2" aria-hidden="true" tabindex="-1"></a>balanceTable <span class="ot">&lt;-</span> <span class="fu">bal.stat</span>(lalonde, <span class="at">vars=</span> covariateNames,</span>
+<span id="cb181-3"><a href="propensity-score-analysis.html#cb181-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">treat.var =</span> <span class="st">&quot;treat&quot;</span>,</span>
+<span id="cb181-4"><a href="propensity-score-analysis.html#cb181-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">w.all =</span> lalonde<span class="sc">$</span>weightATE, </span>
+<span id="cb181-5"><a href="propensity-score-analysis.html#cb181-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">get.ks=</span>F,</span>
+<span id="cb181-6"><a href="propensity-score-analysis.html#cb181-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">sampw =</span> <span class="dv">1</span>,</span>
+<span id="cb181-7"><a href="propensity-score-analysis.html#cb181-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">estimand=</span><span class="st">&quot;ATE&quot;</span>, <span class="at">multinom=</span>F)</span>
+<span id="cb181-8"><a href="propensity-score-analysis.html#cb181-8" aria-hidden="true" tabindex="-1"></a>balanceTable <span class="ot">&lt;-</span> balanceTable<span class="sc">$</span>results</span>
+<span id="cb181-9"><a href="propensity-score-analysis.html#cb181-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(balanceTable,<span class="dv">3</span>) </span></code></pre></div>
 <pre><code>##                tx.mn    tx.sd    ct.mn    ct.sd std.eff.sz   stat     p
 ## age           24.637    7.520   27.512    9.921     -0.291 -2.608 0.009
 ## educ          10.653    2.225   10.323    2.613      0.125  0.905 0.366
@@ -489,23 +508,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="estimation-of-treatment-effect-1" class="section level3 hasAnchor" number="6.3.5">
 <h3><span class="header-section-number">6.3.5</span> Estimation of treatment effect<a href="propensity-score-analysis.html#estimation-of-treatment-effect-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>the final weights are divided by the mean of weights to make them sum to the sample size, which is a process known as normalization.</p>
-<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="propensity-score-analysis.html#cb186-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>finalWeight <span class="ot">&lt;-</span> lalonde<span class="sc">$</span>weightATE<span class="sc">/</span><span class="fu">mean</span>(lalonde<span class="sc">$</span>weightATE)</span></code></pre></div>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="propensity-score-analysis.html#cb183-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>finalWeight <span class="ot">&lt;-</span> lalonde<span class="sc">$</span>weightATE<span class="sc">/</span><span class="fu">mean</span>(lalonde<span class="sc">$</span>weightATE)</span></code></pre></div>
 <p>Before the estimation can be performed, the surveyDesign object is created with the svydesign function to declare the names of the variables that contain cluster ids, strata ids, weights, and the data set:</p>
-<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="propensity-score-analysis.html#cb187-1" aria-hidden="true" tabindex="-1"></a>surveyDesign <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">ids=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">weights=</span><span class="sc">~</span>finalWeight, <span class="at">data =</span> lalonde, <span class="at">nest=</span>T) </span></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="propensity-score-analysis.html#cb184-1" aria-hidden="true" tabindex="-1"></a>surveyDesign <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">ids=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">weights=</span><span class="sc">~</span>finalWeight, <span class="at">data =</span> lalonde, <span class="at">nest=</span>T) </span></code></pre></div>
 <p>Methods to obtain standard errors for propensity score weighted estimates include Taylor series linearization and resampling methods such as bootstrapping, jackknife, and balanced repeated replication (see review by Rodgers, 1999).</p>
 <p>To use bootstrap methods with the survey package, the surveyDesign object created above should be modified to include weights for each replication. The following code takes the surveyDesign object and adds weights for 1,000 bootstrapped samples:</p>
-<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="propensity-score-analysis.html#cb188-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8</span>)</span>
-<span id="cb188-2"><a href="propensity-score-analysis.html#cb188-2" aria-hidden="true" tabindex="-1"></a>surveyDesignBoot <span class="ot">&lt;-</span> <span class="fu">as.svrepdesign</span>(surveyDesign, <span class="at">type=</span><span class="fu">c</span>(<span class="st">&quot;bootstrap&quot;</span>), <span class="at">replicates=</span><span class="dv">1000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="propensity-score-analysis.html#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8</span>)</span>
+<span id="cb185-2"><a href="propensity-score-analysis.html#cb185-2" aria-hidden="true" tabindex="-1"></a>surveyDesignBoot <span class="ot">&lt;-</span> <span class="fu">as.svrepdesign</span>(surveyDesign, <span class="at">type=</span><span class="fu">c</span>(<span class="st">&quot;bootstrap&quot;</span>), <span class="at">replicates=</span><span class="dv">1000</span>)</span></code></pre></div>
 <p>First, the svyby function is used to apply the svymean function separately to treated and control units to obtain weighted outcome:</p>
-<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="propensity-score-analysis.html#cb189-1" aria-hidden="true" tabindex="-1"></a>weightedMeans <span class="ot">&lt;-</span> <span class="fu">svyby</span>(<span class="at">formula=</span><span class="sc">~</span>re78, <span class="at">by=</span><span class="sc">~</span>treat, <span class="at">design=</span>surveyDesignBoot, <span class="at">FUN=</span>svymean, <span class="at">covmat=</span><span class="cn">TRUE</span>)</span>
-<span id="cb189-2"><a href="propensity-score-analysis.html#cb189-2" aria-hidden="true" tabindex="-1"></a>weightedMeans</span></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="propensity-score-analysis.html#cb186-1" aria-hidden="true" tabindex="-1"></a>weightedMeans <span class="ot">&lt;-</span> <span class="fu">svyby</span>(<span class="at">formula=</span><span class="sc">~</span>re78, <span class="at">by=</span><span class="sc">~</span>treat, <span class="at">design=</span>surveyDesignBoot, <span class="at">FUN=</span>svymean, <span class="at">covmat=</span><span class="cn">TRUE</span>)</span>
+<span id="cb186-2"><a href="propensity-score-analysis.html#cb186-2" aria-hidden="true" tabindex="-1"></a>weightedMeans</span></code></pre></div>
 <pre><code>##   treat     re78        se
 ## 0     0 6307.898  392.3048
 ## 1     1 7624.783 1715.2247</code></pre>
 <p><em>The code to obtain the treatment effect with a regression model is shown as follows.
 </em> The model formula using R notation is re78~treat. This formula can be expanded to include any covariates and interaction effects of interest</p>
-<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="propensity-score-analysis.html#cb191-1" aria-hidden="true" tabindex="-1"></a>outcomeModel <span class="ot">&lt;-</span> <span class="fu">svyglm</span>(re78<span class="sc">~</span>treat, <span class="at">design =</span> surveyDesignBoot)</span>
-<span id="cb191-2"><a href="propensity-score-analysis.html#cb191-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(outcomeModel)</span></code></pre></div>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="propensity-score-analysis.html#cb188-1" aria-hidden="true" tabindex="-1"></a>outcomeModel <span class="ot">&lt;-</span> <span class="fu">svyglm</span>(re78<span class="sc">~</span>treat, <span class="at">design =</span> surveyDesignBoot)</span>
+<span id="cb188-2"><a href="propensity-score-analysis.html#cb188-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(outcomeModel)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## svyglm(formula = re78 ~ treat, design = surveyDesignBoot)
@@ -524,8 +543,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## Number of Fisher Scoring iterations: 2</code></pre>
 <p>Double robust with the imbalanced covariates:</p>
-<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="propensity-score-analysis.html#cb193-1" aria-hidden="true" tabindex="-1"></a>outcomeModel <span class="ot">&lt;-</span> <span class="fu">svyglm</span>(re78 <span class="sc">~</span> treat <span class="sc">+</span> age <span class="sc">+</span> un74 <span class="sc">+</span> hispan, <span class="at">design =</span> surveyDesignBoot)</span>
-<span id="cb193-2"><a href="propensity-score-analysis.html#cb193-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(outcomeModel)</span></code></pre></div>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="propensity-score-analysis.html#cb190-1" aria-hidden="true" tabindex="-1"></a>outcomeModel <span class="ot">&lt;-</span> <span class="fu">svyglm</span>(re78 <span class="sc">~</span> treat <span class="sc">+</span> age <span class="sc">+</span> un74 <span class="sc">+</span> hispan, <span class="at">design =</span> surveyDesignBoot)</span>
+<span id="cb190-2"><a href="propensity-score-analysis.html#cb190-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(outcomeModel)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## svyglm(formula = re78 ~ treat + age + un74 + hispan, design = surveyDesignBoot)
@@ -559,36 +578,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>The quintiles are obtained with the quantile function. The function levels is used to assign number labels from 1 to 5 to the strata, and then xtabs is used to display strata by treatment counts.</li>
 <li>The number of strata is limited by the common support of the propensity score distributions of treated and untreated groups, because each stratum must have at least one treated and one untreated observation.</li>
 </ul>
-<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="propensity-score-analysis.html#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(lalonde<span class="sc">$</span>pscore)</span></code></pre></div>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="propensity-score-analysis.html#cb192-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(lalonde<span class="sc">$</span>pscore)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-92-1.png" width="672" /></p>
-<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="propensity-score-analysis.html#cb196-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(lalonde<span class="sc">$</span>pscore, <span class="at">prob =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">5</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="propensity-score-analysis.html#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(lalonde<span class="sc">$</span>pscore, <span class="at">prob =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">5</span>))</span></code></pre></div>
 <pre><code>##           0%          20%          40%          60%          80%         100% 
 ## 4.922848e-05 2.608815e-02 7.289915e-02 2.419414e-01 6.698725e-01 9.546820e-01</code></pre>
-<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="propensity-score-analysis.html#cb198-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>subclass <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x=</span>lalonde<span class="sc">$</span>pscore, <span class="at">breaks =</span> <span class="fu">quantile</span>(lalonde<span class="sc">$</span>pscore, <span class="at">prob =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">5</span>)), <span class="at">include.lowest=</span>T)</span>
-<span id="cb198-2"><a href="propensity-score-analysis.html#cb198-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(lalonde<span class="sc">$</span>subclass) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">levels</span>(lalonde<span class="sc">$</span>subclass))</span>
-<span id="cb198-3"><a href="propensity-score-analysis.html#cb198-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb198-4"><a href="propensity-score-analysis.html#cb198-4" aria-hidden="true" tabindex="-1"></a>ntable <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(<span class="sc">~</span>treat<span class="sc">+</span>subclass,lalonde) </span>
-<span id="cb198-5"><a href="propensity-score-analysis.html#cb198-5" aria-hidden="true" tabindex="-1"></a>ntable</span></code></pre></div>
+<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="propensity-score-analysis.html#cb195-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>subclass <span class="ot">&lt;-</span> <span class="fu">cut</span>(<span class="at">x=</span>lalonde<span class="sc">$</span>pscore, <span class="at">breaks =</span> <span class="fu">quantile</span>(lalonde<span class="sc">$</span>pscore, <span class="at">prob =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span><span class="sc">/</span><span class="dv">5</span>)), <span class="at">include.lowest=</span>T)</span>
+<span id="cb195-2"><a href="propensity-score-analysis.html#cb195-2" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(lalonde<span class="sc">$</span>subclass) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">levels</span>(lalonde<span class="sc">$</span>subclass))</span>
+<span id="cb195-3"><a href="propensity-score-analysis.html#cb195-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb195-4"><a href="propensity-score-analysis.html#cb195-4" aria-hidden="true" tabindex="-1"></a>ntable <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(<span class="sc">~</span>treat<span class="sc">+</span>subclass,lalonde) </span>
+<span id="cb195-5"><a href="propensity-score-analysis.html#cb195-5" aria-hidden="true" tabindex="-1"></a>ntable</span></code></pre></div>
 <pre><code>##      subclass
 ## treat   1   2   3   4   5
 ##     0 122 118 106  61  22
 ##     1   1   5  16  62 101</code></pre>
-<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="propensity-score-analysis.html#cb200-1" aria-hidden="true" tabindex="-1"></a>surveyDesign <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">ids=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">weights=</span><span class="sc">~</span>lalonde<span class="sc">$</span>finalWeight, </span>
-<span id="cb200-2"><a href="propensity-score-analysis.html#cb200-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> lalonde, <span class="at">nest=</span>T) </span></code></pre></div>
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="propensity-score-analysis.html#cb197-1" aria-hidden="true" tabindex="-1"></a>surveyDesign <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">ids=</span><span class="sc">~</span><span class="dv">1</span>, <span class="at">weights=</span><span class="sc">~</span>lalonde<span class="sc">$</span>finalWeight, </span>
+<span id="cb197-2"><a href="propensity-score-analysis.html#cb197-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">data =</span> lalonde, <span class="at">nest=</span>T) </span></code></pre></div>
 </div>
 <div id="stratification-using-matchit" class="section level3 hasAnchor" number="6.4.2">
 <h3><span class="header-section-number">6.4.2</span> Stratification using matchit():<a href="propensity-score-analysis.html#stratification-using-matchit" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="propensity-score-analysis.html#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb201-2"><a href="propensity-score-analysis.html#cb201-2" aria-hidden="true" tabindex="-1"></a>stratification <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
-<span id="cb201-3"><a href="propensity-score-analysis.html#cb201-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm2,</span>
-<span id="cb201-4"><a href="propensity-score-analysis.html#cb201-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
-<span id="cb201-5"><a href="propensity-score-analysis.html#cb201-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;subclass&quot;</span>,</span>
-<span id="cb201-6"><a href="propensity-score-analysis.html#cb201-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">subclass =</span> <span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="propensity-score-analysis.html#cb198-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb198-2"><a href="propensity-score-analysis.html#cb198-2" aria-hidden="true" tabindex="-1"></a>stratification <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
+<span id="cb198-3"><a href="propensity-score-analysis.html#cb198-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm2,</span>
+<span id="cb198-4"><a href="propensity-score-analysis.html#cb198-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
+<span id="cb198-5"><a href="propensity-score-analysis.html#cb198-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;subclass&quot;</span>,</span>
+<span id="cb198-6"><a href="propensity-score-analysis.html#cb198-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">subclass =</span> <span class="dv">5</span>)</span></code></pre></div>
 </div>
 <div id="covariate-balance-evaluation" class="section level3 hasAnchor" number="6.4.3">
 <h3><span class="header-section-number">6.4.3</span> Covariate Balance Evaluation<a href="propensity-score-analysis.html#covariate-balance-evaluation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="propensity-score-analysis.html#cb202-1" aria-hidden="true" tabindex="-1"></a>balance.stratification <span class="ot">=</span> <span class="fu">summary</span>(stratification)</span>
-<span id="cb202-2"><a href="propensity-score-analysis.html#cb202-2" aria-hidden="true" tabindex="-1"></a>balance.stratification<span class="sc">$</span>qn</span></code></pre></div>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="propensity-score-analysis.html#cb199-1" aria-hidden="true" tabindex="-1"></a>balance.stratification <span class="ot">=</span> <span class="fu">summary</span>(stratification)</span>
+<span id="cb199-2"><a href="propensity-score-analysis.html#cb199-2" aria-hidden="true" tabindex="-1"></a>balance.stratification<span class="sc">$</span>qn</span></code></pre></div>
 <pre><code>##           1  2  3  4  5 All
 ## Control 364 35 14 11  5 429
 ## Treated  35 39 37 37 37 185
@@ -597,7 +616,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>It is noticeable in the cross-classification of treatment by strata shown above that the stratification based on the propensity scores of the treated resulted in a similar number of treated units within strata.</p></li>
 <li><p>When using summary(), the default is to display balance only in aggregate using the subclassification weights. This balance output looks similar to that for other matching methods.</p></li>
 </ul>
-<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="propensity-score-analysis.html#cb204-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(balance.stratification<span class="sc">$</span>sum.across,<span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="propensity-score-analysis.html#cb201-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(balance.stratification<span class="sc">$</span>sum.across,<span class="dv">3</span>)</span></code></pre></div>
 <pre><code>##                Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max
 ## distance               0.624         0.593           0.121      0.803     0.047    0.098
 ## age                   25.816        25.865          -0.007      0.811     0.030    0.112
@@ -626,7 +645,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>An additional option in summary(), subclass, allows us to request balance for individual subclasses.</p></li>
 <li><p>Below we call summary() and request balance to be displayed on all subclasses (setting un = FALSE to suppress balance in the original sample):</p></li>
 </ul>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="propensity-score-analysis.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(stratification, <span class="at">subclass =</span> <span class="cn">TRUE</span>, <span class="at">un =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="propensity-score-analysis.html#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(stratification, <span class="at">subclass =</span> <span class="cn">TRUE</span>, <span class="at">un =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## matchit(formula = fm2, data = lalonde, method = &quot;subclass&quot;, distance = &quot;logit&quot;, 
@@ -636,68 +655,68 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 
 ## - Subclass 1
 ##                Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max
-## distance              0.1939        0.0801          0.4443     1.9143    0.3036   0.5192
-## age                  26.5714       28.8626         -0.3202     0.6086    0.0736   0.1527
-## `I(age^2)`          779.3143      956.6593         -0.4112     0.5202    0.0736   0.1527
-## `I(age^3)`        25222.1143    35807.3242         -0.5049     0.4174    0.0736   0.1527
-## educ                 10.5143       10.2170          0.1478     0.5463    0.0284   0.0940
-## black                 0.2571        0.0659          0.5259          .    0.1912   0.1912
-## hispan                0.2286        0.1621          0.2811          .    0.0665   0.0665
-## married               0.3714        0.5742         -0.5177          .    0.2027   0.2027
-## `I(re74/1000)`        3.9016        6.2471         -0.4800     1.1744    0.1693   0.3720
-## `I(re75/1000)`        2.1251        2.6298         -0.1568     0.9425    0.0761   0.1890
+## distance              0.1939        0.0801          0.9198     1.9143    0.3036   0.5192
+## age                  26.5714       28.8626         -0.2638     0.6086    0.0736   0.1527
+## `I(age^2)`          779.3143      956.6593         -0.3293     0.5202    0.0736   0.1527
+## `I(age^3)`        25222.1143    35807.3242         -0.3988     0.4174    0.0736   0.1527
+## educ                 10.5143       10.2170          0.1412     0.5463    0.0284   0.0940
+## black                 0.2571        0.0659          0.4375          .    0.1912   0.1912
+## hispan                0.2286        0.1621          0.1583          .    0.0665   0.0665
+## married               0.3714        0.5742         -0.4196          .    0.2027   0.2027
+## `I(re74/1000)`        3.9016        6.2471         -0.3104     1.1744    0.1693   0.3720
+## `I(re75/1000)`        2.1251        2.6298         -0.1560     0.9425    0.0761   0.1890
 ## 
 ## - Subclass 2
 ##                Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max
-## distance              0.5145        0.5169         -0.0093     1.0639    0.0412   0.1443
-## age                  23.9231       21.6857          0.3127     1.6826    0.0757   0.1619
-## `I(age^2)`          658.7949      521.5143          0.3183     1.8594    0.0757   0.1619
-## `I(age^3)`        20941.4615    14232.2571          0.3200     2.0927    0.0757   0.1619
-## educ                  9.3846        9.9143         -0.2634     0.4968    0.0546   0.2549
-## black                 0.9231        0.9429         -0.0544          .    0.0198   0.0198
-## hispan                0.0769        0.0571          0.0836          .    0.0198   0.0198
-## married               0.2308        0.2000          0.0786          .    0.0308   0.0308
-## `I(re74/1000)`        2.3422        2.0878          0.0521     1.9796    0.0920   0.2894
-## `I(re75/1000)`        2.5483        1.5986          0.2950     3.2557    0.0886   0.2381
+## distance              0.5145        0.5169         -0.0456     1.0639    0.0412   0.1443
+## age                  23.9231       21.6857          0.2375     1.6826    0.0757   0.1619
+## `I(age^2)`          658.7949      521.5143          0.2410     1.8594    0.0757   0.1619
+## `I(age^3)`        20941.4615    14232.2571          0.2389     2.0927    0.0757   0.1619
+## educ                  9.3846        9.9143         -0.2767     0.4968    0.0546   0.2549
+## black                 0.9231        0.9429         -0.0742          .    0.0198   0.0198
+## hispan                0.0769        0.0571          0.0742          .    0.0198   0.0198
+## married               0.2308        0.2000          0.0730          .    0.0308   0.0308
+## `I(re74/1000)`        2.3422        2.0878          0.0458     1.9796    0.0920   0.2894
+## `I(re75/1000)`        2.5483        1.5986          0.1735     3.2557    0.0886   0.2381
 ## 
 ## - Subclass 3
 ##                Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max
-## distance              0.6695        0.6605          0.0351     1.2277    0.0945   0.1931
-## age                  25.0541       23.0714          0.2771     1.8144    0.0760   0.2375
-## `I(age^2)`          679.1622      559.3571          0.2778     2.6006    0.0760   0.2375
-## `I(age^3)`        20134.6216    14283.3571          0.2791     3.9868    0.0760   0.2375
-## educ                 10.8378       11.2857         -0.2228     0.2867    0.0731   0.3456
+## distance              0.6695        0.6605          0.2461     1.2277    0.0945   0.1931
+## age                  25.0541       23.0714          0.2726     1.8144    0.0760   0.2375
+## `I(age^2)`          679.1622      559.3571          0.2697     2.6006    0.0760   0.2375
+## `I(age^3)`        20134.6216    14283.3571          0.2708     3.9868    0.0760   0.2375
+## educ                 10.8378       11.2857         -0.3440     0.2867    0.0731   0.3456
 ## black                 1.0000        1.0000          0.0000          .    0.0000   0.0000
 ## hispan                0.0000        0.0000          0.0000          .    0.0000   0.0000
-## married               0.3243        0.2143          0.2810          .    0.1100   0.1100
-## `I(re74/1000)`        2.2776        3.7009         -0.2913     0.4103    0.0866   0.2375
-## `I(re75/1000)`        1.2027        2.5788         -0.4275     0.1933    0.1333   0.3031
+## married               0.3243        0.2143          0.2351          .    0.1100   0.1100
+## `I(re74/1000)`        2.2776        3.7009         -0.3609     0.4103    0.0866   0.2375
+## `I(re75/1000)`        1.2027        2.5788         -0.8395     0.1933    0.1333   0.3031
 ## 
 ## - Subclass 4
 ##                Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max
-## distance              0.8194        0.7872          0.1256     0.8049    0.1987   0.3735
-## age                  25.9730       26.0909         -0.0165     0.6325    0.0880   0.2285
-## `I(age^2)`          704.1892      724.4545         -0.0470     0.6692    0.0880   0.2285
-## `I(age^3)`        20057.2162    21441.1818         -0.0660     0.7053    0.0880   0.2285
-## educ                 10.8108       10.7273          0.0415     0.4211    0.0781   0.2187
+## distance              0.8194        0.7872          0.6864     0.8049    0.1987   0.3735
+## age                  25.9730       26.0909         -0.0214     0.6325    0.0880   0.2285
+## `I(age^2)`          704.1892      724.4545         -0.0613     0.6692    0.0880   0.2285
+## `I(age^3)`        20057.2162    21441.1818         -0.0902     0.7053    0.0880   0.2285
+## educ                 10.8108       10.7273          0.0434     0.4211    0.0781   0.2187
 ## black                 1.0000        1.0000          0.0000          .    0.0000   0.0000
 ## hispan                0.0000        0.0000          0.0000          .    0.0000   0.0000
-## married               0.0270        0.0909         -0.1631          .    0.0639   0.0639
-## `I(re74/1000)`        1.9019        1.0422          0.1759     3.4387    0.0793   0.2482
-## `I(re75/1000)`        0.9004        0.6699          0.0716     1.9497    0.0662   0.1351
+## married               0.0270        0.0909         -0.3939          .    0.0639   0.0639
+## `I(re74/1000)`        1.9019        1.0422          0.2435     3.4387    0.0793   0.2482
+## `I(re75/1000)`        0.9004        0.6699          0.1428     1.9497    0.0662   0.1351
 ## 
 ## - Subclass 5
 ##                Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max
-## distance              0.9037        0.8952          0.0333     2.0591    0.2208   0.4486
-## age                  27.7027       30.0000         -0.3211     0.2193    0.2015   0.4000
-## `I(age^2)`          772.0270      917.2000         -0.3366     0.1871    0.2015   0.4000
-## `I(age^3)`        21649.2703    28580.4000         -0.3306     0.1596    0.2015   0.4000
-## educ                 10.2432        9.8000          0.2204     0.2171    0.1120   0.3838
+## distance              0.9037        0.8952          0.7106     2.0591    0.2208   0.4486
+## age                  27.7027       30.0000         -1.0580     0.2193    0.2015   0.4000
+## `I(age^2)`          772.0270      917.2000         -1.1692     0.1871    0.2015   0.4000
+## `I(age^3)`        21649.2703    28580.4000         -1.2920     0.1596    0.2015   0.4000
+## educ                 10.2432        9.8000          0.1858     0.2171    0.1120   0.3838
 ## black                 1.0000        1.0000          0.0000          .    0.0000   0.0000
 ## hispan                0.0000        0.0000          0.0000          .    0.0000   0.0000
 ## married               0.0000        0.0000          0.0000          .    0.0000   0.0000
-## `I(re74/1000)`        0.1388        0.0697          0.0141    10.1413    0.0562   0.1189
-## `I(re75/1000)`        0.8609        0.2897          0.1774     8.8591    0.0752   0.1892
+## `I(re74/1000)`        0.1388        0.0697          0.1391    10.1413    0.0562   0.1189
+## `I(re75/1000)`        0.8609        0.2897          0.2963     8.8591    0.0752   0.1892
 ## 
 ## Sample Sizes by Subclass:
 ##           1  2  3  4  5 All
@@ -707,8 +726,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>We can plot the standardized mean differences in a Love plot that also displays balance for the subclasses using plot.summary.matchit() on a summary.matchit() object with subclass = TRUE.</li>
 </ul>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="propensity-score-analysis.html#cb208-1" aria-hidden="true" tabindex="-1"></a>balance.stratification2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(stratification, <span class="at">subclass =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb208-2"><a href="propensity-score-analysis.html#cb208-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(balance.stratification2, <span class="at">var.order =</span> <span class="st">&quot;unmatched&quot;</span>, <span class="at">abs =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="propensity-score-analysis.html#cb205-1" aria-hidden="true" tabindex="-1"></a>balance.stratification2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(stratification, <span class="at">subclass =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb205-2"><a href="propensity-score-analysis.html#cb205-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(balance.stratification2, <span class="at">var.order =</span> <span class="st">&quot;unmatched&quot;</span>, <span class="at">abs =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-97-1.png" width="672" /></p>
 <ul>
 <li>Note that for some variables, while the groups are balanced in aggregate (black dots), the individual subclasses (gray numbers) may not be balanced, in which case unadjusted effect estimates within these subclasses should not be interpreted as unbiased.</li>
@@ -717,33 +736,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="calculate-the-stratum-weights" class="section level3 hasAnchor" number="6.4.4">
 <h3><span class="header-section-number">6.4.4</span> Calculate the stratum weights<a href="propensity-score-analysis.html#calculate-the-stratum-weights" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>To use bootstrap methods with the survey package, the surveyDesign object created above should be modified to include weights for each replication. The following code takes the surveyDesign object and adds weights for 1,000 bootstrapped samples:</p>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="propensity-score-analysis.html#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8</span>)</span>
-<span id="cb209-2"><a href="propensity-score-analysis.html#cb209-2" aria-hidden="true" tabindex="-1"></a>surveyDesignBoot <span class="ot">&lt;-</span> <span class="fu">as.svrepdesign</span>(surveyDesign, <span class="at">type=</span><span class="fu">c</span>(<span class="st">&quot;bootstrap&quot;</span>), <span class="at">replicates=</span><span class="dv">1000</span>) </span></code></pre></div>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="propensity-score-analysis.html#cb206-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8</span>)</span>
+<span id="cb206-2"><a href="propensity-score-analysis.html#cb206-2" aria-hidden="true" tabindex="-1"></a>surveyDesignBoot <span class="ot">&lt;-</span> <span class="fu">as.svrepdesign</span>(surveyDesign, <span class="at">type=</span><span class="fu">c</span>(<span class="st">&quot;bootstrap&quot;</span>), <span class="at">replicates=</span><span class="dv">1000</span>) </span></code></pre></div>
 <p>The following R code uses svyby to apply the svymean function:</p>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="propensity-score-analysis.html#cb210-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lalonde)</span></code></pre></div>
-<pre><code>##      treat age educ   race married nodegree re74 re75       re78 black hispan un74 un75
-## NSW1     1  37   11  black       1        1    0    0  9930.0460     1      0    1    1
-## NSW2     1  22    9 hispan       0        1    0    0  3595.8940     0      1    1    1
-## NSW3     1  30   12  black       0        0    0    0 24909.4500     1      0    1    1
-## NSW4     1  27   11  black       0        1    0    0  7506.1460     1      0    1    1
-## NSW5     1  33    8  black       0        1    0    0   289.7899     1      0    1    1
-## NSW6     1  22    9  black       0        1    0    0  4056.4940     1      0    1    1
-##         pscore weightATT weightATE weightATETruncated finalWeight subclass
-## NSW1 0.6664569         1  1.500472           1.500472   0.7824785        4
-## NSW2 0.3896185         1  2.566613           2.566613   1.3384583        4
-## NSW3 0.9237414         1  1.082554           1.082554   0.5645392        5
-## NSW4 0.9345017         1  1.070089           1.070089   0.5580388        5
-## NSW5 0.9434150         1  1.059979           1.059979   0.5527665        5
-## NSW6 0.8771158         1  1.140100           1.140100   0.5945489        5</code></pre>
-<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="propensity-score-analysis.html#cb212-1" aria-hidden="true" tabindex="-1"></a>subclassMeans <span class="ot">&lt;-</span> <span class="fu">svyby</span>(<span class="at">formula=</span><span class="sc">~</span>re78, <span class="at">by=</span><span class="sc">~</span>treat<span class="sc">+</span>subclass,</span>
-<span id="cb212-2"><a href="propensity-score-analysis.html#cb212-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">design=</span>surveyDesignBoot, <span class="at">FUN=</span>svymean, <span class="at">covmat=</span><span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## Warning in svrVar(repmeans, scale, rscales, mse = design$mse, coef = rval): 350 replicates gave
-## NA results and were discarded.</code></pre>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="propensity-score-analysis.html#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(lalonde)</span></code></pre></div>
+<pre><code>##      treat age educ   race married nodegree re74 re75       re78 black hispan un74 un75    pscore
+## NSW1     1  37   11  black       1        1    0    0  9930.0460     1      0    1    1 0.6664569
+## NSW2     1  22    9 hispan       0        1    0    0  3595.8940     0      1    1    1 0.3896185
+## NSW3     1  30   12  black       0        0    0    0 24909.4500     1      0    1    1 0.9237414
+## NSW4     1  27   11  black       0        1    0    0  7506.1460     1      0    1    1 0.9345017
+## NSW5     1  33    8  black       0        1    0    0   289.7899     1      0    1    1 0.9434150
+## NSW6     1  22    9  black       0        1    0    0  4056.4940     1      0    1    1 0.8771158
+##      weightATT weightATE weightATETruncated finalWeight subclass
+## NSW1         1  1.500472           1.500472   0.7824785        4
+## NSW2         1  2.566613           2.566613   1.3384583        4
+## NSW3         1  1.082554           1.082554   0.5645392        5
+## NSW4         1  1.070089           1.070089   0.5580388        5
+## NSW5         1  1.059979           1.059979   0.5527665        5
+## NSW6         1  1.140100           1.140100   0.5945489        5</code></pre>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="propensity-score-analysis.html#cb209-1" aria-hidden="true" tabindex="-1"></a>subclassMeans <span class="ot">&lt;-</span> <span class="fu">svyby</span>(<span class="at">formula=</span><span class="sc">~</span>re78, <span class="at">by=</span><span class="sc">~</span>treat<span class="sc">+</span>subclass,</span>
+<span id="cb209-2"><a href="propensity-score-analysis.html#cb209-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">design=</span>surveyDesignBoot, <span class="at">FUN=</span>svymean, <span class="at">covmat=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## Warning in svrVar(repmeans, scale, rscales, mse = design$mse, coef = rval): 350 replicates gave NA
+## results and were discarded.</code></pre>
 <pre><code>## Warning in svrVar(repmeans, scale, rscales, mse = design$mse, coef = rval): 5 replicates gave NA
 ## results and were discarded.</code></pre>
-<pre><code>## Warning in svrVar(replicates, design$scale, design$rscales, mse = design$mse, : 354 replicates
-## gave NA results and were discarded.</code></pre>
-<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="propensity-score-analysis.html#cb216-1" aria-hidden="true" tabindex="-1"></a>subclassMeans</span></code></pre></div>
+<pre><code>## Warning in svrVar(replicates, design$scale, design$rscales, mse = design$mse, : 354 replicates gave
+## NA results and were discarded.</code></pre>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="propensity-score-analysis.html#cb213-1" aria-hidden="true" tabindex="-1"></a>subclassMeans</span></code></pre></div>
 <pre><code>##     treat subclass      re78           se
 ## 0.1     0        1  9053.491 7.538916e+02
 ## 1.1     1        1  6788.463 4.072737e-14
@@ -761,10 +780,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>For estimating the ATE, the stratum weight is wk = nk/n, which is the stratum size divided by the total sample size.</li>
 <li>For estimating the ATT, the stratum weight is, wk = n1k/n1 which is the treated sample size within the stratum divided by the total treated sample size.</li>
 </ul>
-<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="propensity-score-analysis.html#cb218-1" aria-hidden="true" tabindex="-1"></a>subclass_table <span class="ot">=</span> balance.stratification2<span class="sc">$</span>qn[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
-<span id="cb218-2"><a href="propensity-score-analysis.html#cb218-2" aria-hidden="true" tabindex="-1"></a>ATEw <span class="ot">=</span> <span class="fu">colSums</span>(subclass_table)<span class="sc">/</span><span class="fu">sum</span>(subclass_table)</span>
-<span id="cb218-3"><a href="propensity-score-analysis.html#cb218-3" aria-hidden="true" tabindex="-1"></a>ATTw <span class="ot">=</span> subclass_table[<span class="dv">2</span>,]<span class="sc">/</span><span class="fu">sum</span>(subclass_table[<span class="dv">2</span>,])</span>
-<span id="cb218-4"><a href="propensity-score-analysis.html#cb218-4" aria-hidden="true" tabindex="-1"></a>subclass_table; ATEw; ATTw</span></code></pre></div>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="propensity-score-analysis.html#cb215-1" aria-hidden="true" tabindex="-1"></a>subclass_table <span class="ot">=</span> balance.stratification2<span class="sc">$</span>qn[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span>
+<span id="cb215-2"><a href="propensity-score-analysis.html#cb215-2" aria-hidden="true" tabindex="-1"></a>ATEw <span class="ot">=</span> <span class="fu">colSums</span>(subclass_table)<span class="sc">/</span><span class="fu">sum</span>(subclass_table)</span>
+<span id="cb215-3"><a href="propensity-score-analysis.html#cb215-3" aria-hidden="true" tabindex="-1"></a>ATTw <span class="ot">=</span> subclass_table[<span class="dv">2</span>,]<span class="sc">/</span><span class="fu">sum</span>(subclass_table[<span class="dv">2</span>,])</span>
+<span id="cb215-4"><a href="propensity-score-analysis.html#cb215-4" aria-hidden="true" tabindex="-1"></a>subclass_table; ATEw; ATTw</span></code></pre></div>
 <pre><code>##           1  2  3  4  5
 ## Control 364 35 14 11  5
 ## Treated  35 39 37 37 37</code></pre>
@@ -773,23 +792,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>##         1         2         3         4         5 
 ## 0.1891892 0.2108108 0.2000000 0.2000000 0.2000000</code></pre>
 <p>This won’t work:</p>
-<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="propensity-score-analysis.html#cb222-1" aria-hidden="true" tabindex="-1"></a>pooledEffects <span class="ot">&lt;-</span> <span class="fu">svycontrast</span>(subclassMeans, <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">ATT=</span>ATTw)) </span></code></pre></div>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb219-1"><a href="propensity-score-analysis.html#cb219-1" aria-hidden="true" tabindex="-1"></a>pooledEffects <span class="ot">&lt;-</span> <span class="fu">svycontrast</span>(subclassMeans, <span class="at">contrasts =</span> <span class="fu">list</span>(<span class="at">ATT=</span>ATTw)) </span></code></pre></div>
 <ul>
 <li>ATEw and ATTw needs to be specified for EVERY group within EVERY stratum</li>
 <li>in our case, 10 groups (2*5 = 10)</li>
 <li>Control groups get negative weights and treatment group gets positive weights:</li>
 </ul>
-<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="propensity-score-analysis.html#cb223-1" aria-hidden="true" tabindex="-1"></a>subclassMeans<span class="sc">$</span>ATEsw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span>ATEw[<span class="dv">1</span>], ATEw[<span class="dv">1</span>], <span class="co"># first stratum, </span></span>
-<span id="cb223-2"><a href="propensity-score-analysis.html#cb223-2" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATEw[<span class="dv">2</span>], ATEw[<span class="dv">2</span>],  <span class="co"># second stratum</span></span>
-<span id="cb223-3"><a href="propensity-score-analysis.html#cb223-3" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATEw[<span class="dv">3</span>], ATEw[<span class="dv">3</span>],  <span class="co"># third stratum</span></span>
-<span id="cb223-4"><a href="propensity-score-analysis.html#cb223-4" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATEw[<span class="dv">4</span>], ATEw[<span class="dv">4</span>],  <span class="co"># fourth stratum</span></span>
-<span id="cb223-5"><a href="propensity-score-analysis.html#cb223-5" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATEw[<span class="dv">4</span>], ATEw[<span class="dv">5</span>])  <span class="co"># fifth stratum</span></span>
-<span id="cb223-6"><a href="propensity-score-analysis.html#cb223-6" aria-hidden="true" tabindex="-1"></a>subclassMeans<span class="sc">$</span>ATTsw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span>ATTw[<span class="dv">1</span>], ATTw[<span class="dv">1</span>], <span class="co"># first stratum, </span></span>
-<span id="cb223-7"><a href="propensity-score-analysis.html#cb223-7" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATTw[<span class="dv">2</span>], ATTw[<span class="dv">2</span>],  <span class="co"># second stratum</span></span>
-<span id="cb223-8"><a href="propensity-score-analysis.html#cb223-8" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATTw[<span class="dv">3</span>], ATTw[<span class="dv">3</span>],  <span class="co"># third stratum</span></span>
-<span id="cb223-9"><a href="propensity-score-analysis.html#cb223-9" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATTw[<span class="dv">4</span>], ATTw[<span class="dv">4</span>],  <span class="co"># fourth stratum</span></span>
-<span id="cb223-10"><a href="propensity-score-analysis.html#cb223-10" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATTw[<span class="dv">4</span>], ATTw[<span class="dv">5</span>])  <span class="co"># fifth stratum</span></span>
-<span id="cb223-11"><a href="propensity-score-analysis.html#cb223-11" aria-hidden="true" tabindex="-1"></a>subclassMeans</span></code></pre></div>
+<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="propensity-score-analysis.html#cb220-1" aria-hidden="true" tabindex="-1"></a>subclassMeans<span class="sc">$</span>ATEsw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span>ATEw[<span class="dv">1</span>], ATEw[<span class="dv">1</span>], <span class="co"># first stratum, </span></span>
+<span id="cb220-2"><a href="propensity-score-analysis.html#cb220-2" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATEw[<span class="dv">2</span>], ATEw[<span class="dv">2</span>],  <span class="co"># second stratum</span></span>
+<span id="cb220-3"><a href="propensity-score-analysis.html#cb220-3" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATEw[<span class="dv">3</span>], ATEw[<span class="dv">3</span>],  <span class="co"># third stratum</span></span>
+<span id="cb220-4"><a href="propensity-score-analysis.html#cb220-4" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATEw[<span class="dv">4</span>], ATEw[<span class="dv">4</span>],  <span class="co"># fourth stratum</span></span>
+<span id="cb220-5"><a href="propensity-score-analysis.html#cb220-5" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATEw[<span class="dv">4</span>], ATEw[<span class="dv">5</span>])  <span class="co"># fifth stratum</span></span>
+<span id="cb220-6"><a href="propensity-score-analysis.html#cb220-6" aria-hidden="true" tabindex="-1"></a>subclassMeans<span class="sc">$</span>ATTsw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span>ATTw[<span class="dv">1</span>], ATTw[<span class="dv">1</span>], <span class="co"># first stratum, </span></span>
+<span id="cb220-7"><a href="propensity-score-analysis.html#cb220-7" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATTw[<span class="dv">2</span>], ATTw[<span class="dv">2</span>],  <span class="co"># second stratum</span></span>
+<span id="cb220-8"><a href="propensity-score-analysis.html#cb220-8" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATTw[<span class="dv">3</span>], ATTw[<span class="dv">3</span>],  <span class="co"># third stratum</span></span>
+<span id="cb220-9"><a href="propensity-score-analysis.html#cb220-9" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATTw[<span class="dv">4</span>], ATTw[<span class="dv">4</span>],  <span class="co"># fourth stratum</span></span>
+<span id="cb220-10"><a href="propensity-score-analysis.html#cb220-10" aria-hidden="true" tabindex="-1"></a>                         <span class="sc">-</span>ATTw[<span class="dv">4</span>], ATTw[<span class="dv">5</span>])  <span class="co"># fifth stratum</span></span>
+<span id="cb220-11"><a href="propensity-score-analysis.html#cb220-11" aria-hidden="true" tabindex="-1"></a>subclassMeans</span></code></pre></div>
 <pre><code>##     treat subclass      re78           se       ATEsw      ATTsw
 ## 0.1     0        1  9053.491 7.538916e+02 -0.64983713 -0.1891892
 ## 1.1     1        1  6788.463 4.072737e-14  0.64983713  0.1891892
@@ -805,9 +824,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="estimation-of-treatment-effects" class="section level3 hasAnchor" number="6.4.5">
 <h3><span class="header-section-number">6.4.5</span> Estimation of Treatment Effects<a href="propensity-score-analysis.html#estimation-of-treatment-effects" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>view ATTw2 here:</p>
-<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="propensity-score-analysis.html#cb225-1" aria-hidden="true" tabindex="-1"></a>pooledEffects <span class="ot">&lt;-</span> <span class="fu">svycontrast</span>(subclassMeans, </span>
-<span id="cb225-2"><a href="propensity-score-analysis.html#cb225-2" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">list</span>(<span class="at">ATE =</span> subclassMeans<span class="sc">$</span>ATTsw, <span class="at">ATT =</span> subclassMeans<span class="sc">$</span>ATEsw)) </span>
-<span id="cb225-3"><a href="propensity-score-analysis.html#cb225-3" aria-hidden="true" tabindex="-1"></a>pooledEffects</span></code></pre></div>
+<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="propensity-score-analysis.html#cb222-1" aria-hidden="true" tabindex="-1"></a>pooledEffects <span class="ot">&lt;-</span> <span class="fu">svycontrast</span>(subclassMeans, </span>
+<span id="cb222-2"><a href="propensity-score-analysis.html#cb222-2" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">list</span>(<span class="at">ATE =</span> subclassMeans<span class="sc">$</span>ATTsw, <span class="at">ATT =</span> subclassMeans<span class="sc">$</span>ATEsw)) </span>
+<span id="cb222-3"><a href="propensity-score-analysis.html#cb222-3" aria-hidden="true" tabindex="-1"></a>pooledEffects</span></code></pre></div>
 <pre><code>##     contrast      SE
 ## ATE  1194.70 1311.46
 ## ATT  -766.55  844.72</code></pre>
@@ -817,8 +836,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="adjustment" class="section level2 hasAnchor" number="6.5">
 <h2><span class="header-section-number">6.5</span> Adjustment<a href="propensity-score-analysis.html#adjustment" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="propensity-score-analysis.html#cb227-1" aria-hidden="true" tabindex="-1"></a>adjustModel <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78<span class="sc">~</span>treat<span class="sc">+</span>pscore,lalonde)</span>
-<span id="cb227-2"><a href="propensity-score-analysis.html#cb227-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(adjustModel) </span></code></pre></div>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="propensity-score-analysis.html#cb224-1" aria-hidden="true" tabindex="-1"></a>adjustModel <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78<span class="sc">~</span>treat<span class="sc">+</span>pscore,lalonde)</span>
+<span id="cb224-2"><a href="propensity-score-analysis.html#cb224-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(adjustModel) </span></code></pre></div>
 <pre><code>## MODEL INFO:
 ## Observations: 614
 ## Dependent Variable: re78

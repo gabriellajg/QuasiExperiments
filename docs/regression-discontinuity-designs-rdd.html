@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 8 Interupted Time Series (ITS) (1) | R Book for Quasi-Experimental Designs</title>
-  <meta name="description" content="Chapter 8 Interupted Time Series (ITS) (1) | R Book for Quasi-Experimental Designs" />
+  <title>Chapter 10 Regression Discontinuity Designs (RDD) | R Book for Quasi-Experimental Designs</title>
+  <meta name="description" content="Chapter 10 Regression Discontinuity Designs (RDD) | R Book for Quasi-Experimental Designs" />
   <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 8 Interupted Time Series (ITS) (1) | R Book for Quasi-Experimental Designs" />
+  <meta property="og:title" content="Chapter 10 Regression Discontinuity Designs (RDD) | R Book for Quasi-Experimental Designs" />
   <meta property="og:type" content="book" />
   
   
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 8 Interupted Time Series (ITS) (1) | R Book for Quasi-Experimental Designs" />
+  <meta name="twitter:title" content="Chapter 10 Regression Discontinuity Designs (RDD) | R Book for Quasi-Experimental Designs" />
   
   
   
@@ -29,8 +29,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="difference-in-differences-did.html"/>
-<link rel="next" href="interupted-time-series-its-2.html"/>
+<link rel="prev" href="interupted-time-series-its-2.html"/>
+<link rel="next" href="rdd-2.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -327,227 +327,209 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="interupted-time-series-its-1" class="section level1 hasAnchor" number="8">
-<h1><span class="header-section-number">Chapter 8</span> Interupted Time Series (ITS) (1)<a href="interupted-time-series-its-1.html#interupted-time-series-its-1" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="regression-discontinuity-designs-rdd" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">Chapter 10</span> Regression Discontinuity Designs (RDD)<a href="regression-discontinuity-designs-rdd.html#regression-discontinuity-designs-rdd" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <ul>
-<li>In this lab, we will see how to use Segmented Regression to analyze ITS data.</li>
-<li>Source: “Global Health Research: Design + Methods”. By Dr. Eric Green</li>
+<li>This lab goes over several estimators for RDD designs.</li>
+<li>Part of the R codes were adapted from Chapter 13 of: R Companion to Real Econometrics: <a href="https://bookdown.org/carillitony/bailey/chp11.html#fn20" class="uri">https://bookdown.org/carillitony/bailey/chp11.html#fn20</a></li>
 </ul>
 <p>Install and load the following packages:</p>
-<div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="interupted-time-series-its-1.html#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb302-2"><a href="interupted-time-series-its-1.html#cb302-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
-<span id="cb302-3"><a href="interupted-time-series-its-1.html#cb302-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
-<span id="cb302-4"><a href="interupted-time-series-its-1.html#cb302-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span></code></pre></div>
+<div class="sourceCode" id="cb357"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb357-1"><a href="regression-discontinuity-designs-rdd.html#cb357-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb357-2"><a href="regression-discontinuity-designs-rdd.html#cb357-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb357-3"><a href="regression-discontinuity-designs-rdd.html#cb357-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rdd)</span></code></pre></div>
 <!------------------------------>
-<div id="data-3" class="section level2 hasAnchor" number="8.1">
-<h2><span class="header-section-number">8.1</span> Data<a href="interupted-time-series-its-1.html#data-3" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="data-5" class="section level2 hasAnchor" number="10.1">
+<h2><span class="header-section-number">10.1</span> Data<a href="regression-discontinuity-designs-rdd.html#data-5" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
-<p>Generating sample data:</p>
-<div class="sourceCode" id="cb303"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb303-1"><a href="interupted-time-series-its-1.html#cb303-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">month=</span><span class="fu">seq</span>(<span class="at">from=</span><span class="dv">1</span>, <span class="at">to=</span><span class="dv">24</span>), </span>
-<span id="cb303-2"><a href="interupted-time-series-its-1.html#cb303-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">post=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">12</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">12</span>)),</span>
-<span id="cb303-3"><a href="interupted-time-series-its-1.html#cb303-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">monthpost=</span><span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">12</span>), <span class="fu">seq</span>(<span class="at">from=</span><span class="dv">1</span>, <span class="at">to=</span><span class="dv">12</span>)), </span>
-<span id="cb303-4"><a href="interupted-time-series-its-1.html#cb303-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">outcome=</span><span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">60</span>, <span class="dv">45</span>, <span class="dv">47</span>, <span class="dv">50</span>, <span class="dv">55</span>, <span class="dv">53</span>, <span class="dv">51</span>, <span class="dv">48</span>, <span class="dv">50</span>, <span class="dv">47</span>, <span class="dv">48</span>,</span>
-<span id="cb303-5"><a href="interupted-time-series-its-1.html#cb303-5" aria-hidden="true" tabindex="-1"></a>                            <span class="dv">55</span>, <span class="dv">60</span>, <span class="dv">63</span>, <span class="dv">67</span>, <span class="dv">65</span>, <span class="dv">69</span>, <span class="dv">72</span>, <span class="dv">68</span>, <span class="dv">74</span>, <span class="dv">71</span>, <span class="dv">76</span>, <span class="dv">70</span>))</span>
-<span id="cb303-6"><a href="interupted-time-series-its-1.html#cb303-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat)</span></code></pre></div>
-<pre><code>##   month post monthpost outcome
-## 1     1    0         0      50
-## 2     2    0         0      60
-## 3     3    0         0      45
-## 4     4    0         0      47
-## 5     5    0         0      50
-## 6     6    0         0      55</code></pre>
-<div id="line-plot" class="section level3 hasAnchor" number="8.1.1">
-<h3><span class="header-section-number">8.1.1</span> Line plot<a href="interupted-time-series-its-1.html#line-plot" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb305"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb305-1"><a href="interupted-time-series-its-1.html#cb305-1" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data =</span> dat, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> month, <span class="at">y =</span> outcome)) <span class="sc">+</span></span>
-<span id="cb305-2"><a href="interupted-time-series-its-1.html#cb305-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&#39;red&#39;</span>) <span class="sc">+</span> </span>
-<span id="cb305-3"><a href="interupted-time-series-its-1.html#cb305-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">fill=</span><span class="st">&quot;white&quot;</span>, <span class="at">shape=</span><span class="dv">21</span>) <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
-<span id="cb305-4"><a href="interupted-time-series-its-1.html#cb305-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">12.5</span>, <span class="at">color =</span> <span class="st">&#39;blue&#39;</span>, <span class="at">linetype =</span> <span class="st">&quot;longdash&quot;</span>)</span>
-<span id="cb305-5"><a href="interupted-time-series-its-1.html#cb305-5" aria-hidden="true" tabindex="-1"></a>p1</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-129-1.png" width="672" /></p>
+<ul>
+<li><p>Let’s estimate an RDD model using the data from a 2009 paper by Carpenter and Dobkin about the effect of increasing the drinking age on mortality rates.</p></li>
+<li><p>Carpenter, Christopher and Carlos Dobkin. “The Effects of Alcohol Consumption on Mortality: Regression Discontinuity from the Minimum Drinking Age,” American Economic Journal: Applied Econometrics, 2009, 1:1, 164-182.</p></li>
+<li><p>The data are available at <a href="https://github.com/jrnold/masteringmetrics/tree/master/masteringmetrics/data" class="uri">https://github.com/jrnold/masteringmetrics/tree/master/masteringmetrics/data</a> in mlda.rda</p></li>
+<li><p>First, Let’s look at motor vehicle deaths (outcome) as a function of age (assignment variable). The cutoff age is 21 years old.</p></li>
+</ul>
+<div class="sourceCode" id="cb358"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb358-1"><a href="regression-discontinuity-designs-rdd.html#cb358-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;mlda.rda&quot;</span>)</span>
+<span id="cb358-2"><a href="regression-discontinuity-designs-rdd.html#cb358-2" aria-hidden="true" tabindex="-1"></a>mlda <span class="ot">=</span> <span class="fu">na.omit</span>(mlda) <span class="co"># removed 2 rows with missing data</span></span>
+<span id="cb358-3"><a href="regression-discontinuity-designs-rdd.html#cb358-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mlda)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 19
+##   agecell   all allfitted internal interna…¹ exter…² exter…³ alcohol alcoh…⁴ homic…⁵ homic…⁶ suicide
+##     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1    19.1  92.8      91.7     16.6      16.7    76.2    75.0   0.639   0.794    16.3    16.3    11.2
+## 2    19.2  95.1      91.9     18.3      16.9    76.8    75.0   0.677   0.838    16.9    16.3    12.2
+## 3    19.2  92.1      92.0     18.9      17.1    73.2    75.0   0.866   0.878    15.2    16.3    11.7
+## 4    19.3  88.4      92.2     16.1      17.3    72.3    74.9   0.867   0.915    16.7    16.3    11.3
+## 5    19.4  88.7      92.3     17.4      17.4    71.3    74.9   1.02    0.949    14.9    16.3    11.0
+## 6    19.5  90.2      92.5     17.9      17.6    72.3    74.9   1.17    0.981    15.6    16.3    12.2
+## # … with 7 more variables: suicidefitted &lt;dbl&gt;, mva &lt;dbl&gt;, mvafitted &lt;dbl&gt;, drugs &lt;dbl&gt;,
+## #   drugsfitted &lt;dbl&gt;, externalother &lt;dbl&gt;, externalotherfitted &lt;dbl&gt;, and abbreviated variable
+## #   names ¹​internalfitted, ²​external, ³​externalfitted, ⁴​alcoholfitted, ⁵​homicide, ⁶​homicidefitted</code></pre>
+<div class="sourceCode" id="cb360"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb360-1"><a href="regression-discontinuity-designs-rdd.html#cb360-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(mlda)</span></code></pre></div>
+<pre><code>## [1] 48 19</code></pre>
+<ul>
+<li>assignment: minimum legal drinking age (agecell)</li>
+<li>cutoff: 21 years old</li>
+<li>outcome: Motor Vehicle Accidents Death (mva) per 100,000 individuals</li>
+</ul>
+<p>Plot the outcome against assignment variable (ggplot2):</p>
+<div class="sourceCode" id="cb362"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb362-1"><a href="regression-discontinuity-designs-rdd.html#cb362-1" aria-hidden="true" tabindex="-1"></a>mlda <span class="sc">%&gt;%</span> </span>
+<span id="cb362-2"><a href="regression-discontinuity-designs-rdd.html#cb362-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(agecell, mva) <span class="sc">%&gt;%</span> </span>
+<span id="cb362-3"><a href="regression-discontinuity-designs-rdd.html#cb362-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Treat =</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(agecell <span class="sc">&gt;=</span> <span class="dv">21</span>, <span class="dv">1</span>, <span class="dv">0</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb362-4"><a href="regression-discontinuity-designs-rdd.html#cb362-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> agecell, <span class="at">y =</span> mva, <span class="at">color =</span> Treat)) <span class="sc">+</span></span>
+<span id="cb362-5"><a href="regression-discontinuity-designs-rdd.html#cb362-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb362-6"><a href="regression-discontinuity-designs-rdd.html#cb362-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">21</span>) <span class="sc">+</span> </span>
+<span id="cb362-7"><a href="regression-discontinuity-designs-rdd.html#cb362-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Deaths in Moving Vehicle Accidents&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Age&quot;</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-161-1.png" width="672" /></p>
+<p>Alternatively, there is a generic way of plotting using plot():</p>
+<div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="regression-discontinuity-designs-rdd.html#cb363-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mlda<span class="sc">$</span>agecell, mlda<span class="sc">$</span>mva, <span class="at">xlab =</span> <span class="st">&quot;Age&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Deaths in Moving Vehicle Accidents&quot;</span>)</span>
+<span id="cb363-2"><a href="regression-discontinuity-designs-rdd.html#cb363-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">21</span>, <span class="at">col =</span> <span class="st">&#39;red&#39;</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-162-1.png" width="672" /></p>
 <!------------------------------>
 </div>
-</div>
-<div id="ols-segmented-regression" class="section level2 hasAnchor" number="8.2">
-<h2><span class="header-section-number">8.2</span> OLS Segmented Regression<a href="interupted-time-series-its-1.html#ols-segmented-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="segmented-regression" class="section level2 hasAnchor" number="10.2">
+<h2><span class="header-section-number">10.2</span> Segmented regression<a href="regression-discontinuity-designs-rdd.html#segmented-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
-<div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="interupted-time-series-its-1.html#cb306-1" aria-hidden="true" tabindex="-1"></a>lmFit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> month <span class="sc">+</span> post <span class="sc">+</span> monthpost, <span class="at">data=</span>dat) </span>
-<span id="cb306-2"><a href="interupted-time-series-its-1.html#cb306-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit1)</span></code></pre></div>
+<ul>
+<li>There appears to be a discontinuity at age 21. Let’s estimate the RD model:</li>
+<li>mva = b0 + b1*(agecell-21) + b2*Treat + b3*interaction1 + e</li>
+<li>where Treat=1 if agecell&gt;=21 and Treat=0 if agecell&lt;21</li>
+<li>let’s call age_centered = agecell-21</li>
+<li>interaction1 = *age_centered*Treat</li>
+</ul>
+<div class="sourceCode" id="cb364"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb364-1"><a href="regression-discontinuity-designs-rdd.html#cb364-1" aria-hidden="true" tabindex="-1"></a>mlda<span class="sc">$</span>Treat <span class="ot">=</span> <span class="fu">ifelse</span>(mlda<span class="sc">$</span>agecell<span class="sc">&gt;=</span><span class="dv">21</span>, <span class="dv">1</span>, <span class="dv">0</span>)  <span class="co"># dummy variable for policy</span></span>
+<span id="cb364-2"><a href="regression-discontinuity-designs-rdd.html#cb364-2" aria-hidden="true" tabindex="-1"></a>mlda<span class="sc">$</span>age_centered <span class="ot">=</span> mlda<span class="sc">$</span>agecell <span class="sc">-</span> <span class="dv">21</span>  <span class="co"># &quot;centered&quot; age</span></span>
+<span id="cb364-3"><a href="regression-discontinuity-designs-rdd.html#cb364-3" aria-hidden="true" tabindex="-1"></a>mlda<span class="sc">$</span>int1 <span class="ot">=</span> mlda<span class="sc">$</span>Treat<span class="sc">*</span>mlda<span class="sc">$</span>age_centered   <span class="co"># interaction with &quot;centered&quot; age</span></span></code></pre></div>
+<p>Segmented regression:</p>
+<div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb365-1"><a href="regression-discontinuity-designs-rdd.html#cb365-1" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">=</span> <span class="fu">lm</span>(mva <span class="sc">~</span> age_centered <span class="sc">+</span> Treat <span class="sc">+</span> int1, <span class="at">data =</span> mlda)</span>
+<span id="cb365-2"><a href="regression-discontinuity-designs-rdd.html#cb365-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## lm(formula = outcome ~ month + post + monthpost, data = dat)
+## lm(formula = mva ~ age_centered + Treat + int1, data = mlda)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -6.5326 -1.6935 -0.3939  2.3747  8.1247 
+## -2.4124 -0.7774 -0.2913  0.8495  3.2378 
+## 
+## Coefficients:
+##              Estimate Std. Error t value    Pr(&gt;|t|)    
+## (Intercept)   29.9292     0.5308  56.390     &lt; 2e-16 ***
+## age_centered  -2.5676     0.4661  -5.508 0.000001772 ***
+## Treat          4.5340     0.7506   6.041 0.000000294 ***
+## int1          -1.1624     0.6592  -1.763      0.0848 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.299 on 44 degrees of freedom
+## Multiple R-squared:  0.7222, Adjusted R-squared:  0.7032 
+## F-statistic: 38.13 on 3 and 44 DF,  p-value: 2.671e-12</code></pre>
+<div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="regression-discontinuity-designs-rdd.html#cb367-1" aria-hidden="true" tabindex="-1"></a><span class="co"># interpretation?</span></span></code></pre></div>
+<p>Now, note that age must be centered at the cutoff for ease of interpretation:</p>
+<div class="sourceCode" id="cb368"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb368-1"><a href="regression-discontinuity-designs-rdd.html#cb368-1" aria-hidden="true" tabindex="-1"></a>mlda<span class="sc">$</span>int2 <span class="ot">=</span> mlda<span class="sc">$</span>Treat<span class="sc">*</span>mlda<span class="sc">$</span>agecell        <span class="co"># interaction with age</span></span>
+<span id="cb368-2"><a href="regression-discontinuity-designs-rdd.html#cb368-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb368-3"><a href="regression-discontinuity-designs-rdd.html#cb368-3" aria-hidden="true" tabindex="-1"></a>lm.wrong <span class="ot">=</span> <span class="fu">lm</span>(mva <span class="sc">~</span> agecell <span class="sc">+</span> Treat <span class="sc">+</span> int2, <span class="at">data =</span> mlda)</span>
+<span id="cb368-4"><a href="regression-discontinuity-designs-rdd.html#cb368-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.wrong)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mva ~ agecell + Treat + int2, data = mlda)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.4124 -0.7774 -0.2913  0.8495  3.2378 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  52.5606     2.2450  23.412 5.24e-16 ***
-## month        -0.3427     0.3050  -1.123 0.274605    
-## post          9.6876     2.9940   3.236 0.004144 ** 
-## monthpost     1.7832     0.4314   4.134 0.000515 ***
+## (Intercept)  83.8492     9.3328   8.984 1.63e-11 ***
+## agecell      -2.5676     0.4661  -5.508 1.77e-06 ***
+## Treat        28.9450    13.8638   2.088   0.0426 *  
+## int2         -1.1624     0.6592  -1.763   0.0848 .  
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 3.648 on 20 degrees of freedom
-## Multiple R-squared:  0.8867, Adjusted R-squared:  0.8697 
-## F-statistic: 52.15 on 3 and 20 DF,  p-value: 1.227e-09</code></pre>
-<ul>
-<li>change in intercept: b2 = 9.6876 p = 0.004144 **</li>
-<li>change in slope: b3 = 1.7832 p = 0.000515 ***</li>
-</ul>
-<div id="regression-diagnostics" class="section level3 hasAnchor" number="8.2.1">
-<h3><span class="header-section-number">8.2.1</span> Regression diagnostics<a href="interupted-time-series-its-1.html#regression-diagnostics" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="interupted-time-series-its-1.html#cb308-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))</span>
-<span id="cb308-2"><a href="interupted-time-series-its-1.html#cb308-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(lmFit1)</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-131-1.png" width="672" /></p>
-<div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="interupted-time-series-its-1.html#cb309-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</span></code></pre></div>
-<p>nothing abnormal.</p>
-</div>
-<div id="overplot-prediction" class="section level3 hasAnchor" number="8.2.2">
-<h3><span class="header-section-number">8.2.2</span> Overplot prediction<a href="interupted-time-series-its-1.html#overplot-prediction" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb310"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb310-1"><a href="interupted-time-series-its-1.html#cb310-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>predicted <span class="ot">=</span> <span class="fu">predict</span>(lmFit1, <span class="at">data =</span> dat)</span>
-<span id="cb310-2"><a href="interupted-time-series-its-1.html#cb310-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> </span>
-<span id="cb310-3"><a href="interupted-time-series-its-1.html#cb310-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">0</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted), <span class="at">color=</span><span class="st">&quot;green&quot;</span>) <span class="sc">+</span></span>
-<span id="cb310-4"><a href="interupted-time-series-its-1.html#cb310-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted), <span class="at">color=</span><span class="st">&quot;green&quot;</span>)</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-132-1.png" width="672" /></p>
+## Residual standard error: 1.299 on 44 degrees of freedom
+## Multiple R-squared:  0.7222, Adjusted R-squared:  0.7032 
+## F-statistic: 38.13 on 3 and 44 DF,  p-value: 2.671e-12</code></pre>
+<div class="sourceCode" id="cb370"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb370-1"><a href="regression-discontinuity-designs-rdd.html#cb370-1" aria-hidden="true" tabindex="-1"></a><span class="co"># interpretation?</span></span></code></pre></div>
+<div class="sourceCode" id="cb371"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb371-1"><a href="regression-discontinuity-designs-rdd.html#cb371-1" aria-hidden="true" tabindex="-1"></a>stargazer<span class="sc">::</span><span class="fu">stargazer</span>(lm1, lm.wrong, <span class="at">type =</span> <span class="st">&#39;text&#39;</span>)</span></code></pre></div>
+<pre><code>## 
+## ==========================================================
+##                                   Dependent variable:     
+##                               ----------------------------
+##                                           mva             
+##                                    (1)            (2)     
+## ----------------------------------------------------------
+## age_centered                    -2.568***                 
+##                                  (0.466)                  
+##                                                           
+## agecell                                        -2.568***  
+##                                                 (0.466)   
+##                                                           
+## Treat                            4.534***      28.945**   
+##                                  (0.751)       (13.864)   
+##                                                           
+## int1                             -1.162*                  
+##                                  (0.659)                  
+##                                                           
+## int2                                            -1.162*   
+##                                                 (0.659)   
+##                                                           
+## Constant                        29.929***      83.849***  
+##                                  (0.531)        (9.333)   
+##                                                           
+## ----------------------------------------------------------
+## Observations                        48            48      
+## R2                                0.722          0.722    
+## Adjusted R2                       0.703          0.703    
+## Residual Std. Error (df = 44)     1.299          1.299    
+## F Statistic (df = 3; 44)        38.125***      38.125***  
+## ==========================================================
+## Note:                          *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+<p>PLOTTING: it is easier and fancier to do the plotting using ggplot2, but it’s also feasible to plot using generic plot()</p>
+<div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="regression-discontinuity-designs-rdd.html#cb373-1" aria-hidden="true" tabindex="-1"></a><span class="co"># RDD - unequal slope</span></span>
+<span id="cb373-2"><a href="regression-discontinuity-designs-rdd.html#cb373-2" aria-hidden="true" tabindex="-1"></a>mlda <span class="sc">%&gt;%</span> </span>
+<span id="cb373-3"><a href="regression-discontinuity-designs-rdd.html#cb373-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(agecell, mva) <span class="sc">%&gt;%</span> </span>
+<span id="cb373-4"><a href="regression-discontinuity-designs-rdd.html#cb373-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Treat =</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(agecell <span class="sc">&gt;=</span> <span class="dv">21</span>, <span class="dv">1</span>, <span class="dv">0</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb373-5"><a href="regression-discontinuity-designs-rdd.html#cb373-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> agecell, <span class="at">y =</span> mva, <span class="at">color =</span> Treat)) <span class="sc">+</span></span>
+<span id="cb373-6"><a href="regression-discontinuity-designs-rdd.html#cb373-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb373-7"><a href="regression-discontinuity-designs-rdd.html#cb373-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb373-8"><a href="regression-discontinuity-designs-rdd.html#cb373-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;Deaths in Moving Vehicle Accidents&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Age&quot;</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-167-1.png" width="672" /></p>
 <!------------------------------>
 </div>
-</div>
-<div id="ols-segmented-regression-with-polynomial-term" class="section level2 hasAnchor" number="8.3">
-<h2><span class="header-section-number">8.3</span> OLS Segmented Regression with Polynomial term<a href="interupted-time-series-its-1.html#ols-segmented-regression-with-polynomial-term" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="ik-estimator" class="section level2 hasAnchor" number="10.3">
+<h2><span class="header-section-number">10.3</span> IK estimator<a href="regression-discontinuity-designs-rdd.html#ik-estimator" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
-<p><strong>outcome=Time+Time^{2}</strong> <strong>+Treat+delta_Time+delta_Time^{2}</strong></p>
-<div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="interupted-time-series-its-1.html#cb311-1" aria-hidden="true" tabindex="-1"></a>lmFit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(outcome <span class="sc">~</span> month <span class="sc">+</span> <span class="fu">I</span>(month<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> post <span class="sc">+</span> monthpost <span class="sc">+</span> <span class="fu">I</span>(monthpost<span class="sc">^</span><span class="dv">2</span>), <span class="at">data=</span>dat) </span>
-<span id="cb311-2"><a href="interupted-time-series-its-1.html#cb311-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit2)</span></code></pre></div>
+<p>Imbens-Kalyanaraman optimal bandwidth calculation:</p>
+<div class="sourceCode" id="cb375"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb375-1"><a href="regression-discontinuity-designs-rdd.html#cb375-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rdd)</span>
+<span id="cb375-2"><a href="regression-discontinuity-designs-rdd.html#cb375-2" aria-hidden="true" tabindex="-1"></a>rd1 <span class="ot">=</span> <span class="fu">RDestimate</span>(<span class="at">formula =</span> mva <span class="sc">~</span> agecell, <span class="at">data =</span> mlda, <span class="at">cutpoint =</span> <span class="dv">21</span>)</span>
+<span id="cb375-3"><a href="regression-discontinuity-designs-rdd.html#cb375-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(rd1)</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## lm(formula = outcome ~ month + I(month^2) + post + monthpost + 
-##     I(monthpost^2), data = dat)
+## RDestimate(formula = mva ~ agecell, data = mlda, cutpoint = 21)
 ## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -6.5190 -1.5350  0.1249  1.5789  8.4660 
+## Type:
+## sharp 
 ## 
-## Coefficients:
-##                Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)    51.31818    3.55724  14.426 2.47e-11 ***
-## month           0.18981    1.25812   0.151  0.88176    
-## I(month^2)     -0.04096    0.09421  -0.435  0.66891    
-## post            4.52947    4.37383   1.036  0.31411    
-## monthpost       4.76623    1.65520   2.880  0.00998 ** 
-## I(monthpost^2) -0.15385    0.13324  -1.155  0.26332    
+## Estimates:
+##            Bandwidth  Observations  Estimate  Std. Error  z value  Pr(&gt;|z|)      
+## LATE       1.2109     30            4.977     1.0590      4.700    2.607e-06  ***
+## Half-BW    0.6054     14            4.956     1.3767      3.600    3.182e-04  ***
+## Double-BW  2.4218     48            4.566     0.7086      6.444    1.162e-10  ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 3.442 on 18 degrees of freedom
-## Multiple R-squared:  0.9092, Adjusted R-squared:  0.884 
-## F-statistic: 36.04 on 5 and 18 DF,  p-value: 9.126e-09</code></pre>
+## F-statistics:
+##            F      Num. DoF  Denom. DoF  p        
+## LATE       13.32  3         26          3.692e-05
+## Half-BW    12.76  3         10          1.879e-03
+## Double-BW  26.99  3         44          9.322e-10</code></pre>
 <ul>
-<li>change in intercept: b3 = 4.52947 p = 0.31411 **</li>
-<li>change in slope: b4 = 4.76623 p = 0.00998 **</li>
-<li>change in slope^2: b5 = -0.15385 p = 0.26332</li>
+<li>In an RDD framework, we always need to balance our choice of large and small bandwidth. Larger bandwidth make the comparison between the treatment group and control group “less similar”.</li>
+<li>We see that the coefficient called “LATE”, is our parameter of interest of the MLDA program on mortality.</li>
+<li>We observe that deaths increase by 4.977 at the cutoff point of 21. The estimate of the treatment is slightly larger than the RDD estimate in lm1 (4.5340).</li>
 </ul>
-<div id="overplot-prediction-1" class="section level3 hasAnchor" number="8.3.1">
-<h3><span class="header-section-number">8.3.1</span> Overplot prediction<a href="interupted-time-series-its-1.html#overplot-prediction-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb313"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb313-1"><a href="interupted-time-series-its-1.html#cb313-1" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>predicted2 <span class="ot">=</span> <span class="fu">predict</span>(lmFit2, <span class="at">data =</span> dat)</span>
-<span id="cb313-2"><a href="interupted-time-series-its-1.html#cb313-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> </span>
-<span id="cb313-3"><a href="interupted-time-series-its-1.html#cb313-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">0</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted2), <span class="at">color=</span><span class="st">&quot;green&quot;</span>) <span class="sc">+</span></span>
-<span id="cb313-4"><a href="interupted-time-series-its-1.html#cb313-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> dat[dat<span class="sc">$</span>post<span class="sc">==</span><span class="dv">1</span>,], <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>predicted2), <span class="at">color=</span><span class="st">&quot;green&quot;</span>)</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-134-1.png" width="672" /></p>
-<!------------------------------>
-</div>
-</div>
-<div id="autocorrelation" class="section level2 hasAnchor" number="8.4">
-<h2><span class="header-section-number">8.4</span> Autocorrelation<a href="interupted-time-series-its-1.html#autocorrelation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<!------------------------------>
-<p>ACF and PACF of residuals:</p>
-<div class="sourceCode" id="cb314"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb314-1"><a href="interupted-time-series-its-1.html#cb314-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))</span>
-<span id="cb314-2"><a href="interupted-time-series-its-1.html#cb314-2" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(dat<span class="sc">$</span>outcome, <span class="at">lag.max =</span> <span class="dv">23</span>) <span class="co"># for Y</span></span>
-<span id="cb314-3"><a href="interupted-time-series-its-1.html#cb314-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(dat<span class="sc">$</span>outcome, <span class="at">lag.max =</span> <span class="dv">23</span>) <span class="co"># for Y</span></span>
-<span id="cb314-4"><a href="interupted-time-series-its-1.html#cb314-4" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(<span class="fu">resid</span>(lmFit2)) <span class="co"># for e</span></span>
-<span id="cb314-5"><a href="interupted-time-series-its-1.html#cb314-5" aria-hidden="true" tabindex="-1"></a><span class="fu">pacf</span>(<span class="fu">resid</span>(lmFit2)) <span class="co"># for e</span></span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-135-1.png" width="672" /></p>
-<div class="sourceCode" id="cb315"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb315-1"><a href="interupted-time-series-its-1.html#cb315-1" aria-hidden="true" tabindex="-1"></a><span class="fu">checkresiduals</span>(lmFit2)</span></code></pre></div>
-<p><img src="bookdownproj_files/figure-html/unnamed-chunk-136-1.png" width="672" /></p>
-<pre><code>## 
-##  Breusch-Godfrey test for serial correlation of order up to 9
-## 
-## data:  Residuals
-## LM test = 15.996, df = 9, p-value = 0.06696</code></pre>
-<ul>
-<li>the Breusch-Godfrey test for jointly testing up to 9th order autocorrelation.</li>
-<li>The residual plot shows some changing variation over time, but is not remarkable (p = 0.06696).</li>
-<li>The histogram shows that the residuals seem to be slightly skewed, which may also affect the standard errors of the residuals.</li>
-<li>The autocorrelation plot (ACF) shows no significant spike beyond the dashed blue line. Even up to lag 8, there is not quite enough evidence for the Breusch-Godfrey to be significant at the 5% level. The autocorrelations are not particularly large, and will be unlikely to have any noticeable impact on the forecasts or the prediction intervals.</li>
-<li>We are good with segmented regression…</li>
-<li>But for illustration purposes…</li>
-</ul>
-<!------------------------------>
-</div>
-<div id="segmented-regression-with-hac-correction-for-standard-errors" class="section level2 hasAnchor" number="8.5">
-<h2><span class="header-section-number">8.5</span> Segmented Regression with HAC correction for standard errors<a href="interupted-time-series-its-1.html#segmented-regression-with-hac-correction-for-standard-errors" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<!------------------------------>
-<div id="ols" class="section level3 hasAnchor" number="8.5.1">
-<h3><span class="header-section-number">8.5.1</span> OLS:<a href="interupted-time-series-its-1.html#ols" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb317"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb317-1"><a href="interupted-time-series-its-1.html#cb317-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">vcov</span>(lmFit2), <span class="dv">2</span>) <span class="co"># original</span></span></code></pre></div>
-<pre><code>##                (Intercept) month I(month^2)  post monthpost I(monthpost^2)
-## (Intercept)          12.65 -4.04       0.27 -2.96     -2.42          -0.27
-## month                -4.04  1.58      -0.12  1.66      1.19           0.12
-## I(month^2)            0.27 -0.12       0.01 -0.16     -0.10          -0.01
-## post                 -2.96  1.66      -0.16 19.13     -1.79           0.43
-## monthpost            -2.42  1.19      -0.10 -1.79      2.74          -0.02
-## I(monthpost^2)       -0.27  0.12      -0.01  0.43     -0.02           0.02</code></pre>
-<div class="sourceCode" id="cb319"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb319-1"><a href="interupted-time-series-its-1.html#cb319-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lmFit2)</span></code></pre></div>
-<pre><code>## 
-## Call:
-## lm(formula = outcome ~ month + I(month^2) + post + monthpost + 
-##     I(monthpost^2), data = dat)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -6.5190 -1.5350  0.1249  1.5789  8.4660 
-## 
-## Coefficients:
-##                Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)    51.31818    3.55724  14.426 2.47e-11 ***
-## month           0.18981    1.25812   0.151  0.88176    
-## I(month^2)     -0.04096    0.09421  -0.435  0.66891    
-## post            4.52947    4.37383   1.036  0.31411    
-## monthpost       4.76623    1.65520   2.880  0.00998 ** 
-## I(monthpost^2) -0.15385    0.13324  -1.155  0.26332    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 3.442 on 18 degrees of freedom
-## Multiple R-squared:  0.9092, Adjusted R-squared:  0.884 
-## F-statistic: 36.04 on 5 and 18 DF,  p-value: 9.126e-09</code></pre>
-</div>
-<div id="hac" class="section level3 hasAnchor" number="8.5.2">
-<h3><span class="header-section-number">8.5.2</span> HAC:<a href="interupted-time-series-its-1.html#hac" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb321"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb321-1"><a href="interupted-time-series-its-1.html#cb321-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">vcovHAC</span>(lmFit2), <span class="dv">2</span>)  <span class="co"># HAC corrected</span></span></code></pre></div>
-<pre><code>##                (Intercept) month I(month^2)  post monthpost I(monthpost^2)
-## (Intercept)           9.81 -2.55       0.15 -0.65     -0.99          -0.15
-## month                -2.55  1.14      -0.08  0.87      0.84           0.08
-## I(month^2)            0.15 -0.08       0.01 -0.08     -0.07          -0.01
-## post                 -0.65  0.87      -0.08  2.26      0.66           0.10
-## monthpost            -0.99  0.84      -0.07  0.66      0.95           0.06
-## I(monthpost^2)       -0.15  0.08      -0.01  0.10      0.06           0.01</code></pre>
-<div class="sourceCode" id="cb323"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb323-1"><a href="interupted-time-series-its-1.html#cb323-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(lmFit2, <span class="at">vcov =</span> <span class="fu">vcovHAC</span>(lmFit2))</span></code></pre></div>
-<pre><code>## 
-## t test of coefficients:
-## 
-##                 Estimate Std. Error t value  Pr(&gt;|t|)    
-## (Intercept)    51.318182   3.132281 16.3836 2.919e-12 ***
-## month           0.189810   1.067497  0.1778 0.8608590    
-## I(month^2)     -0.040959   0.079998 -0.5120 0.6148763    
-## post            4.529471   1.504238  3.0111 0.0075014 ** 
-## monthpost       4.766234   0.974371  4.8916 0.0001175 ***
-## I(monthpost^2) -0.153846   0.084921 -1.8116 0.0867621 .  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>smoothed curve:</p>
+<div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="regression-discontinuity-designs-rdd.html#cb377-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rd1)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-169-1.png" width="672" /></p>
 
-</div>
 </div>
 </div>
             </section>
@@ -555,8 +537,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="difference-in-differences-did.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="interupted-time-series-its-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="interupted-time-series-its-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="rdd-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -587,7 +569,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/master/08-SegmentedRegression.Rmd",
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/master/10-RDD.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -595,7 +577,7 @@ gitbook.start({
 "text": null
 },
 "view": {
-"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/master/08-SegmentedRegression.Rmd",
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/master/10-RDD.Rmd",
 "text": null
 },
 "download": null,

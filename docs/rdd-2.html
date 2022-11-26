@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapter 11 RDD (2) | R Book for Quasi-Experimental Designs</title>
+  <meta name="description" content="Chapter 11 RDD (2) | R Book for Quasi-Experimental Designs" />
+  <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapter 11 RDD (2) | R Book for Quasi-Experimental Designs" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 11 RDD (2) | R Book for Quasi-Experimental Designs" />
+  
+  
+  
+
+<meta name="author" content="Ge Jiang" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="regression-discontinuity-designs-rdd.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">R for Quasi-exp Designs</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Course</a></li>
+<li class="chapter" data-level="2" data-path="regression-approach-to-treatment-effect-estimation.html"><a href="regression-approach-to-treatment-effect-estimation.html"><i class="fa fa-check"></i><b>2</b> Regression Approach to Treatment Effect Estimation</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="regression-approach-to-treatment-effect-estimation.html"><a href="regression-approach-to-treatment-effect-estimation.html#regression-w-no-confounder"><i class="fa fa-check"></i><b>2.1</b> Regression w/ no confounder</a></li>
+<li class="chapter" data-level="2.2" data-path="regression-approach-to-treatment-effect-estimation.html"><a href="regression-approach-to-treatment-effect-estimation.html#including-confounder-ses"><i class="fa fa-check"></i><b>2.2</b> Including confounder SES</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="regression-approach-to-treatment-effect-estimation.html"><a href="regression-approach-to-treatment-effect-estimation.html#low-ses"><i class="fa fa-check"></i><b>2.2.1</b> low SES</a></li>
+<li class="chapter" data-level="2.2.2" data-path="regression-approach-to-treatment-effect-estimation.html"><a href="regression-approach-to-treatment-effect-estimation.html#middle-ses"><i class="fa fa-check"></i><b>2.2.2</b> middle SES</a></li>
+<li class="chapter" data-level="2.2.3" data-path="regression-approach-to-treatment-effect-estimation.html"><a href="regression-approach-to-treatment-effect-estimation.html#high-ses"><i class="fa fa-check"></i><b>2.2.3</b> high SES</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="types-of-causal-effects.html"><a href="types-of-causal-effects.html"><i class="fa fa-check"></i><b>3</b> Types of Causal Effects</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="types-of-causal-effects.html"><a href="types-of-causal-effects.html#att-ate-atu-what-the-what"><i class="fa fa-check"></i><b>3.1</b> ATT, ATE, ATU, … what the what?</a></li>
+<li class="chapter" data-level="3.2" data-path="types-of-causal-effects.html"><a href="types-of-causal-effects.html#calculating-different-causal-effects-in-practice"><i class="fa fa-check"></i><b>3.2</b> Calculating different causal effects in practice</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="instrumental-variable.html"><a href="instrumental-variable.html"><i class="fa fa-check"></i><b>4</b> Instrumental Variable</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="instrumental-variable.html"><a href="instrumental-variable.html#loading-data"><i class="fa fa-check"></i><b>4.1</b> Loading Data</a></li>
+<li class="chapter" data-level="4.2" data-path="instrumental-variable.html"><a href="instrumental-variable.html#setup"><i class="fa fa-check"></i><b>4.2</b> Setup</a></li>
+<li class="chapter" data-level="4.3" data-path="instrumental-variable.html"><a href="instrumental-variable.html#regression-approaches"><i class="fa fa-check"></i><b>4.3</b> Regression Approaches</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="instrumental-variable.html"><a href="instrumental-variable.html#naive-regression-ols-estimate-with-treatment-only"><i class="fa fa-check"></i><b>4.3.1</b> Naive Regression: OLS estimate with treatment only</a></li>
+<li class="chapter" data-level="4.3.2" data-path="instrumental-variable.html"><a href="instrumental-variable.html#regression-with-covariates"><i class="fa fa-check"></i><b>4.3.2</b> Regression with covariates</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="instrumental-variable.html"><a href="instrumental-variable.html#iv-does-education-effect-wages-when-college-proximity-is-used-as-the-instrument"><i class="fa fa-check"></i><b>4.4</b> IV: Does education effect wages when college proximity is used as the instrument?</a>
+<ul>
+<li class="chapter" data-level="4.4.1" data-path="instrumental-variable.html"><a href="instrumental-variable.html#stage-1-t-on-iv"><i class="fa fa-check"></i><b>4.4.1</b> Stage 1: T on IV</a></li>
+<li class="chapter" data-level="4.4.2" data-path="instrumental-variable.html"><a href="instrumental-variable.html#stage-2-y-on-t_hat"><i class="fa fa-check"></i><b>4.4.2</b> Stage 2: Y on T_hat</a></li>
+<li class="chapter" data-level="4.4.3" data-path="instrumental-variable.html"><a href="instrumental-variable.html#all-in-one-function-ivreg"><i class="fa fa-check"></i><b>4.4.3</b> All-in-one function ivreg():</a></li>
+<li class="chapter" data-level="4.4.4" data-path="instrumental-variable.html"><a href="instrumental-variable.html#diagnostic-tests"><i class="fa fa-check"></i><b>4.4.4</b> Diagnostic tests:</a></li>
+<li class="chapter" data-level="4.4.5" data-path="instrumental-variable.html"><a href="instrumental-variable.html#multiple-iv"><i class="fa fa-check"></i><b>4.4.5</b> Multiple IV</a></li>
+<li class="chapter" data-level="4.4.6" data-path="instrumental-variable.html"><a href="instrumental-variable.html#compare-with-ols"><i class="fa fa-check"></i><b>4.4.6</b> Compare with OLS:</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="instrumental-variable.html"><a href="instrumental-variable.html#take-home-exercise"><i class="fa fa-check"></i><b>4.5</b> Take-home exercise</a>
+<ul>
+<li class="chapter" data-level="4.5.1" data-path="instrumental-variable.html"><a href="instrumental-variable.html#does-cigarette-smoking-have-an-effect-on-child-birth-weight-wooldridge-2002"><i class="fa fa-check"></i><b>4.5.1</b> Does cigarette smoking have an effect on child birth weight (Wooldridge, 2002)?</a></li>
+<li class="chapter" data-level="4.5.2" data-path="instrumental-variable.html"><a href="instrumental-variable.html#missing-data"><i class="fa fa-check"></i><b>4.5.2</b> Missing data</a></li>
+<li class="chapter" data-level="4.5.3" data-path="instrumental-variable.html"><a href="instrumental-variable.html#your-turn-now"><i class="fa fa-check"></i><b>4.5.3</b> Your turn now!!!!</a></li>
+<li class="chapter" data-level="4.5.4" data-path="instrumental-variable.html"><a href="instrumental-variable.html#naive-regression-ols-estimate-with-treatment-only-1"><i class="fa fa-check"></i><b>4.5.4</b> Naive Regression: OLS Estimate with treatment only</a></li>
+<li class="chapter" data-level="4.5.5" data-path="instrumental-variable.html"><a href="instrumental-variable.html#regression-with-covariates-1"><i class="fa fa-check"></i><b>4.5.5</b> Regression with covariates</a></li>
+<li class="chapter" data-level="4.5.6" data-path="instrumental-variable.html"><a href="instrumental-variable.html#iv-done-manually"><i class="fa fa-check"></i><b>4.5.6</b> IV done manually</a></li>
+<li class="chapter" data-level="4.5.7" data-path="instrumental-variable.html"><a href="instrumental-variable.html#ivreg"><i class="fa fa-check"></i><b>4.5.7</b> IVreg()</a></li>
+<li class="chapter" data-level="4.5.8" data-path="instrumental-variable.html"><a href="instrumental-variable.html#model-comparison"><i class="fa fa-check"></i><b>4.5.8</b> Model Comparison</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html"><i class="fa fa-check"></i><b>5</b> PSM Matching Strategy</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#data"><i class="fa fa-check"></i><b>5.1</b> Data</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#create-dummy-variable-for-race-and-unemployment"><i class="fa fa-check"></i><b>5.1.1</b> Create dummy variable for race and unemployment</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#regression-estimates"><i class="fa fa-check"></i><b>5.2</b> Regression Estimates</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#naive-t-test-estimate"><i class="fa fa-check"></i><b>5.2.1</b> naive t-test estimate</a></li>
+<li class="chapter" data-level="5.2.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#regression-with-covariates-2"><i class="fa fa-check"></i><b>5.2.2</b> regression with covariates</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#psm-steps"><i class="fa fa-check"></i><b>5.3</b> PSM Steps</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#selection-of-covariates-in-x"><i class="fa fa-check"></i><b>5.3.1</b> Selection of covariates in X</a></li>
+<li class="chapter" data-level="5.3.2" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#calculation-of-propensity-scores-p-scores"><i class="fa fa-check"></i><b>5.3.2</b> Calculation of propensity scores (p-scores)</a></li>
+<li class="chapter" data-level="5.3.3" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#matching-based-on-p-sores"><i class="fa fa-check"></i><b>5.3.3</b> Matching based on p-sores</a></li>
+<li class="chapter" data-level="5.3.4" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#checking-balance-on-covariates"><i class="fa fa-check"></i><b>5.3.4</b> Checking balance on covariates:</a></li>
+<li class="chapter" data-level="5.3.5" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#estimation-of-treatment-effect"><i class="fa fa-check"></i><b>5.3.5</b> Estimation of treatment effect</a></li>
+<li class="chapter" data-level="5.3.6" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#hidden-bias-analysis"><i class="fa fa-check"></i><b>5.3.6</b> Hidden bias analysis</a></li>
+<li class="chapter" data-level="5.3.7" data-path="psm-matching-strategy.html"><a href="psm-matching-strategy.html#references"><i class="fa fa-check"></i><b>5.3.7</b> References:</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html"><i class="fa fa-check"></i><b>6</b> Propensity Score Analysis</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#data-1"><i class="fa fa-check"></i><b>6.1</b> Data</a>
+<ul>
+<li class="chapter" data-level="6.1.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#create-dummy-variable-for-race-and-unemployment-1"><i class="fa fa-check"></i><b>6.1.1</b> Create dummy variable for race and unemployment</a></li>
+</ul></li>
+<li class="chapter" data-level="6.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#calculating-propensity-scores"><i class="fa fa-check"></i><b>6.2</b> Calculating Propensity Scores</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#different-formulas"><i class="fa fa-check"></i><b>6.2.1</b> Different formulas</a></li>
+<li class="chapter" data-level="6.2.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#calculation-of-propensity-scores-p-scores-1"><i class="fa fa-check"></i><b>6.2.2</b> Calculation of propensity scores (p-scores)</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#iptw-inverse-probability-treatment-weighting"><i class="fa fa-check"></i><b>6.3</b> IPTW: Inverse Probability Treatment Weighting</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#weightatt"><i class="fa fa-check"></i><b>6.3.1</b> weightATT</a></li>
+<li class="chapter" data-level="6.3.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#weightate"><i class="fa fa-check"></i><b>6.3.2</b> weightATE</a></li>
+<li class="chapter" data-level="6.3.3" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#weight-truncation"><i class="fa fa-check"></i><b>6.3.3</b> Weight truncation</a></li>
+<li class="chapter" data-level="6.3.4" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#balance-check"><i class="fa fa-check"></i><b>6.3.4</b> Balance check</a></li>
+<li class="chapter" data-level="6.3.5" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#estimation-of-treatment-effect-1"><i class="fa fa-check"></i><b>6.3.5</b> Estimation of treatment effect</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#stratification"><i class="fa fa-check"></i><b>6.4</b> Stratification</a>
+<ul>
+<li class="chapter" data-level="6.4.1" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#manually-creating-subclasses"><i class="fa fa-check"></i><b>6.4.1</b> Manually creating subclasses</a></li>
+<li class="chapter" data-level="6.4.2" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#stratification-using-matchit"><i class="fa fa-check"></i><b>6.4.2</b> Stratification using matchit():</a></li>
+<li class="chapter" data-level="6.4.3" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#covariate-balance-evaluation"><i class="fa fa-check"></i><b>6.4.3</b> Covariate Balance Evaluation</a></li>
+<li class="chapter" data-level="6.4.4" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#calculate-the-stratum-weights"><i class="fa fa-check"></i><b>6.4.4</b> Calculate the stratum weights</a></li>
+<li class="chapter" data-level="6.4.5" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#estimation-of-treatment-effects"><i class="fa fa-check"></i><b>6.4.5</b> Estimation of Treatment Effects</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#adjustment"><i class="fa fa-check"></i><b>6.5</b> Adjustment</a></li>
+<li class="chapter" data-level="6.6" data-path="propensity-score-analysis.html"><a href="propensity-score-analysis.html#exercise"><i class="fa fa-check"></i><b>6.6</b> Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html"><i class="fa fa-check"></i><b>7</b> Difference-in-differences (DID)</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#data-2"><i class="fa fa-check"></i><b>7.1</b> Data</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#scatterplot-by-country"><i class="fa fa-check"></i><b>7.1.1</b> Scatterplot by country:</a></li>
+<li class="chapter" data-level="7.1.2" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#create-dummy-variables"><i class="fa fa-check"></i><b>7.1.2</b> Create dummy variables</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#the-did-estimator"><i class="fa fa-check"></i><b>7.2</b> The DID estimator</a></li>
+<li class="chapter" data-level="7.3" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#card-and-krueger-1994-from-poedata"><i class="fa fa-check"></i><b>7.3</b> Card and Krueger (1994) from PoEdata</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#regression-models"><i class="fa fa-check"></i><b>7.3.1</b> Regression models</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#demo-of-honestdid-rambachan-roth-2022"><i class="fa fa-check"></i><b>7.4</b> Demo of HonestDiD (Rambachan &amp; Roth, 2022)</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#estimate-the-baseline-did"><i class="fa fa-check"></i><b>7.4.1</b> Estimate the baseline DiD</a></li>
+<li class="chapter" data-level="7.4.2" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#sensitivity-analysis-using-relative-magnitudes-restrictions"><i class="fa fa-check"></i><b>7.4.2</b> Sensitivity analysis using relative magnitudes restrictions</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#synthetic-control"><i class="fa fa-check"></i><b>7.5</b> Synthetic Control</a>
+<ul>
+<li class="chapter" data-level="7.5.1" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#smoking-data"><i class="fa fa-check"></i><b>7.5.1</b> Smoking data</a></li>
+<li class="chapter" data-level="7.5.2" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#generate-control"><i class="fa fa-check"></i><b>7.5.2</b> Generate Control</a></li>
+<li class="chapter" data-level="7.5.3" data-path="difference-in-differences-did.html"><a href="difference-in-differences-did.html#inference"><i class="fa fa-check"></i><b>7.5.3</b> Inference</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html"><i class="fa fa-check"></i><b>8</b> Interupted Time Series (ITS) (1)</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#data-3"><i class="fa fa-check"></i><b>8.1</b> Data</a>
+<ul>
+<li class="chapter" data-level="8.1.1" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#line-plot"><i class="fa fa-check"></i><b>8.1.1</b> Line plot</a></li>
+</ul></li>
+<li class="chapter" data-level="8.2" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#ols-segmented-regression"><i class="fa fa-check"></i><b>8.2</b> OLS Segmented Regression</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#regression-diagnostics"><i class="fa fa-check"></i><b>8.2.1</b> Regression diagnostics</a></li>
+<li class="chapter" data-level="8.2.2" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#overplot-prediction"><i class="fa fa-check"></i><b>8.2.2</b> Overplot prediction</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#ols-segmented-regression-with-polynomial-term"><i class="fa fa-check"></i><b>8.3</b> OLS Segmented Regression with Polynomial term</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#overplot-prediction-1"><i class="fa fa-check"></i><b>8.3.1</b> Overplot prediction</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#autocorrelation"><i class="fa fa-check"></i><b>8.4</b> Autocorrelation</a></li>
+<li class="chapter" data-level="8.5" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#segmented-regression-with-hac-correction-for-standard-errors"><i class="fa fa-check"></i><b>8.5</b> Segmented Regression with HAC correction for standard errors</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#ols"><i class="fa fa-check"></i><b>8.5.1</b> OLS:</a></li>
+<li class="chapter" data-level="8.5.2" data-path="interupted-time-series-its-1.html"><a href="interupted-time-series-its-1.html#hac"><i class="fa fa-check"></i><b>8.5.2</b> HAC:</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html"><i class="fa fa-check"></i><b>9</b> Interupted Time Series (ITS) (2)</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#data-4"><i class="fa fa-check"></i><b>9.1</b> Data</a></li>
+<li class="chapter" data-level="9.2" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-1-plot-data-to-visualize-time-series"><i class="fa fa-check"></i><b>9.2</b> Step 1: Plot data to visualize time series</a></li>
+<li class="chapter" data-level="9.3" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-2-plot-the-differenced-data"><i class="fa fa-check"></i><b>9.3</b> Step 2: Plot the differenced data</a></li>
+<li class="chapter" data-level="9.4" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-3-view-acfpacf-plots-of-differencedseasonally-differenced-data"><i class="fa fa-check"></i><b>9.4</b> Step 3: View ACF/PACF plots of differenced/seasonally differenced data</a></li>
+<li class="chapter" data-level="9.5" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-4-build-arima-model"><i class="fa fa-check"></i><b>9.5</b> Step 4: Build ARIMA model</a></li>
+<li class="chapter" data-level="9.6" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-5-check-residuals"><i class="fa fa-check"></i><b>9.6</b> Step 5: Check residuals</a></li>
+<li class="chapter" data-level="9.7" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-6-calculate-forecasts"><i class="fa fa-check"></i><b>9.7</b> Step 6: Calculate forecasts</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html"><i class="fa fa-check"></i><b>10</b> Regression Discontinuity Designs (RDD)</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#data-5"><i class="fa fa-check"></i><b>10.1</b> Data</a></li>
+<li class="chapter" data-level="10.2" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#segmented-regression"><i class="fa fa-check"></i><b>10.2</b> Segmented regression</a></li>
+<li class="chapter" data-level="10.3" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#ik-estimator"><i class="fa fa-check"></i><b>10.3</b> IK estimator</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="rdd-2.html"><a href="rdd-2.html"><i class="fa fa-check"></i><b>11</b> RDD (2)</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="rdd-2.html"><a href="rdd-2.html#step-1-determine-if-process-of-assigning-treatment-is-rule-based"><i class="fa fa-check"></i><b>11.1</b> Step 1: Determine if process of assigning treatment is rule-based</a></li>
+<li class="chapter" data-level="11.2" data-path="rdd-2.html"><a href="rdd-2.html#step-2-determine-if-the-design-is-fuzzy-or-sharp"><i class="fa fa-check"></i><b>11.2</b> Step 2: Determine if the design is fuzzy or sharp</a></li>
+<li class="chapter" data-level="11.3" data-path="rdd-2.html"><a href="rdd-2.html#step-3-check-for-discontinuity-in-running-variable-around-cutpoint"><i class="fa fa-check"></i><b>11.3</b> Step 3: Check for discontinuity in running variable around cutpoint</a></li>
+<li class="chapter" data-level="11.4" data-path="rdd-2.html"><a href="rdd-2.html#step-4-check-for-discontinuity-in-outcome-across-running-variable"><i class="fa fa-check"></i><b>11.4</b> Step 4: Check for discontinuity in outcome across running variable</a></li>
+<li class="chapter" data-level="11.5" data-path="rdd-2.html"><a href="rdd-2.html#step-5-measure-the-size-of-the-effect"><i class="fa fa-check"></i><b>11.5</b> Step 5: Measure the size of the effect</a>
+<ul>
+<li class="chapter" data-level="11.5.1" data-path="rdd-2.html"><a href="rdd-2.html#parametric-estimation"><i class="fa fa-check"></i><b>11.5.1</b> Parametric estimation</a></li>
+<li class="chapter" data-level="11.5.2" data-path="rdd-2.html"><a href="rdd-2.html#nonparametric-estimation"><i class="fa fa-check"></i><b>11.5.2</b> Nonparametric estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="11.6" data-path="rdd-2.html"><a href="rdd-2.html#step-6-compare-all-the-effects"><i class="fa fa-check"></i><b>11.6</b> Step 6: Compare all the effects</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">R Book for Quasi-Experimental Designs</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="rdd-2" class="section level1 hasAnchor" number="11">
+<h1><span class="header-section-number">Chapter 11</span> RDD (2)<a href="rdd-2.html#rdd-2" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Source: Dr. Andrew Heiss’s course materials on RDD:
+<a href="https://evalsp20.classes.andrewheiss.com/class/11-class/" class="uri">https://evalsp20.classes.andrewheiss.com/class/11-class/</a></p>
+<p>In this hypothetical example, students take a test in 6th grade to determine if they can participate in an academically and intellectually gifted (AIG) program during middle school and high school. In the AIG program students regularly get pulled out of their classes for extra work and lessons. At the end of high school, students take a final test (with a maximum of 100 points) to measure how much they learned overall.</p>
+<div class="sourceCode" id="cb378"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb378-1"><a href="rdd-2.html#cb378-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)  <span class="co"># For ggplot, %&gt;%, and gang</span></span>
+<span id="cb378-2"><a href="rdd-2.html#cb378-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)      <span class="co"># For converting models into tables</span></span>
+<span id="cb378-3"><a href="rdd-2.html#cb378-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rdrobust)   <span class="co"># For robust nonparametric regression discontinuity</span></span>
+<span id="cb378-4"><a href="rdd-2.html#cb378-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rddensity)  <span class="co"># For nonparametric regression discontinuity density tests</span></span>
+<span id="cb378-5"><a href="rdd-2.html#cb378-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(huxtable)   <span class="co"># For side-by-side regression tables</span></span>
+<span id="cb378-6"><a href="rdd-2.html#cb378-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rdd)   </span>
+<span id="cb378-7"><a href="rdd-2.html#cb378-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb378-8"><a href="rdd-2.html#cb378-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data</span></span>
+<span id="cb378-9"><a href="rdd-2.html#cb378-9" aria-hidden="true" tabindex="-1"></a>aig_program <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;aig_program.csv&quot;</span>)</span></code></pre></div>
+<div id="step-1-determine-if-process-of-assigning-treatment-is-rule-based" class="section level2 hasAnchor" number="11.1">
+<h2><span class="header-section-number">11.1</span> Step 1: Determine if process of assigning treatment is rule-based<a href="rdd-2.html#step-1-determine-if-process-of-assigning-treatment-is-rule-based" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>There’s no statsy test for this. You just have to figure it out based on in the implementation of the program.</p>
+<p>It sounds like it’s rule-based!</p>
+<div class="sourceCode" id="cb379"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb379-1"><a href="rdd-2.html#cb379-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(aig_program)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 6
+##   ID    test_score final_score Race     Sex    aig  
+##   &lt;chr&gt;      &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;lgl&gt;
+## 1 0001        92.4        88.1 White    Male   TRUE 
+## 2 0002        72.8        58.2 Hispanic Male   FALSE
+## 3 0003        53.7        52.0 White    Female FALSE
+## 4 0004        98.3        77.5 White    Male   TRUE 
+## 5 0005        69.7        44.1 White    Male   FALSE
+## 6 0006        68.1        50.1 Hispanic Male   FALSE</code></pre>
+</div>
+<div id="step-2-determine-if-the-design-is-fuzzy-or-sharp" class="section level2 hasAnchor" number="11.2">
+<h2><span class="header-section-number">11.2</span> Step 2: Determine if the design is fuzzy or sharp<a href="rdd-2.html#step-2-determine-if-the-design-is-fuzzy-or-sharp" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Since we know that the program was applied based on a rule, we want to next figure out how strictly the rule was applied. The threshold was 75 points on the test—did people who scored 73 slip into the AIG program, or did people who scored 80 not show up to the program? The easiest way to do this is with a graph, and we can get exact numbers with a table.</p>
+<div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb381-1"><a href="rdd-2.html#cb381-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> aig_program,</span>
+<span id="cb381-2"><a href="rdd-2.html#cb381-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> test_score, <span class="at">y =</span> aig, <span class="at">color =</span> aig)) <span class="sc">+</span></span>
+<span id="cb381-3"><a href="rdd-2.html#cb381-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb381-4"><a href="rdd-2.html#cb381-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">75</span>, <span class="at">color =</span> <span class="st">&quot;purple&quot;</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/check-fuzzy-sharp-1.png" width="624" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb382"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb382-1"><a href="rdd-2.html#cb382-1" aria-hidden="true" tabindex="-1"></a>aig_program <span class="sc">%&gt;%</span> </span>
+<span id="cb382-2"><a href="rdd-2.html#cb382-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(aig, test_score <span class="sc">&gt;=</span> <span class="dv">75</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb382-3"><a href="rdd-2.html#cb382-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>())</span></code></pre></div>
+<pre><code>## `summarise()` has grouped output by &#39;aig&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 2 × 3
+## # Groups:   aig [2]
+##   aig   `test_score &gt;= 75` count
+##   &lt;lgl&gt; &lt;lgl&gt;              &lt;int&gt;
+## 1 FALSE FALSE                346
+## 2 TRUE  TRUE                 654</code></pre>
+</div>
+<div id="step-3-check-for-discontinuity-in-running-variable-around-cutpoint" class="section level2 hasAnchor" number="11.3">
+<h2><span class="header-section-number">11.3</span> Step 3: Check for discontinuity in running variable around cutpoint<a href="rdd-2.html#step-3-check-for-discontinuity-in-running-variable-around-cutpoint" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Next we need to see if there was any manipulation in the rating or running variable—maybe lots of people bunched up around 75 because of how the test was graded (i.e. teachers wanted to get students into the program so they bumped people up from 70 to 76). We can do this a couple different ways. First, make a histogram of the running variable (test scores) and see if there are any big jumps around the threshold:</p>
+<div class="sourceCode" id="cb385"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb385-1"><a href="rdd-2.html#cb385-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> aig_program, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> test_score, <span class="at">fill =</span> aig)) <span class="sc">+</span> </span>
+<span id="cb385-2"><a href="rdd-2.html#cb385-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">&quot;white&quot;</span>) <span class="sc">+</span></span>
+<span id="cb385-3"><a href="rdd-2.html#cb385-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">75</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/check-running-discontinuity-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>If there’s a jump, we want to check if it’s statistically significant. To test that, we can do a McCrary density test (explained on pp. 185-86 of <a href="https://www.scunning.com/mixtape.html"><em>Causal Inference: The Mixtape</em></a>). This puts data into bins like a histogram, and then plots the averages and confidence intervals of those bins. If the confidence intervals of the density lines don’t overlap, then there’s likely something systematically wrong with how the test was scored (i.e. too many people getting 76 vs 74). If the confidence intervals overlap, there’s not any significant difference around the threshold and we’re fine.</p>
+<div class="sourceCode" id="cb386"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb386-1"><a href="rdd-2.html#cb386-1" aria-hidden="true" tabindex="-1"></a>thing <span class="ot">&lt;-</span> <span class="fu">rdplotdensity</span>(<span class="at">rdd =</span> <span class="fu">rddensity</span>(<span class="at">X =</span> aig_program<span class="sc">$</span>test_score, <span class="at">c =</span> <span class="dv">75</span>),</span>
+<span id="cb386-2"><a href="rdd-2.html#cb386-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">X =</span> aig_program<span class="sc">$</span>test_score)</span></code></pre></div>
+<pre><code>## Warning: The dot-dot notation (`..density..`) was deprecated in ggplot2 3.4.0.
+## ℹ Please use `after_stat(density)` instead.
+## ℹ The deprecated feature was likely used in the lpdensity package.
+##   Please report the issue to the authors.</code></pre>
+<p><img src="bookdownproj_files/figure-html/check-running-discontinuity-mcrary-1.png" width="624" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb388"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb388-1"><a href="rdd-2.html#cb388-1" aria-hidden="true" tabindex="-1"></a><span class="fu">DCdensity</span>(aig_program<span class="sc">$</span>test_score, <span class="dv">75</span>, <span class="at">ext.out =</span> F)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/unnamed-chunk-171-1.png" width="624" style="display: block; margin: auto;" /></p>
+<pre><code>## [1] 0.3154099</code></pre>
+</div>
+<div id="step-4-check-for-discontinuity-in-outcome-across-running-variable" class="section level2 hasAnchor" number="11.4">
+<h2><span class="header-section-number">11.4</span> Step 4: Check for discontinuity in outcome across running variable<a href="rdd-2.html#step-4-check-for-discontinuity-in-outcome-across-running-variable" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Now that we know this is a sharp design and that there’s no bunching of test scores around the 75-point threshold, we can finally see if there’s a discontinuity in final scores based on participation in the AIG program. Plot the running variable on the x-axis, the outcome variable on the y-axis, and color the points by whether they participated in the program.</p>
+<div class="sourceCode" id="cb390"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb390-1"><a href="rdd-2.html#cb390-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> aig_program, </span>
+<span id="cb390-2"><a href="rdd-2.html#cb390-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> test_score, <span class="at">y =</span> final_score, <span class="at">color =</span> aig)) <span class="sc">+</span></span>
+<span id="cb390-3"><a href="rdd-2.html#cb390-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">0.5</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb390-4"><a href="rdd-2.html#cb390-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">75</span>) <span class="sc">+</span></span>
+<span id="cb390-5"><a href="rdd-2.html#cb390-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>)</span></code></pre></div>
+<pre><code>## `geom_smooth()` using formula = &#39;y ~ x&#39;</code></pre>
+<p><img src="bookdownproj_files/figure-html/check-outcome-discontinuity-1.png" width="624" style="display: block; margin: auto;" /></p>
+</div>
+<div id="step-5-measure-the-size-of-the-effect" class="section level2 hasAnchor" number="11.5">
+<h2><span class="header-section-number">11.5</span> Step 5: Measure the size of the effect<a href="rdd-2.html#step-5-measure-the-size-of-the-effect" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>There’s a discontinuity, but how big is it? And is it statistically significant?</p>
+<p>We can check the size two different ways: parametrically (i.e. using <code>lm()</code> with specific parameters and coefficients), and nonparametrically (i.e. not using <code>lm()</code> or any kind of straight line and instead drawing lines that fit the data more precisely). We’ll do it both ways.</p>
+<div id="parametric-estimation" class="section level3 hasAnchor" number="11.5.1">
+<h3><span class="header-section-number">11.5.1</span> Parametric estimation<a href="rdd-2.html#parametric-estimation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>First we’ll do it parametrically by using linear regression. Here we want to explain the variation in final scores based on the AIG test score and participation in the program:</p>
+<p><span class="math display">\[
+\text{Final score} = \beta_0 + \beta_1 \text{AIG test score} + \beta_2 \text{AIG program} + \epsilon
+\]</span></p>
+<p>To make it easier to interpret coefficients, we can center the test score column so that instead of showing the actual test score, it shows how many points above or below 75 the student scored.</p>
+<div class="sourceCode" id="cb392"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb392-1"><a href="rdd-2.html#cb392-1" aria-hidden="true" tabindex="-1"></a>aig_program_centered <span class="ot">&lt;-</span> aig_program <span class="sc">%&gt;%</span> </span>
+<span id="cb392-2"><a href="rdd-2.html#cb392-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">test_centered =</span> test_score <span class="sc">-</span> <span class="dv">75</span>)</span>
+<span id="cb392-3"><a href="rdd-2.html#cb392-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb392-4"><a href="rdd-2.html#cb392-4" aria-hidden="true" tabindex="-1"></a>model_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(final_score <span class="sc">~</span> test_centered <span class="sc">+</span> aig, <span class="at">data =</span> aig_program_centered)</span>
+<span id="cb392-5"><a href="rdd-2.html#cb392-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_1)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 5
+##   term          estimate std.error statistic  p.value
+##   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)     63.1      0.466      135.  0       
+## 2 test_centered    0.535    0.0278      19.2 2.09e-70
+## 3 aigTRUE          8.47     0.743       11.4 2.27e-28</code></pre>
+<div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb394-1"><a href="rdd-2.html#cb394-1" aria-hidden="true" tabindex="-1"></a>model_1_int <span class="ot">&lt;-</span> <span class="fu">lm</span>(final_score <span class="sc">~</span> test_centered<span class="sc">*</span>aig, <span class="at">data =</span> aig_program_centered)</span>
+<span id="cb394-2"><a href="rdd-2.html#cb394-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_1_int)</span></code></pre></div>
+<pre><code>## # A tibble: 4 × 5
+##   term                  estimate std.error statistic  p.value
+##   &lt;chr&gt;                    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)            62.8       0.544    115.    0       
+## 2 test_centered           0.513     0.0376    13.6   6.25e-39
+## 3 aigTRUE                 8.43      0.745     11.3   4.63e-28
+## 4 test_centered:aigTRUE   0.0471    0.0558     0.844 3.99e- 1</code></pre>
+<p>Here’s what these coefficients mean:</p>
+<ul>
+<li><span class="math inline">\(\beta_0\)</span>: This is the intercept. …</li>
+<li><span class="math inline">\(\beta_1\)</span>: This is the coefficient for <code>test_score_centered</code>. …</li>
+<li><span class="math inline">\(\beta_2\)</span>: This is the coefficient for AIG, and this is the one we care about the most. This is the shift in intercept when <code>aig</code> is true, or the difference between scores at the threshold. …</li>
+</ul>
+<p>One advantage to using a parametric approach is that you can include other covariates like demographics. You can also use polynomial regression and include terms like <code>test_score²</code> or <code>test_score³</code> or even <code>test_score⁴</code> to make the line fit the data as close as possible.</p>
+<p>Here we fit the model to the entire data, but in real life, we care most about the observations right around the threshold. Scores that are super high or super low shouldn’t really influence our effect size, since we only care about the people who score just barely under and just barely over 75.</p>
+<p>We can fit the same model but restrict it to people within a smaller window, or bandwidth, like ±10 points, or ±5 points:</p>
+<div class="sourceCode" id="cb396"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb396-1"><a href="rdd-2.html#cb396-1" aria-hidden="true" tabindex="-1"></a>aig_program_10 <span class="ot">&lt;-</span> aig_program_centered <span class="sc">%&gt;%</span> </span>
+<span id="cb396-2"><a href="rdd-2.html#cb396-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(test_centered <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">10</span> <span class="sc">&amp;</span> test_centered <span class="sc">&lt;</span> <span class="dv">10</span>)</span>
+<span id="cb396-3"><a href="rdd-2.html#cb396-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-4"><a href="rdd-2.html#cb396-4" aria-hidden="true" tabindex="-1"></a>aig_program_5 <span class="ot">&lt;-</span> aig_program_centered <span class="sc">%&gt;%</span> </span>
+<span id="cb396-5"><a href="rdd-2.html#cb396-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(test_centered <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">5</span> <span class="sc">&amp;</span> test_centered <span class="sc">&lt;</span> <span class="dv">5</span>)</span>
+<span id="cb396-6"><a href="rdd-2.html#cb396-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb396-7"><a href="rdd-2.html#cb396-7" aria-hidden="true" tabindex="-1"></a>model_2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(final_score <span class="sc">~</span> test_centered <span class="sc">+</span> aig, <span class="at">data =</span> aig_program_10)</span>
+<span id="cb396-8"><a href="rdd-2.html#cb396-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_2)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 5
+##   term          estimate std.error statistic   p.value
+##   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)     62.5       0.669     93.5  2.90e-316
+## 2 test_centered    0.458     0.103      4.43 1.17e-  5
+## 3 aigTRUE          9.20      1.17       7.89 1.97e- 14</code></pre>
+<div class="sourceCode" id="cb398"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb398-1"><a href="rdd-2.html#cb398-1" aria-hidden="true" tabindex="-1"></a>model_3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(final_score <span class="sc">~</span> test_centered <span class="sc">+</span> aig, <span class="at">data =</span> aig_program_5)</span>
+<span id="cb398-2"><a href="rdd-2.html#cb398-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_3)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 5
+##   term          estimate std.error statistic   p.value
+##   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)     63.6       0.908     70.1  3.69e-168
+## 2 test_centered    0.859     0.274      3.14 1.91e-  3
+## 3 aigTRUE          7.36      1.58       4.66 5.22e-  6</code></pre>
+<p>We can compare all these models simultaneously with <code>huxreg</code>:</p>
+<div class="sourceCode" id="cb400"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb400-1"><a href="rdd-2.html#cb400-1" aria-hidden="true" tabindex="-1"></a><span class="fu">huxreg</span>(<span class="fu">list</span>(model_1, model_1_int, model_2, model_3))</span></code></pre></div>
+<table class="huxtable" style="border-collapse: collapse; border: 0px; margin-bottom: 2em; margin-top: 2em; ; margin-left: auto; margin-right: auto;  " id="tab:all-models">
+<caption style="caption-side: top; text-align: center;"><span id="tab:all-models">Table 11.1: </span> </caption><col><col><col><col><col><tr>
+<th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></th><th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(1)</th><th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(2)</th><th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(3)</th><th style="vertical-align: top; text-align: center; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(4)</th></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(Intercept)</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">63.075 ***</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">62.838 ***</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">62.513 ***</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">63.614 ***</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.466)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.544)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.669)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.908)&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">test_centered</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.535 ***</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.513 ***</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.458 ***</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.859 **&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.028)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.038)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.103)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.274)&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">aigTRUE</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">8.470 ***</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">8.434 ***</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">9.196 ***</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">7.361 ***</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.743)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.745)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(1.166)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(1.581)&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">test_centered:aigTRUE</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.047&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"></th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">(0.056)&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.4pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">N</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">497&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0.4pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">257&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">R2</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.716&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.717&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.513&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">0.456&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">logLik</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-3292.006&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-3291.648&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-1640.572&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">-842.102&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">AIC</th><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">6592.012&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">6593.297&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">3289.145&nbsp;&nbsp;&nbsp;&nbsp;</td><td style="vertical-align: top; text-align: right; white-space: normal; border-style: solid solid solid solid; border-width: 0pt 0pt 0.8pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;">1692.204&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+<tr>
+<th colspan="5" style="vertical-align: top; text-align: left; white-space: normal; border-style: solid solid solid solid; border-width: 0.8pt 0pt 0pt 0pt;    padding: 6pt 6pt 6pt 6pt; font-weight: normal;"> *** p &lt; 0.001;  ** p &lt; 0.01;  * p &lt; 0.05.</th></tr>
+</table>
+
+</div>
+<div id="nonparametric-estimation" class="section level3 hasAnchor" number="11.5.2">
+<h3><span class="header-section-number">11.5.2</span> Nonparametric estimation<a href="rdd-2.html#nonparametric-estimation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Instead of using linear regression to measure the size of the discontinuity, we can use nonparametric methods. Essentially this means that R will not try to fit a straight line to the data—instead it’ll curve around the points and try to fit everything as smoothly as possible.</p>
+<p>The <code>rdrobust()</code> function makes it really easy to measure the gap at the cutoff with nonparametric estimation. Here’s the simplest version:</p>
+<div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb401-1"><a href="rdd-2.html#cb401-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdrobust</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score,</span>
+<span id="cb401-2"><a href="rdd-2.html#cb401-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> aig_program<span class="sc">$</span>test_score,</span>
+<span id="cb401-3"><a href="rdd-2.html#cb401-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">c =</span> <span class="dv">75</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb401-4"><a href="rdd-2.html#cb401-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>## Sharp RD estimates using local polynomial regression.
+## 
+## Number of Obs.                 1000
+## BW type                       mserd
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                  346          654
+## Eff. Number of Obs.             138          198
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## BW est. (h)                   6.584        6.584
+## BW bias (b)                   9.576        9.576
+## rho (h/b)                     0.688        0.688
+## Unique Obs.                     346          654
+## 
+## =============================================================================
+##         Method     Coef. Std. Err.         z     P&gt;|z|      [ 95% C.I. ]       
+## =============================================================================
+##   Conventional     8.011     1.494     5.360     0.000     [5.082 , 10.940]    
+##         Robust         -         -     4.437     0.000     [4.315 , 11.144]    
+## =============================================================================</code></pre>
+<p>There are a few important pieces of information to look at in this output:</p>
+<ul>
+<li>The thing you care about the most is the actual effect size. This is the coefficient in the table at the bottom, indicated with the “Conventional” method. Here it’s 8.011, which means the AIG program causes an 8-point increase in final test scores. The table at the bottom also includes standard errors, p-values, and confidence intervals for the coefficient, both normal estimates (conventional) and robust estimates (robust). According to both types of estimates, this 8 point bump is statistically significant (p &lt; 0.001; the 95% confidence interval definitely doesn’t ever include 0).</li>
+<li>The model used a bandwidth of 6.584 (<code>BW est. (h)</code> in the output), which means it only looked at people with test scores of 75 ± 6.6. It decided on this bandwidth automatically, but you can change it to whatever you want.</li>
+<li>The model used a triangular kernel. This is the most esoteric part of the model—the kernel decides how much weight to give to observations around the cutoff. Test scores like 74.99 or 75.01 are extremely close to 75, so they get the most weight. Scores like 73 or 77 are a little further away so they matter less. Scores like 69 or 81 matter even less, so they get even less weight. You can use different kernels too, and <a href="https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use">Wikipedia has a nice graphic showing the shapes of these different kernels</a> and how they give different weights to observations at different distances.</li>
+</ul>
+<p>We can plot this nonparametric model with <code>rdplot()</code>. It unfortunately doesn’t use the same plotting system as <code>ggplot()</code>, so you can’t add layers like <code>labs()</code> or <code>geom_point()</code> or anything else, which is sad. Oh well.</p>
+<div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb403-1"><a href="rdd-2.html#cb403-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdplot</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score,</span>
+<span id="cb403-2"><a href="rdd-2.html#cb403-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> aig_program<span class="sc">$</span>test_score,</span>
+<span id="cb403-3"><a href="rdd-2.html#cb403-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">c =</span> <span class="dv">75</span>)</span></code></pre></div>
+<p><img src="bookdownproj_files/figure-html/rdplot-basic-1.png" width="624" style="display: block; margin: auto;" /></p>
+<p>Look at that 8 point jump at 75! Neat!</p>
+<p>By default, <code>rdrobust()</code> chooses the bandwidth size automatically based on fancy algorithms that economists have developed. You can use <code>rdbwselect()</code> to see what that bandwidth is, and if you include the <code>all = TRUE</code> argument, you can see a bunch of different potential bandwidths based on a bunch of different algorithms:</p>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb404-1"><a href="rdd-2.html#cb404-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdbwselect</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score,</span>
+<span id="cb404-2"><a href="rdd-2.html#cb404-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">x =</span> aig_program<span class="sc">$</span>test_score,</span>
+<span id="cb404-3"><a href="rdd-2.html#cb404-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">c =</span> <span class="dv">75</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb404-4"><a href="rdd-2.html#cb404-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>## Call: rdbwselect
+## 
+## Number of Obs.                 1000
+## BW type                       mserd
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                  346          654
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## Unique Obs.                     346          654
+## 
+## =======================================================
+##                   BW est. (h)    BW bias (b)
+##             Left of c Right of c  Left of c Right of c
+## =======================================================
+##      mserd     6.584      6.584      9.576      9.576
+## =======================================================</code></pre>
+<p>What are the different possible bandwidths we could use?</p>
+<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb406-1"><a href="rdd-2.html#cb406-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdbwselect</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score, </span>
+<span id="cb406-2"><a href="rdd-2.html#cb406-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">x =</span> aig_program<span class="sc">$</span>test_score, </span>
+<span id="cb406-3"><a href="rdd-2.html#cb406-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">c =</span> <span class="dv">75</span>, </span>
+<span id="cb406-4"><a href="rdd-2.html#cb406-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">all =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb406-5"><a href="rdd-2.html#cb406-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>## Call: rdbwselect
+## 
+## Number of Obs.                 1000
+## BW type                         All
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                  346          654
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## Unique Obs.                     346          654
+## 
+## =======================================================
+##                   BW est. (h)    BW bias (b)
+##             Left of c Right of c  Left of c Right of c
+## =======================================================
+##      mserd     6.584      6.584      9.576      9.576
+##     msetwo    12.996      5.671     20.658      8.491
+##     msesum     6.039      6.039      8.939      8.939
+##   msecomb1     6.039      6.039      8.939      8.939
+##   msecomb2     6.584      6.039      9.576      8.939
+##      cerrd     4.661      4.661      9.576      9.576
+##     certwo     9.200      4.015     20.658      8.491
+##     cersum     4.275      4.275      8.939      8.939
+##   cercomb1     4.275      4.275      8.939      8.939
+##   cercomb2     4.661      4.275      9.576      8.939
+## =======================================================</code></pre>
+<p>Phew. There are a lot here. The best one was <code>mserd</code>, or ±6.5. Some say ±6, others ±4.5ish, other are asymmetric and say -14 before and +5 after, or -9 before and +4 after. Try a bunch of different bandwidths as part of your sensitivity analysis and see if your effect size changes substantially as a result.</p>
+<p>Another common approach to sensitivity analysis is to use the ideal bandwidth, twice the ideal, and half the ideal (so in our case 6.5, 13, and 3.25) and see if the estimate changes substantially. Use the <code>h</code> argument to specify your own bandwidth</p>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb408-1"><a href="rdd-2.html#cb408-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdrobust</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score,</span>
+<span id="cb408-2"><a href="rdd-2.html#cb408-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> aig_program<span class="sc">$</span>test_score,</span>
+<span id="cb408-3"><a href="rdd-2.html#cb408-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">c =</span> <span class="dv">75</span>, <span class="at">h =</span> <span class="fl">6.5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb408-4"><a href="rdd-2.html#cb408-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>## Sharp RD estimates using local polynomial regression.
+## 
+## Number of Obs.                 1000
+## BW type                      Manual
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                  346          654
+## Eff. Number of Obs.             136          197
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## BW est. (h)                   6.500        6.500
+## BW bias (b)                   6.500        6.500
+## rho (h/b)                     1.000        1.000
+## Unique Obs.                     346          654
+## 
+## =============================================================================
+##         Method     Coef. Std. Err.         z     P&gt;|z|      [ 95% C.I. ]       
+## =============================================================================
+##   Conventional     7.986     1.501     5.321     0.000     [5.044 , 10.928]    
+##         Robust         -         -     4.492     0.000     [4.734 , 12.063]    
+## =============================================================================</code></pre>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb410-1"><a href="rdd-2.html#cb410-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdrobust</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score,</span>
+<span id="cb410-2"><a href="rdd-2.html#cb410-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> aig_program<span class="sc">$</span>test_score,</span>
+<span id="cb410-3"><a href="rdd-2.html#cb410-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">c =</span> <span class="dv">75</span>, <span class="at">h =</span> <span class="fl">6.5</span><span class="sc">/</span><span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb410-4"><a href="rdd-2.html#cb410-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>## Sharp RD estimates using local polynomial regression.
+## 
+## Number of Obs.                 1000
+## BW type                      Manual
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                  346          654
+## Eff. Number of Obs.              74           95
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## BW est. (h)                   3.250        3.250
+## BW bias (b)                   3.250        3.250
+## rho (h/b)                     1.000        1.000
+## Unique Obs.                     346          654
+## 
+## =============================================================================
+##         Method     Coef. Std. Err.         z     P&gt;|z|      [ 95% C.I. ]       
+## =============================================================================
+##   Conventional     8.169     1.774     4.606     0.000     [4.693 , 11.645]    
+##         Robust         -         -     3.433     0.001     [3.311 , 12.123]    
+## =============================================================================</code></pre>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb412-1"><a href="rdd-2.html#cb412-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdrobust</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score,</span>
+<span id="cb412-2"><a href="rdd-2.html#cb412-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> aig_program<span class="sc">$</span>test_score,</span>
+<span id="cb412-3"><a href="rdd-2.html#cb412-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">c =</span> <span class="dv">75</span>, <span class="at">h =</span> <span class="fl">6.5</span> <span class="sc">*</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb412-4"><a href="rdd-2.html#cb412-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>## Sharp RD estimates using local polynomial regression.
+## 
+## Number of Obs.                 1000
+## BW type                      Manual
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                  346          654
+## Eff. Number of Obs.             237          409
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## BW est. (h)                  13.000       13.000
+## BW bias (b)                  13.000       13.000
+## rho (h/b)                     1.000        1.000
+## Unique Obs.                     346          654
+## 
+## =============================================================================
+##         Method     Coef. Std. Err.         z     P&gt;|z|      [ 95% C.I. ]       
+## =============================================================================
+##   Conventional     8.774     1.131     7.759     0.000     [6.558 , 10.991]    
+##         Robust         -         -     5.182     0.000     [5.047 , 11.186]    
+## =============================================================================</code></pre>
+<p>Here the coefficients change slightly:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Bandwidth</th>
+<th align="center">Effect size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">6.5 (ideal)</td>
+<td align="center">7.986</td>
+</tr>
+<tr class="even">
+<td align="center">13 (twice)</td>
+<td align="center">8.774</td>
+</tr>
+<tr class="odd">
+<td align="center">3.25 (half)</td>
+<td align="center">8.169</td>
+</tr>
+</tbody>
+</table>
+<p>You can also adjust the kernel. By default <code>rd_robust</code> uses a triangular kernel (more distant observations have less weight linearly), but you can switch it to Epanechnikov (more distant observations have less weight following a curve) or uniform (more distant observations have the same weight as closer observations; this is unweighted).</p>
+<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb414-1"><a href="rdd-2.html#cb414-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdrobust</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score,</span>
+<span id="cb414-2"><a href="rdd-2.html#cb414-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> aig_program<span class="sc">$</span>test_score,</span>
+<span id="cb414-3"><a href="rdd-2.html#cb414-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">c =</span> <span class="dv">75</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb414-4"><a href="rdd-2.html#cb414-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>## Sharp RD estimates using local polynomial regression.
+## 
+## Number of Obs.                 1000
+## BW type                       mserd
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                  346          654
+## Eff. Number of Obs.             138          198
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## BW est. (h)                   6.584        6.584
+## BW bias (b)                   9.576        9.576
+## rho (h/b)                     0.688        0.688
+## Unique Obs.                     346          654
+## 
+## =============================================================================
+##         Method     Coef. Std. Err.         z     P&gt;|z|      [ 95% C.I. ]       
+## =============================================================================
+##   Conventional     8.011     1.494     5.360     0.000     [5.082 , 10.940]    
+##         Robust         -         -     4.437     0.000     [4.315 , 11.144]    
+## =============================================================================</code></pre>
+<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb416-1"><a href="rdd-2.html#cb416-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdrobust</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score,</span>
+<span id="cb416-2"><a href="rdd-2.html#cb416-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> aig_program<span class="sc">$</span>test_score,</span>
+<span id="cb416-3"><a href="rdd-2.html#cb416-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">c =</span> <span class="dv">75</span>, <span class="at">kernel =</span> <span class="st">&quot;epanechnikov&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb416-4"><a href="rdd-2.html#cb416-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>## Sharp RD estimates using local polynomial regression.
+## 
+## Number of Obs.                 1000
+## BW type                       mserd
+## Kernel                   Epanechnikov
+## VCE method                       NN
+## 
+## Number of Obs.                  346          654
+## Eff. Number of Obs.             129          178
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## BW est. (h)                   5.994        5.994
+## BW bias (b)                   9.277        9.277
+## rho (h/b)                     0.646        0.646
+## Unique Obs.                     346          654
+## 
+## =============================================================================
+##         Method     Coef. Std. Err.         z     P&gt;|z|      [ 95% C.I. ]       
+## =============================================================================
+##   Conventional     7.866     1.547     5.084     0.000     [4.834 , 10.898]    
+##         Robust         -         -     4.184     0.000     [4.012 , 11.082]    
+## =============================================================================</code></pre>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb418-1"><a href="rdd-2.html#cb418-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rdrobust</span>(<span class="at">y =</span> aig_program<span class="sc">$</span>final_score,</span>
+<span id="cb418-2"><a href="rdd-2.html#cb418-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">x =</span> aig_program<span class="sc">$</span>test_score,</span>
+<span id="cb418-3"><a href="rdd-2.html#cb418-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">c =</span> <span class="dv">75</span>, <span class="at">kernel =</span> <span class="st">&quot;uniform&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb418-4"><a href="rdd-2.html#cb418-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>## Sharp RD estimates using local polynomial regression.
+## 
+## Number of Obs.                 1000
+## BW type                       mserd
+## Kernel                      Uniform
+## VCE method                       NN
+## 
+## Number of Obs.                  346          654
+## Eff. Number of Obs.             121          163
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## BW est. (h)                   5.598        5.598
+## BW bias (b)                  10.148       10.148
+## rho (h/b)                     0.552        0.552
+## Unique Obs.                     346          654
+## 
+## =============================================================================
+##         Method     Coef. Std. Err.         z     P&gt;|z|      [ 95% C.I. ]       
+## =============================================================================
+##   Conventional     7.733     1.554     4.975     0.000     [4.686 , 10.779]    
+##         Robust         -         -     4.081     0.000     [3.776 , 10.753]    
+## =============================================================================</code></pre>
+<p>Again, the coefficients change slightly:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Kernel</th>
+<th align="center">Effect size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Triangular</td>
+<td align="center">8.011</td>
+</tr>
+<tr class="even">
+<td align="center">Epanechnikov</td>
+<td align="center">7.866</td>
+</tr>
+<tr class="odd">
+<td align="center">Uniform</td>
+<td align="center">7.733</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="step-6-compare-all-the-effects" class="section level2 hasAnchor" number="11.6">
+<h2><span class="header-section-number">11.6</span> Step 6: Compare all the effects<a href="rdd-2.html#step-6-compare-all-the-effects" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>We just estimated a ton of effect sizes. In real life you’d generally just report one of these as your final effect, but you’d run the different parametric and nonparametric models to check how reliable and robust your findings are. Here’s everything we just found:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Method</th>
+<th align="center">Bandwidth</th>
+<th align="center">Kernel</th>
+<th align="center">Estimate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Parametric</td>
+<td align="center">Full data</td>
+<td align="center">Unweighted</td>
+<td align="center">8.470</td>
+</tr>
+<tr class="even">
+<td align="center">Parametric</td>
+<td align="center">10</td>
+<td align="center">Unweighted</td>
+<td align="center">9.196</td>
+</tr>
+<tr class="odd">
+<td align="center">Parametric</td>
+<td align="center">5</td>
+<td align="center">Unweighted</td>
+<td align="center">7.361</td>
+</tr>
+<tr class="even">
+<td align="center">Nonparametric</td>
+<td align="center">6.584</td>
+<td align="center">Triangular</td>
+<td align="center">8.011</td>
+</tr>
+<tr class="odd">
+<td align="center">Nonparametric</td>
+<td align="center">6.5</td>
+<td align="center">Triangular</td>
+<td align="center">7.986</td>
+</tr>
+<tr class="even">
+<td align="center">Nonparametric</td>
+<td align="center">13</td>
+<td align="center">Triangular</td>
+<td align="center">8.774</td>
+</tr>
+<tr class="odd">
+<td align="center">Nonparametric</td>
+<td align="center">3.25</td>
+<td align="center">Triangular</td>
+<td align="center">8.169</td>
+</tr>
+<tr class="even">
+<td align="center">Nonparametric</td>
+<td align="center">6.584</td>
+<td align="center">Epanechnikov</td>
+<td align="center">7.866</td>
+</tr>
+<tr class="odd">
+<td align="center">Nonparametric</td>
+<td align="center">6.584</td>
+<td align="center">Uniform (unweighted)</td>
+<td align="center">7.733</td>
+</tr>
+</tbody>
+</table>
+<p>In real life, I’d likely report the simplest one (row 4: nonparametric, automatic bandwidth, triangular kernel), but knowing how much the effect varies across model specifications is helpful.</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="regression-discontinuity-designs-rdd.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/edit/master/11-RDD2.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": "https://github.com/YOUR GITHUB USERNAME/YOUR REPO NAME/blob/master/11-RDD2.Rmd",
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

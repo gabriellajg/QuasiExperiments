@@ -19,7 +19,8 @@ library(lmtest)
 Generating sample data:
 
 ```{r}
-dat <- data.frame(month=seq(from=1, to=24), post=c(rep(0, 12), rep(1, 12)),
+dat <- data.frame(month=seq(from=1, to=24), 
+                  post=c(rep(0, 12), rep(1, 12)),
                   monthpost=c(rep(0, 12), seq(from=1, to=12)), 
                   outcome=c(50, 60, 45, 47, 50, 55, 53, 51, 48, 50, 47, 48,
                             55, 60, 63, 67, 65, 69, 72, 68, 74, 71, 76, 70))

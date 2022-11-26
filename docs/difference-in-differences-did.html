@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 7 Difference-in-differences (DID) | R Book for Quasi-Experimental Designs</title>
   <meta name="description" content="Chapter 7 Difference-in-differences (DID) | R Book for Quasi-Experimental Designs" />
-  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 7 Difference-in-differences (DID) | R Book for Quasi-Experimental Designs" />
   <meta property="og:type" content="book" />
@@ -289,6 +289,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.6" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-5-check-residuals"><i class="fa fa-check"></i><b>9.6</b> Step 5: Check residuals</a></li>
 <li class="chapter" data-level="9.7" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-6-calculate-forecasts"><i class="fa fa-check"></i><b>9.7</b> Step 6: Calculate forecasts</a></li>
 </ul></li>
+<li class="chapter" data-level="10" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html"><i class="fa fa-check"></i><b>10</b> Regression Discontinuity Designs (RDD)</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#data-5"><i class="fa fa-check"></i><b>10.1</b> Data</a></li>
+<li class="chapter" data-level="10.2" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#segmented-regression"><i class="fa fa-check"></i><b>10.2</b> Segmented regression</a></li>
+<li class="chapter" data-level="10.3" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#ik-estimator"><i class="fa fa-check"></i><b>10.3</b> IK estimator</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="rdd-2.html"><a href="rdd-2.html"><i class="fa fa-check"></i><b>11</b> RDD (2)</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="rdd-2.html"><a href="rdd-2.html#step-1-determine-if-process-of-assigning-treatment-is-rule-based"><i class="fa fa-check"></i><b>11.1</b> Step 1: Determine if process of assigning treatment is rule-based</a></li>
+<li class="chapter" data-level="11.2" data-path="rdd-2.html"><a href="rdd-2.html#step-2-determine-if-the-design-is-fuzzy-or-sharp"><i class="fa fa-check"></i><b>11.2</b> Step 2: Determine if the design is fuzzy or sharp</a></li>
+<li class="chapter" data-level="11.3" data-path="rdd-2.html"><a href="rdd-2.html#step-3-check-for-discontinuity-in-running-variable-around-cutpoint"><i class="fa fa-check"></i><b>11.3</b> Step 3: Check for discontinuity in running variable around cutpoint</a></li>
+<li class="chapter" data-level="11.4" data-path="rdd-2.html"><a href="rdd-2.html#step-4-check-for-discontinuity-in-outcome-across-running-variable"><i class="fa fa-check"></i><b>11.4</b> Step 4: Check for discontinuity in outcome across running variable</a></li>
+<li class="chapter" data-level="11.5" data-path="rdd-2.html"><a href="rdd-2.html#step-5-measure-the-size-of-the-effect"><i class="fa fa-check"></i><b>11.5</b> Step 5: Measure the size of the effect</a>
+<ul>
+<li class="chapter" data-level="11.5.1" data-path="rdd-2.html"><a href="rdd-2.html#parametric-estimation"><i class="fa fa-check"></i><b>11.5.1</b> Parametric estimation</a></li>
+<li class="chapter" data-level="11.5.2" data-path="rdd-2.html"><a href="rdd-2.html#nonparametric-estimation"><i class="fa fa-check"></i><b>11.5.2</b> Nonparametric estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="11.6" data-path="rdd-2.html"><a href="rdd-2.html#step-6-compare-all-the-effects"><i class="fa fa-check"></i><b>11.6</b> Step 6: Compare all the effects</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -312,20 +331,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Chapter 7</span> Difference-in-differences (DID)<a href="difference-in-differences-did.html#difference-in-differences-did" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>In this lab, we will use propensity scores to perform other types of analyses (weighting, stratification, and covariate adjustment)</p>
 <p>Install and load the following packages:</p>
-<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="difference-in-differences-did.html#cb229-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb229-2"><a href="difference-in-differences-did.html#cb229-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
-<span id="cb229-3"><a href="difference-in-differences-did.html#cb229-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
-<span id="cb229-4"><a href="difference-in-differences-did.html#cb229-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stargazer)</span>
-<span id="cb229-5"><a href="difference-in-differences-did.html#cb229-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
-<span id="cb229-6"><a href="difference-in-differences-did.html#cb229-6" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&#39;ccolonescu/PoEdata&#39;</span>)</span>
-<span id="cb229-7"><a href="difference-in-differences-did.html#cb229-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(PoEdata)</span></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="difference-in-differences-did.html#cb226-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb226-2"><a href="difference-in-differences-did.html#cb226-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(foreign)</span>
+<span id="cb226-3"><a href="difference-in-differences-did.html#cb226-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb226-4"><a href="difference-in-differences-did.html#cb226-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stargazer)</span>
+<span id="cb226-5"><a href="difference-in-differences-did.html#cb226-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
+<span id="cb226-6"><a href="difference-in-differences-did.html#cb226-6" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&#39;ccolonescu/PoEdata&#39;</span>)</span>
+<span id="cb226-7"><a href="difference-in-differences-did.html#cb226-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(PoEdata)</span></code></pre></div>
 <!------------------------------>
 <div id="data-2" class="section level2 hasAnchor" number="7.1">
 <h2><span class="header-section-number">7.1</span> Data<a href="difference-in-differences-did.html#data-2" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
 <p>Getting sample data:</p>
-<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="difference-in-differences-did.html#cb230-1" aria-hidden="true" tabindex="-1"></a>mydata <span class="ot">=</span> <span class="fu">read.dta</span>(<span class="st">&quot;http://dss.princeton.edu/training/Panel101.dta&quot;</span>)</span>
-<span id="cb230-2"><a href="difference-in-differences-did.html#cb230-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mydata)</span></code></pre></div>
+<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="difference-in-differences-did.html#cb227-1" aria-hidden="true" tabindex="-1"></a>mydata <span class="ot">=</span> <span class="fu">read.dta</span>(<span class="st">&quot;http://dss.princeton.edu/training/Panel101.dta&quot;</span>)</span>
+<span id="cb227-2"><a href="difference-in-differences-did.html#cb227-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mydata)</span></code></pre></div>
 <pre><code>##   country year           y y_bin        x1         x2          x3   opinion op
 ## 1       A 1990  1342787840     1 0.2779036 -1.1079559  0.28255358 Str agree  1
 ## 2       A 1991 -1899660544     0 0.3206847 -0.9487200  0.49253848     Disag  0
@@ -335,7 +354,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 6       A 1995  3229574144     1 0.4772141 -0.7232460  1.02968037 Str agree  1</code></pre>
 <div id="scatterplot-by-country" class="section level3 hasAnchor" number="7.1.1">
 <h3><span class="header-section-number">7.1.1</span> Scatterplot by country:<a href="difference-in-differences-did.html#scatterplot-by-country" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="difference-in-differences-did.html#cb232-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scatterplot</span>(y<span class="sc">~</span>year<span class="sc">|</span>country, <span class="at">boxplots=</span><span class="cn">FALSE</span>, <span class="at">smooth=</span><span class="cn">TRUE</span>, <span class="at">data =</span> mydata)</span></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="difference-in-differences-did.html#cb229-1" aria-hidden="true" tabindex="-1"></a><span class="fu">scatterplot</span>(y<span class="sc">~</span>year<span class="sc">|</span>country, <span class="at">boxplots=</span><span class="cn">FALSE</span>, <span class="at">smooth=</span><span class="cn">TRUE</span>, <span class="at">data =</span> mydata)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-107-1.png" width="672" /></p>
 </div>
 <div id="create-dummy-variables" class="section level3 hasAnchor" number="7.1.2">
@@ -344,25 +363,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>time: time when the treatment started</li>
 </ol>
 <p>Let’s assume that treatment started in 1994. In this case, years before 1994 will have a value of 0 and 1994+ a 1. If you already have this skip this step.</p>
-<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="difference-in-differences-did.html#cb233-1" aria-hidden="true" tabindex="-1"></a>mydata<span class="sc">$</span>time <span class="ot">=</span> <span class="fu">ifelse</span>(mydata<span class="sc">$</span>year <span class="sc">&gt;=</span> <span class="dv">1994</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="difference-in-differences-did.html#cb230-1" aria-hidden="true" tabindex="-1"></a>mydata<span class="sc">$</span>time <span class="ot">=</span> <span class="fu">ifelse</span>(mydata<span class="sc">$</span>year <span class="sc">&gt;=</span> <span class="dv">1994</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span></code></pre></div>
 <p>2.treated: the group exposed to the treatment</p>
 <ul>
 <li>In this example let’s assumed that countries with code 5,6, and 7 were treated (=1).</li>
 <li>Countries 1-4 were not treated (=0). If you already have this skip this step.</li>
 </ul>
-<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="difference-in-differences-did.html#cb234-1" aria-hidden="true" tabindex="-1"></a>mydata<span class="sc">$</span>treated <span class="ot">=</span> <span class="fu">ifelse</span>(mydata<span class="sc">$</span>country <span class="sc">==</span> <span class="st">&quot;E&quot;</span> <span class="sc">|</span></span>
-<span id="cb234-2"><a href="difference-in-differences-did.html#cb234-2" aria-hidden="true" tabindex="-1"></a>                          mydata<span class="sc">$</span>country <span class="sc">==</span> <span class="st">&quot;F&quot;</span> <span class="sc">|</span></span>
-<span id="cb234-3"><a href="difference-in-differences-did.html#cb234-3" aria-hidden="true" tabindex="-1"></a>                          mydata<span class="sc">$</span>country <span class="sc">==</span> <span class="st">&quot;G&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="difference-in-differences-did.html#cb231-1" aria-hidden="true" tabindex="-1"></a>mydata<span class="sc">$</span>treated <span class="ot">=</span> <span class="fu">ifelse</span>(mydata<span class="sc">$</span>country <span class="sc">==</span> <span class="st">&quot;E&quot;</span> <span class="sc">|</span></span>
+<span id="cb231-2"><a href="difference-in-differences-did.html#cb231-2" aria-hidden="true" tabindex="-1"></a>                          mydata<span class="sc">$</span>country <span class="sc">==</span> <span class="st">&quot;F&quot;</span> <span class="sc">|</span></span>
+<span id="cb231-3"><a href="difference-in-differences-did.html#cb231-3" aria-hidden="true" tabindex="-1"></a>                          mydata<span class="sc">$</span>country <span class="sc">==</span> <span class="st">&quot;G&quot;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span></code></pre></div>
 <p>3.did: an interaction by multiplying time and treated. We will call this interaction ‘did’.</p>
-<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="difference-in-differences-did.html#cb235-1" aria-hidden="true" tabindex="-1"></a>mydata<span class="sc">$</span>did <span class="ot">=</span> mydata<span class="sc">$</span>time <span class="sc">*</span> mydata<span class="sc">$</span>treated</span></code></pre></div>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="difference-in-differences-did.html#cb232-1" aria-hidden="true" tabindex="-1"></a>mydata<span class="sc">$</span>did <span class="ot">=</span> mydata<span class="sc">$</span>time <span class="sc">*</span> mydata<span class="sc">$</span>treated</span></code></pre></div>
 <!------------------------------>
 </div>
 </div>
 <div id="the-did-estimator" class="section level2 hasAnchor" number="7.2">
 <h2><span class="header-section-number">7.2</span> The DID estimator<a href="difference-in-differences-did.html#the-did-estimator" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
-<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="difference-in-differences-did.html#cb236-1" aria-hidden="true" tabindex="-1"></a>didreg <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> treated <span class="sc">+</span> time <span class="sc">+</span> did, <span class="at">data =</span> mydata)</span>
-<span id="cb236-2"><a href="difference-in-differences-did.html#cb236-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(didreg)</span></code></pre></div>
+<div class="sourceCode" id="cb233"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="difference-in-differences-did.html#cb233-1" aria-hidden="true" tabindex="-1"></a>didreg <span class="ot">=</span> <span class="fu">lm</span>(y <span class="sc">~</span> treated <span class="sc">+</span> time <span class="sc">+</span> did, <span class="at">data =</span> mydata)</span>
+<span id="cb233-2"><a href="difference-in-differences-did.html#cb233-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(didreg)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = y ~ treated + time + did, data = mydata)
@@ -398,20 +417,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="https://github.com/ccolonescu/PoEdata" class="uri">https://github.com/ccolonescu/PoEdata</a></li>
 <li><a href="https://bookdown.org/ccolonescu/RPoE4/indvars.html#the-difference-in-differences-estimator" class="uri">https://bookdown.org/ccolonescu/RPoE4/indvars.html#the-difference-in-differences-estimator</a></li>
 </ul>
-<div class="sourceCode" id="cb238"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb238-1"><a href="difference-in-differences-did.html#cb238-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;njmin3&quot;</span>, <span class="at">package=</span><span class="st">&quot;PoEdata&quot;</span>)</span>
-<span id="cb238-2"><a href="difference-in-differences-did.html#cb238-2" aria-hidden="true" tabindex="-1"></a>?njmin3 <span class="co"># minimum wage example </span></span></code></pre></div>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="difference-in-differences-did.html#cb235-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;njmin3&quot;</span>, <span class="at">package=</span><span class="st">&quot;PoEdata&quot;</span>)</span>
+<span id="cb235-2"><a href="difference-in-differences-did.html#cb235-2" aria-hidden="true" tabindex="-1"></a>?njmin3 <span class="co"># minimum wage example </span></span></code></pre></div>
 <div id="regression-models" class="section level3 hasAnchor" number="7.3.1">
 <h3><span class="header-section-number">7.3.1</span> Regression models<a href="difference-in-differences-did.html#regression-models" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb239-1"><a href="difference-in-differences-did.html#cb239-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(fte<span class="sc">~</span>nj<span class="sc">*</span>d, <span class="at">data=</span>njmin3)</span>
-<span id="cb239-2"><a href="difference-in-differences-did.html#cb239-2" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(fte<span class="sc">~</span>nj<span class="sc">*</span>d<span class="sc">+</span></span>
-<span id="cb239-3"><a href="difference-in-differences-did.html#cb239-3" aria-hidden="true" tabindex="-1"></a>             kfc<span class="sc">+</span>roys<span class="sc">+</span>wendys<span class="sc">+</span>co_owned, <span class="at">data=</span>njmin3)</span>
-<span id="cb239-4"><a href="difference-in-differences-did.html#cb239-4" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(fte<span class="sc">~</span>nj<span class="sc">*</span>d<span class="sc">+</span></span>
-<span id="cb239-5"><a href="difference-in-differences-did.html#cb239-5" aria-hidden="true" tabindex="-1"></a>             kfc<span class="sc">+</span>roys<span class="sc">+</span>wendys<span class="sc">+</span>co_owned<span class="sc">+</span></span>
-<span id="cb239-6"><a href="difference-in-differences-did.html#cb239-6" aria-hidden="true" tabindex="-1"></a>             southj<span class="sc">+</span>centralj<span class="sc">+</span>pa1, <span class="at">data=</span>njmin3)</span></code></pre></div>
-<div class="sourceCode" id="cb240"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb240-1"><a href="difference-in-differences-did.html#cb240-1" aria-hidden="true" tabindex="-1"></a>stargazer<span class="sc">::</span><span class="fu">stargazer</span>(mod1, mod2, mod3, </span>
-<span id="cb240-2"><a href="difference-in-differences-did.html#cb240-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">type =</span> <span class="st">&#39;text&#39;</span>, <span class="at">model.names =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb240-3"><a href="difference-in-differences-did.html#cb240-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">header=</span><span class="cn">FALSE</span>, <span class="at">keep.stat=</span><span class="st">&quot;n&quot;</span>,<span class="at">digits=</span><span class="dv">2</span>, </span>
-<span id="cb240-4"><a href="difference-in-differences-did.html#cb240-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">column.labels =</span> <span class="fu">c</span>(<span class="st">&#39;DID&#39;</span>, <span class="st">&#39;DIDw/Cov&#39;</span>, <span class="st">&#39;DIDw/All&#39;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb236"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb236-1"><a href="difference-in-differences-did.html#cb236-1" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(fte<span class="sc">~</span>nj<span class="sc">*</span>d, <span class="at">data=</span>njmin3)</span>
+<span id="cb236-2"><a href="difference-in-differences-did.html#cb236-2" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(fte<span class="sc">~</span>nj<span class="sc">*</span>d<span class="sc">+</span></span>
+<span id="cb236-3"><a href="difference-in-differences-did.html#cb236-3" aria-hidden="true" tabindex="-1"></a>             kfc<span class="sc">+</span>roys<span class="sc">+</span>wendys<span class="sc">+</span>co_owned, <span class="at">data=</span>njmin3)</span>
+<span id="cb236-4"><a href="difference-in-differences-did.html#cb236-4" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(fte<span class="sc">~</span>nj<span class="sc">*</span>d<span class="sc">+</span></span>
+<span id="cb236-5"><a href="difference-in-differences-did.html#cb236-5" aria-hidden="true" tabindex="-1"></a>             kfc<span class="sc">+</span>roys<span class="sc">+</span>wendys<span class="sc">+</span>co_owned<span class="sc">+</span></span>
+<span id="cb236-6"><a href="difference-in-differences-did.html#cb236-6" aria-hidden="true" tabindex="-1"></a>             southj<span class="sc">+</span>centralj<span class="sc">+</span>pa1, <span class="at">data=</span>njmin3)</span></code></pre></div>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="difference-in-differences-did.html#cb237-1" aria-hidden="true" tabindex="-1"></a>stargazer<span class="sc">::</span><span class="fu">stargazer</span>(mod1, mod2, mod3, </span>
+<span id="cb237-2"><a href="difference-in-differences-did.html#cb237-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">type =</span> <span class="st">&#39;text&#39;</span>, <span class="at">model.names =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb237-3"><a href="difference-in-differences-did.html#cb237-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">header=</span><span class="cn">FALSE</span>, <span class="at">keep.stat=</span><span class="st">&quot;n&quot;</span>,<span class="at">digits=</span><span class="dv">2</span>, </span>
+<span id="cb237-4"><a href="difference-in-differences-did.html#cb237-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">column.labels =</span> <span class="fu">c</span>(<span class="st">&#39;DID&#39;</span>, <span class="st">&#39;DIDw/Cov&#39;</span>, <span class="st">&#39;DIDw/All&#39;</span>))</span></code></pre></div>
 <pre><code>## 
 ## ==========================================
 ##                   Dependent variable:     
@@ -464,17 +483,102 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">7.4</span> Demo of HonestDiD (Rambachan &amp; Roth, 2022)<a href="difference-in-differences-did.html#demo-of-honestdid-rambachan-roth-2022" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
 <p>See original tutorial: <a href="https://github.com/asheshrambachan/HonestDiD" class="uri">https://github.com/asheshrambachan/HonestDiD</a></p>
-<div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="difference-in-differences-did.html#cb242-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb242-2"><a href="difference-in-differences-did.html#cb242-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(did)</span>
-<span id="cb242-3"><a href="difference-in-differences-did.html#cb242-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rglpk)</span>
-<span id="cb242-4"><a href="difference-in-differences-did.html#cb242-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
-<span id="cb242-5"><a href="difference-in-differences-did.html#cb242-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb242-6"><a href="difference-in-differences-did.html#cb242-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
-<span id="cb242-7"><a href="difference-in-differences-did.html#cb242-7" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github(&quot;asheshrambachan/HonestDiD&quot;)</span></span>
-<span id="cb242-8"><a href="difference-in-differences-did.html#cb242-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(HonestDiD)</span>
-<span id="cb242-9"><a href="difference-in-differences-did.html#cb242-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb242-10"><a href="difference-in-differences-did.html#cb242-10" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">&quot;https://raw.githubusercontent.com/Mixtape-Sessions/Advanced-DID/main/Exercises/Data/ehec_data.dta&quot;</span>)</span>
-<span id="cb242-11"><a href="difference-in-differences-did.html#cb242-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df,<span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb239-1"><a href="difference-in-differences-did.html#cb239-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div>
+<pre><code>## here() starts at /Users/gejiang/Box Sync/MacSync/Teaching/574Quasi-Experimental/Class2022/Lectures/R_Book_QuasiExperiments</code></pre>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb241-1"><a href="difference-in-differences-did.html#cb241-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(did)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;did&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:psych&#39;:
+## 
+##     sim</code></pre>
+<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="difference-in-differences-did.html#cb244-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rglpk)</span></code></pre></div>
+<pre><code>## Loading required package: slam</code></pre>
+<pre><code>## Using the GLPK callable library version 5.0</code></pre>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="difference-in-differences-did.html#cb247-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb247-2"><a href="difference-in-differences-did.html#cb247-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb247-3"><a href="difference-in-differences-did.html#cb247-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb247-4"><a href="difference-in-differences-did.html#cb247-4" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github(&quot;asheshrambachan/HonestDiD&quot;)</span></span>
+<span id="cb247-5"><a href="difference-in-differences-did.html#cb247-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(HonestDiD)</span></code></pre></div>
+<pre><code>## Loading required package: CVXR</code></pre>
+<pre><code>## 
+## Attaching package: &#39;CVXR&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     id</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     is_vector</code></pre>
+<pre><code>## The following object is masked from &#39;package:jtools&#39;:
+## 
+##     get_data</code></pre>
+<pre><code>## The following object is masked from &#39;package:numDeriv&#39;:
+## 
+##     grad</code></pre>
+<pre><code>## The following objects are masked from &#39;package:tcltk2&#39;:
+## 
+##     size, value, value&lt;-</code></pre>
+<pre><code>## The following object is masked from &#39;package:MASS&#39;:
+## 
+##     huber</code></pre>
+<pre><code>## The following object is masked from &#39;package:psych&#39;:
+## 
+##     logistic</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     power</code></pre>
+<pre><code>## Loading required package: doParallel</code></pre>
+<pre><code>## Loading required package: foreach</code></pre>
+<pre><code>## 
+## Attaching package: &#39;foreach&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:purrr&#39;:
+## 
+##     accumulate, when</code></pre>
+<pre><code>## Loading required package: iterators</code></pre>
+<pre><code>## Loading required package: parallel</code></pre>
+<pre><code>## Loading required package: latex2exp</code></pre>
+<pre><code>## Loading required package: lpSolveAPI</code></pre>
+<pre><code>## Loading required package: pracma</code></pre>
+<pre><code>## 
+## Attaching package: &#39;pracma&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:CVXR&#39;:
+## 
+##     conv, grad, size</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     cross</code></pre>
+<pre><code>## The following object is masked from &#39;package:survey&#39;:
+## 
+##     hadamard</code></pre>
+<pre><code>## The following objects are masked from &#39;package:Matrix&#39;:
+## 
+##     expm, lu, tril, triu</code></pre>
+<pre><code>## The following objects are masked from &#39;package:numDeriv&#39;:
+## 
+##     grad, hessian, jacobian</code></pre>
+<pre><code>## The following object is masked from &#39;package:tcltk2&#39;:
+## 
+##     size</code></pre>
+<pre><code>## The following object is masked from &#39;package:Hmisc&#39;:
+## 
+##     ceil</code></pre>
+<pre><code>## The following object is masked from &#39;package:car&#39;:
+## 
+##     logit</code></pre>
+<pre><code>## The following objects are masked from &#39;package:psych&#39;:
+## 
+##     logit, polar</code></pre>
+<pre><code>## Loading required package: ROI</code></pre>
+<pre><code>## ROI: R Optimization Infrastructure</code></pre>
+<pre><code>## Registered solver plugins: nlminb.</code></pre>
+<pre><code>## Default solver: auto.</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ROI&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:CVXR&#39;:
+## 
+##     constraints, constraints&lt;-, objective, objective&lt;-</code></pre>
+<pre><code>## Loading required package: TruncatedNormal</code></pre>
+<div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="difference-in-differences-did.html#cb284-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">&quot;https://raw.githubusercontent.com/Mixtape-Sessions/Advanced-DID/main/Exercises/Data/ehec_data.dta&quot;</span>)</span>
+<span id="cb284-2"><a href="difference-in-differences-did.html#cb284-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df,<span class="dv">5</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 5 × 5
 ##   stfips      year         dins yexp2      W
 ##   &lt;dbl+lbl&gt;   &lt;dbl+lbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
@@ -485,38 +589,38 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 5 1 [alabama] 2012 [2012] 0.671    NA 613156</code></pre>
 <div id="estimate-the-baseline-did" class="section level3 hasAnchor" number="7.4.1">
 <h3><span class="header-section-number">7.4.1</span> Estimate the baseline DiD<a href="difference-in-differences-did.html#estimate-the-baseline-did" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb244"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb244-1"><a href="difference-in-differences-did.html#cb244-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Keep years before 2016. Drop the 2016 cohort</span></span>
-<span id="cb244-2"><a href="difference-in-differences-did.html#cb244-2" aria-hidden="true" tabindex="-1"></a>df_nonstaggered <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year <span class="sc">&lt;</span> <span class="dv">2016</span> <span class="sc">&amp;</span> </span>
-<span id="cb244-3"><a href="difference-in-differences-did.html#cb244-3" aria-hidden="true" tabindex="-1"></a>                                 (<span class="fu">is.na</span>(yexp2)<span class="sc">|</span> yexp2 <span class="sc">!=</span> <span class="dv">2015</span>) )</span>
-<span id="cb244-4"><a href="difference-in-differences-did.html#cb244-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb244-5"><a href="difference-in-differences-did.html#cb244-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Create a treatment dummy</span></span>
-<span id="cb244-6"><a href="difference-in-differences-did.html#cb244-6" aria-hidden="true" tabindex="-1"></a>df_nonstaggered <span class="ot">&lt;-</span> df_nonstaggered <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">D =</span> <span class="fu">case_when</span>( yexp2 <span class="sc">==</span> <span class="dv">2014</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb244-7"><a href="difference-in-differences-did.html#cb244-7" aria-hidden="true" tabindex="-1"></a>                                                             T <span class="sc">~</span> <span class="dv">0</span>)) </span>
-<span id="cb244-8"><a href="difference-in-differences-did.html#cb244-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb244-9"><a href="difference-in-differences-did.html#cb244-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Run the TWFE spec</span></span>
-<span id="cb244-10"><a href="difference-in-differences-did.html#cb244-10" aria-hidden="true" tabindex="-1"></a>twfe_results <span class="ot">&lt;-</span> fixest<span class="sc">::</span><span class="fu">feols</span>(dins <span class="sc">~</span> <span class="fu">i</span>(year, D, <span class="at">ref =</span> <span class="dv">2013</span>) <span class="sc">|</span> stfips <span class="sc">+</span> year, </span>
-<span id="cb244-11"><a href="difference-in-differences-did.html#cb244-11" aria-hidden="true" tabindex="-1"></a>                        <span class="at">cluster =</span> <span class="st">&quot;stfips&quot;</span>,</span>
-<span id="cb244-12"><a href="difference-in-differences-did.html#cb244-12" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> df_nonstaggered)</span>
-<span id="cb244-13"><a href="difference-in-differences-did.html#cb244-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb244-14"><a href="difference-in-differences-did.html#cb244-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb244-15"><a href="difference-in-differences-did.html#cb244-15" aria-hidden="true" tabindex="-1"></a>betahat <span class="ot">&lt;-</span> <span class="fu">summary</span>(twfe_results)<span class="sc">$</span>coefficients <span class="co">#save the coefficients</span></span>
-<span id="cb244-16"><a href="difference-in-differences-did.html#cb244-16" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">summary</span>(twfe_results)<span class="sc">$</span>cov.scaled <span class="co">#save the covariance matrix</span></span>
-<span id="cb244-17"><a href="difference-in-differences-did.html#cb244-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb244-18"><a href="difference-in-differences-did.html#cb244-18" aria-hidden="true" tabindex="-1"></a>fixest<span class="sc">::</span><span class="fu">iplot</span>(twfe_results)</span></code></pre></div>
+<div class="sourceCode" id="cb286"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb286-1"><a href="difference-in-differences-did.html#cb286-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Keep years before 2016. Drop the 2016 cohort</span></span>
+<span id="cb286-2"><a href="difference-in-differences-did.html#cb286-2" aria-hidden="true" tabindex="-1"></a>df_nonstaggered <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(year <span class="sc">&lt;</span> <span class="dv">2016</span> <span class="sc">&amp;</span> </span>
+<span id="cb286-3"><a href="difference-in-differences-did.html#cb286-3" aria-hidden="true" tabindex="-1"></a>                                 (<span class="fu">is.na</span>(yexp2)<span class="sc">|</span> yexp2 <span class="sc">!=</span> <span class="dv">2015</span>) )</span>
+<span id="cb286-4"><a href="difference-in-differences-did.html#cb286-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb286-5"><a href="difference-in-differences-did.html#cb286-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Create a treatment dummy</span></span>
+<span id="cb286-6"><a href="difference-in-differences-did.html#cb286-6" aria-hidden="true" tabindex="-1"></a>df_nonstaggered <span class="ot">&lt;-</span> df_nonstaggered <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">D =</span> <span class="fu">case_when</span>( yexp2 <span class="sc">==</span> <span class="dv">2014</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb286-7"><a href="difference-in-differences-did.html#cb286-7" aria-hidden="true" tabindex="-1"></a>                                                             T <span class="sc">~</span> <span class="dv">0</span>)) </span>
+<span id="cb286-8"><a href="difference-in-differences-did.html#cb286-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb286-9"><a href="difference-in-differences-did.html#cb286-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Run the TWFE spec</span></span>
+<span id="cb286-10"><a href="difference-in-differences-did.html#cb286-10" aria-hidden="true" tabindex="-1"></a>twfe_results <span class="ot">&lt;-</span> fixest<span class="sc">::</span><span class="fu">feols</span>(dins <span class="sc">~</span> <span class="fu">i</span>(year, D, <span class="at">ref =</span> <span class="dv">2013</span>) <span class="sc">|</span> stfips <span class="sc">+</span> year, </span>
+<span id="cb286-11"><a href="difference-in-differences-did.html#cb286-11" aria-hidden="true" tabindex="-1"></a>                        <span class="at">cluster =</span> <span class="st">&quot;stfips&quot;</span>,</span>
+<span id="cb286-12"><a href="difference-in-differences-did.html#cb286-12" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> df_nonstaggered)</span>
+<span id="cb286-13"><a href="difference-in-differences-did.html#cb286-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb286-14"><a href="difference-in-differences-did.html#cb286-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb286-15"><a href="difference-in-differences-did.html#cb286-15" aria-hidden="true" tabindex="-1"></a>betahat <span class="ot">&lt;-</span> <span class="fu">summary</span>(twfe_results)<span class="sc">$</span>coefficients <span class="co">#save the coefficients</span></span>
+<span id="cb286-16"><a href="difference-in-differences-did.html#cb286-16" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">summary</span>(twfe_results)<span class="sc">$</span>cov.scaled <span class="co">#save the covariance matrix</span></span>
+<span id="cb286-17"><a href="difference-in-differences-did.html#cb286-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb286-18"><a href="difference-in-differences-did.html#cb286-18" aria-hidden="true" tabindex="-1"></a>fixest<span class="sc">::</span><span class="fu">iplot</span>(twfe_results)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-116-1.png" width="672" /></p>
 </div>
 <div id="sensitivity-analysis-using-relative-magnitudes-restrictions" class="section level3 hasAnchor" number="7.4.2">
 <h3><span class="header-section-number">7.4.2</span> Sensitivity analysis using relative magnitudes restrictions<a href="difference-in-differences-did.html#sensitivity-analysis-using-relative-magnitudes-restrictions" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="difference-in-differences-did.html#cb245-1" aria-hidden="true" tabindex="-1"></a>delta_rm_results <span class="ot">&lt;-</span> </span>
-<span id="cb245-2"><a href="difference-in-differences-did.html#cb245-2" aria-hidden="true" tabindex="-1"></a>HonestDiD<span class="sc">::</span><span class="fu">createSensitivityResults_relativeMagnitudes</span>(</span>
-<span id="cb245-3"><a href="difference-in-differences-did.html#cb245-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">betahat =</span> betahat, <span class="co">#coefficients</span></span>
-<span id="cb245-4"><a href="difference-in-differences-did.html#cb245-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">sigma =</span> sigma, <span class="co">#covariance matrix</span></span>
-<span id="cb245-5"><a href="difference-in-differences-did.html#cb245-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">numPrePeriods =</span> <span class="dv">5</span>, <span class="co">#num. of pre-treatment coefs</span></span>
-<span id="cb245-6"><a href="difference-in-differences-did.html#cb245-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">numPostPeriods =</span> <span class="dv">2</span>, <span class="co">#num. of post-treatment coefs</span></span>
-<span id="cb245-7"><a href="difference-in-differences-did.html#cb245-7" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">Mbarvec =</span> <span class="fu">seq</span>(<span class="fl">0.5</span>,<span class="dv">2</span>,<span class="at">by=</span><span class="fl">0.5</span>) <span class="co">#values of Mbar</span></span>
-<span id="cb245-8"><a href="difference-in-differences-did.html#cb245-8" aria-hidden="true" tabindex="-1"></a>                                    )</span>
-<span id="cb245-9"><a href="difference-in-differences-did.html#cb245-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-10"><a href="difference-in-differences-did.html#cb245-10" aria-hidden="true" tabindex="-1"></a>delta_rm_results</span></code></pre></div>
+<div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb287-1"><a href="difference-in-differences-did.html#cb287-1" aria-hidden="true" tabindex="-1"></a>delta_rm_results <span class="ot">&lt;-</span> </span>
+<span id="cb287-2"><a href="difference-in-differences-did.html#cb287-2" aria-hidden="true" tabindex="-1"></a>HonestDiD<span class="sc">::</span><span class="fu">createSensitivityResults_relativeMagnitudes</span>(</span>
+<span id="cb287-3"><a href="difference-in-differences-did.html#cb287-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">betahat =</span> betahat, <span class="co">#coefficients</span></span>
+<span id="cb287-4"><a href="difference-in-differences-did.html#cb287-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">sigma =</span> sigma, <span class="co">#covariance matrix</span></span>
+<span id="cb287-5"><a href="difference-in-differences-did.html#cb287-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">numPrePeriods =</span> <span class="dv">5</span>, <span class="co">#num. of pre-treatment coefs</span></span>
+<span id="cb287-6"><a href="difference-in-differences-did.html#cb287-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">numPostPeriods =</span> <span class="dv">2</span>, <span class="co">#num. of post-treatment coefs</span></span>
+<span id="cb287-7"><a href="difference-in-differences-did.html#cb287-7" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">Mbarvec =</span> <span class="fu">seq</span>(<span class="fl">0.5</span>,<span class="dv">2</span>,<span class="at">by=</span><span class="fl">0.5</span>) <span class="co">#values of Mbar</span></span>
+<span id="cb287-8"><a href="difference-in-differences-did.html#cb287-8" aria-hidden="true" tabindex="-1"></a>                                    )</span>
+<span id="cb287-9"><a href="difference-in-differences-did.html#cb287-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb287-10"><a href="difference-in-differences-did.html#cb287-10" aria-hidden="true" tabindex="-1"></a>delta_rm_results</span></code></pre></div>
 <pre><code>## # A tibble: 4 × 5
 ##          lb     ub method Delta    Mbar
 ##       &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;dbl&gt;
@@ -524,12 +628,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## 2  0.0170   0.0720 C-LF   DeltaRM   1  
 ## 3  0.00824  0.0797 C-LF   DeltaRM   1.5
 ## 4 -0.000916 0.0881 C-LF   DeltaRM   2</code></pre>
-<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="difference-in-differences-did.html#cb247-1" aria-hidden="true" tabindex="-1"></a>originalResults <span class="ot">&lt;-</span> HonestDiD<span class="sc">::</span><span class="fu">constructOriginalCS</span>(<span class="at">betahat =</span> betahat,</span>
-<span id="cb247-2"><a href="difference-in-differences-did.html#cb247-2" aria-hidden="true" tabindex="-1"></a>                                                  <span class="at">sigma =</span> sigma,</span>
-<span id="cb247-3"><a href="difference-in-differences-did.html#cb247-3" aria-hidden="true" tabindex="-1"></a>                                                  <span class="at">numPrePeriods =</span> <span class="dv">5</span>,</span>
-<span id="cb247-4"><a href="difference-in-differences-did.html#cb247-4" aria-hidden="true" tabindex="-1"></a>                                                  <span class="at">numPostPeriods =</span> <span class="dv">2</span>)</span>
-<span id="cb247-5"><a href="difference-in-differences-did.html#cb247-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb247-6"><a href="difference-in-differences-did.html#cb247-6" aria-hidden="true" tabindex="-1"></a>HonestDiD<span class="sc">::</span><span class="fu">createSensitivityPlot_relativeMagnitudes</span>(delta_rm_results, originalResults)</span></code></pre></div>
+<div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb289-1"><a href="difference-in-differences-did.html#cb289-1" aria-hidden="true" tabindex="-1"></a>originalResults <span class="ot">&lt;-</span> HonestDiD<span class="sc">::</span><span class="fu">constructOriginalCS</span>(<span class="at">betahat =</span> betahat,</span>
+<span id="cb289-2"><a href="difference-in-differences-did.html#cb289-2" aria-hidden="true" tabindex="-1"></a>                                                  <span class="at">sigma =</span> sigma,</span>
+<span id="cb289-3"><a href="difference-in-differences-did.html#cb289-3" aria-hidden="true" tabindex="-1"></a>                                                  <span class="at">numPrePeriods =</span> <span class="dv">5</span>,</span>
+<span id="cb289-4"><a href="difference-in-differences-did.html#cb289-4" aria-hidden="true" tabindex="-1"></a>                                                  <span class="at">numPostPeriods =</span> <span class="dv">2</span>)</span>
+<span id="cb289-5"><a href="difference-in-differences-did.html#cb289-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb289-6"><a href="difference-in-differences-did.html#cb289-6" aria-hidden="true" tabindex="-1"></a>HonestDiD<span class="sc">::</span><span class="fu">createSensitivityPlot_relativeMagnitudes</span>(delta_rm_results, originalResults)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-118-1.png" width="672" /></p>
 <!------------------------------>
 </div>
@@ -537,80 +641,80 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="synthetic-control" class="section level2 hasAnchor" number="7.5">
 <h2><span class="header-section-number">7.5</span> Synthetic Control<a href="difference-in-differences-did.html#synthetic-control" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <!------------------------------>
-<div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="difference-in-differences-did.html#cb248-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
-<span id="cb248-2"><a href="difference-in-differences-did.html#cb248-2" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github(&quot;edunford/tidysynth&quot;)</span></span>
-<span id="cb248-3"><a href="difference-in-differences-did.html#cb248-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidysynth)</span></code></pre></div>
+<div class="sourceCode" id="cb290"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb290-1"><a href="difference-in-differences-did.html#cb290-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
+<span id="cb290-2"><a href="difference-in-differences-did.html#cb290-2" aria-hidden="true" tabindex="-1"></a><span class="co">#devtools::install_github(&quot;edunford/tidysynth&quot;)</span></span>
+<span id="cb290-3"><a href="difference-in-differences-did.html#cb290-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidysynth)</span></code></pre></div>
 <div id="smoking-data" class="section level3 hasAnchor" number="7.5.1">
 <h3><span class="header-section-number">7.5.1</span> Smoking data<a href="difference-in-differences-did.html#smoking-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>See original tutorial: <a href="https://github.com/edunford/tidysynth" class="uri">https://github.com/edunford/tidysynth</a></p>
-<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="difference-in-differences-did.html#cb249-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;smoking&quot;</span>)</span>
-<span id="cb249-2"><a href="difference-in-differences-did.html#cb249-2" aria-hidden="true" tabindex="-1"></a>smoking <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb291-1"><a href="difference-in-differences-did.html#cb291-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;smoking&quot;</span>)</span>
+<span id="cb291-2"><a href="difference-in-differences-did.html#cb291-2" aria-hidden="true" tabindex="-1"></a>smoking <span class="sc">%&gt;%</span> dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code></pre></div>
 <pre><code>## Rows: 1,209
 ## Columns: 7
-## $ state     &lt;chr&gt; &quot;Rhode Island&quot;, &quot;Tennessee&quot;, &quot;Indiana&quot;, &quot;Nevada&quot;, &quot;Louisiana&quot;, &quot;Oklahoma&quot;, &quot;N…
-## $ year      &lt;dbl&gt; 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970,…
-## $ cigsale   &lt;dbl&gt; 123.9, 99.8, 134.6, 189.5, 115.9, 108.4, 265.7, 93.8, 100.3, 124.3, 124.8, 92…
-## $ lnincome  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ beer      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ age15to24 &lt;dbl&gt; 0.1831579, 0.1780438, 0.1765159, 0.1615542, 0.1851852, 0.1754592, 0.1707317, …
-## $ retprice  &lt;dbl&gt; 39.3, 39.9, 30.6, 38.9, 34.3, 38.4, 31.4, 37.3, 36.7, 28.8, 41.4, 38.5, 34.6,…</code></pre>
+## $ state     &lt;chr&gt; &quot;Rhode Island&quot;, &quot;Tennessee&quot;, &quot;Indiana&quot;, &quot;Nevada&quot;, &quot;Louisiana&quot;, &quot;Oklahoma&quot;, &quot;New …
+## $ year      &lt;dbl&gt; 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 1970, 19…
+## $ cigsale   &lt;dbl&gt; 123.9, 99.8, 134.6, 189.5, 115.9, 108.4, 265.7, 93.8, 100.3, 124.3, 124.8, 92.7,…
+## $ lnincome  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ beer      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ age15to24 &lt;dbl&gt; 0.1831579, 0.1780438, 0.1765159, 0.1615542, 0.1851852, 0.1754592, 0.1707317, 0.1…
+## $ retprice  &lt;dbl&gt; 39.3, 39.9, 30.6, 38.9, 34.3, 38.4, 31.4, 37.3, 36.7, 28.8, 41.4, 38.5, 34.6, 34…</code></pre>
 </div>
 <div id="generate-control" class="section level3 hasAnchor" number="7.5.2">
 <h3><span class="header-section-number">7.5.2</span> Generate Control<a href="difference-in-differences-did.html#generate-control" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The method aims to generate a synthetic California using information from a subset of control states (the “donor pool”) where a similar law was not implemented. The donor pool is the subset of case comparisons from which information is borrowed to generate a synthetic version of the treated unit (“California”).</p>
-<div class="sourceCode" id="cb251"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb251-1"><a href="difference-in-differences-did.html#cb251-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="ot">&lt;-</span></span>
-<span id="cb251-2"><a href="difference-in-differences-did.html#cb251-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb251-3"><a href="difference-in-differences-did.html#cb251-3" aria-hidden="true" tabindex="-1"></a>  smoking <span class="sc">%&gt;%</span></span>
-<span id="cb251-4"><a href="difference-in-differences-did.html#cb251-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb251-5"><a href="difference-in-differences-did.html#cb251-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initial the synthetic control object</span></span>
-<span id="cb251-6"><a href="difference-in-differences-did.html#cb251-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">synthetic_control</span>(<span class="at">outcome =</span> cigsale, <span class="co"># outcome</span></span>
-<span id="cb251-7"><a href="difference-in-differences-did.html#cb251-7" aria-hidden="true" tabindex="-1"></a>                    <span class="at">unit =</span> state, <span class="co"># unit index in the panel data</span></span>
-<span id="cb251-8"><a href="difference-in-differences-did.html#cb251-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">time =</span> year, <span class="co"># time index in the panel data</span></span>
-<span id="cb251-9"><a href="difference-in-differences-did.html#cb251-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">i_unit =</span> <span class="st">&quot;California&quot;</span>, <span class="co"># unit where the intervention occurred</span></span>
-<span id="cb251-10"><a href="difference-in-differences-did.html#cb251-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">i_time =</span> <span class="dv">1988</span>, <span class="co"># time period when the intervention occurred</span></span>
-<span id="cb251-11"><a href="difference-in-differences-did.html#cb251-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">generate_placebos=</span>T <span class="co"># generate placebo synthetic controls (for inference)</span></span>
-<span id="cb251-12"><a href="difference-in-differences-did.html#cb251-12" aria-hidden="true" tabindex="-1"></a>                    ) <span class="sc">%&gt;%</span></span>
-<span id="cb251-13"><a href="difference-in-differences-did.html#cb251-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb251-14"><a href="difference-in-differences-did.html#cb251-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the aggregate predictors used to fit the weights</span></span>
-<span id="cb251-15"><a href="difference-in-differences-did.html#cb251-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb251-16"><a href="difference-in-differences-did.html#cb251-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># average log income, retail price of cigarettes, and proportion of the</span></span>
-<span id="cb251-17"><a href="difference-in-differences-did.html#cb251-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># population between 15 and 24 years of age from 1980 - 1988</span></span>
-<span id="cb251-18"><a href="difference-in-differences-did.html#cb251-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1980</span><span class="sc">:</span><span class="dv">1988</span>,</span>
-<span id="cb251-19"><a href="difference-in-differences-did.html#cb251-19" aria-hidden="true" tabindex="-1"></a>                     <span class="at">ln_income =</span> <span class="fu">mean</span>(lnincome, <span class="at">na.rm =</span> T),</span>
-<span id="cb251-20"><a href="difference-in-differences-did.html#cb251-20" aria-hidden="true" tabindex="-1"></a>                     <span class="at">ret_price =</span> <span class="fu">mean</span>(retprice, <span class="at">na.rm =</span> T),</span>
-<span id="cb251-21"><a href="difference-in-differences-did.html#cb251-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">youth =</span> <span class="fu">mean</span>(age15to24, <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span></span>
-<span id="cb251-22"><a href="difference-in-differences-did.html#cb251-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb251-23"><a href="difference-in-differences-did.html#cb251-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># average beer consumption in the donor pool from 1984 - 1988</span></span>
-<span id="cb251-24"><a href="difference-in-differences-did.html#cb251-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1984</span><span class="sc">:</span><span class="dv">1988</span>,</span>
-<span id="cb251-25"><a href="difference-in-differences-did.html#cb251-25" aria-hidden="true" tabindex="-1"></a>                     <span class="at">beer_sales =</span> <span class="fu">mean</span>(beer, <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span></span>
-<span id="cb251-26"><a href="difference-in-differences-did.html#cb251-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb251-27"><a href="difference-in-differences-did.html#cb251-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Lagged cigarette sales </span></span>
-<span id="cb251-28"><a href="difference-in-differences-did.html#cb251-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1975</span>,</span>
-<span id="cb251-29"><a href="difference-in-differences-did.html#cb251-29" aria-hidden="true" tabindex="-1"></a>                     <span class="at">cigsale_1975 =</span> cigsale) <span class="sc">%&gt;%</span></span>
-<span id="cb251-30"><a href="difference-in-differences-did.html#cb251-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1980</span>,</span>
-<span id="cb251-31"><a href="difference-in-differences-did.html#cb251-31" aria-hidden="true" tabindex="-1"></a>                     <span class="at">cigsale_1980 =</span> cigsale) <span class="sc">%&gt;%</span></span>
-<span id="cb251-32"><a href="difference-in-differences-did.html#cb251-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1988</span>,</span>
-<span id="cb251-33"><a href="difference-in-differences-did.html#cb251-33" aria-hidden="true" tabindex="-1"></a>                     <span class="at">cigsale_1988 =</span> cigsale) <span class="sc">%&gt;%</span></span>
-<span id="cb251-34"><a href="difference-in-differences-did.html#cb251-34" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb251-35"><a href="difference-in-differences-did.html#cb251-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb251-36"><a href="difference-in-differences-did.html#cb251-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the fitted weights for the synthetic control</span></span>
-<span id="cb251-37"><a href="difference-in-differences-did.html#cb251-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_weights</span>(<span class="at">optimization_window =</span> <span class="dv">1970</span><span class="sc">:</span><span class="dv">1988</span>, <span class="co"># time to use in the optimization task</span></span>
-<span id="cb251-38"><a href="difference-in-differences-did.html#cb251-38" aria-hidden="true" tabindex="-1"></a>                   <span class="at">margin_ipop =</span> .<span class="dv">02</span>,<span class="at">sigf_ipop =</span> <span class="dv">7</span>,<span class="at">bound_ipop =</span> <span class="dv">6</span> <span class="co"># optimizer options</span></span>
-<span id="cb251-39"><a href="difference-in-differences-did.html#cb251-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb251-40"><a href="difference-in-differences-did.html#cb251-40" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb251-41"><a href="difference-in-differences-did.html#cb251-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the synthetic control</span></span>
-<span id="cb251-42"><a href="difference-in-differences-did.html#cb251-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_control</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb293"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb293-1"><a href="difference-in-differences-did.html#cb293-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="ot">&lt;-</span></span>
+<span id="cb293-2"><a href="difference-in-differences-did.html#cb293-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb293-3"><a href="difference-in-differences-did.html#cb293-3" aria-hidden="true" tabindex="-1"></a>  smoking <span class="sc">%&gt;%</span></span>
+<span id="cb293-4"><a href="difference-in-differences-did.html#cb293-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb293-5"><a href="difference-in-differences-did.html#cb293-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initial the synthetic control object</span></span>
+<span id="cb293-6"><a href="difference-in-differences-did.html#cb293-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">synthetic_control</span>(<span class="at">outcome =</span> cigsale, <span class="co"># outcome</span></span>
+<span id="cb293-7"><a href="difference-in-differences-did.html#cb293-7" aria-hidden="true" tabindex="-1"></a>                    <span class="at">unit =</span> state, <span class="co"># unit index in the panel data</span></span>
+<span id="cb293-8"><a href="difference-in-differences-did.html#cb293-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">time =</span> year, <span class="co"># time index in the panel data</span></span>
+<span id="cb293-9"><a href="difference-in-differences-did.html#cb293-9" aria-hidden="true" tabindex="-1"></a>                    <span class="at">i_unit =</span> <span class="st">&quot;California&quot;</span>, <span class="co"># unit where the intervention occurred</span></span>
+<span id="cb293-10"><a href="difference-in-differences-did.html#cb293-10" aria-hidden="true" tabindex="-1"></a>                    <span class="at">i_time =</span> <span class="dv">1988</span>, <span class="co"># time period when the intervention occurred</span></span>
+<span id="cb293-11"><a href="difference-in-differences-did.html#cb293-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">generate_placebos=</span>T <span class="co"># generate placebo synthetic controls (for inference)</span></span>
+<span id="cb293-12"><a href="difference-in-differences-did.html#cb293-12" aria-hidden="true" tabindex="-1"></a>                    ) <span class="sc">%&gt;%</span></span>
+<span id="cb293-13"><a href="difference-in-differences-did.html#cb293-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb293-14"><a href="difference-in-differences-did.html#cb293-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the aggregate predictors used to fit the weights</span></span>
+<span id="cb293-15"><a href="difference-in-differences-did.html#cb293-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb293-16"><a href="difference-in-differences-did.html#cb293-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># average log income, retail price of cigarettes, and proportion of the</span></span>
+<span id="cb293-17"><a href="difference-in-differences-did.html#cb293-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># population between 15 and 24 years of age from 1980 - 1988</span></span>
+<span id="cb293-18"><a href="difference-in-differences-did.html#cb293-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1980</span><span class="sc">:</span><span class="dv">1988</span>,</span>
+<span id="cb293-19"><a href="difference-in-differences-did.html#cb293-19" aria-hidden="true" tabindex="-1"></a>                     <span class="at">ln_income =</span> <span class="fu">mean</span>(lnincome, <span class="at">na.rm =</span> T),</span>
+<span id="cb293-20"><a href="difference-in-differences-did.html#cb293-20" aria-hidden="true" tabindex="-1"></a>                     <span class="at">ret_price =</span> <span class="fu">mean</span>(retprice, <span class="at">na.rm =</span> T),</span>
+<span id="cb293-21"><a href="difference-in-differences-did.html#cb293-21" aria-hidden="true" tabindex="-1"></a>                     <span class="at">youth =</span> <span class="fu">mean</span>(age15to24, <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span></span>
+<span id="cb293-22"><a href="difference-in-differences-did.html#cb293-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb293-23"><a href="difference-in-differences-did.html#cb293-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># average beer consumption in the donor pool from 1984 - 1988</span></span>
+<span id="cb293-24"><a href="difference-in-differences-did.html#cb293-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1984</span><span class="sc">:</span><span class="dv">1988</span>,</span>
+<span id="cb293-25"><a href="difference-in-differences-did.html#cb293-25" aria-hidden="true" tabindex="-1"></a>                     <span class="at">beer_sales =</span> <span class="fu">mean</span>(beer, <span class="at">na.rm =</span> T)) <span class="sc">%&gt;%</span></span>
+<span id="cb293-26"><a href="difference-in-differences-did.html#cb293-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb293-27"><a href="difference-in-differences-did.html#cb293-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Lagged cigarette sales </span></span>
+<span id="cb293-28"><a href="difference-in-differences-did.html#cb293-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1975</span>,</span>
+<span id="cb293-29"><a href="difference-in-differences-did.html#cb293-29" aria-hidden="true" tabindex="-1"></a>                     <span class="at">cigsale_1975 =</span> cigsale) <span class="sc">%&gt;%</span></span>
+<span id="cb293-30"><a href="difference-in-differences-did.html#cb293-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1980</span>,</span>
+<span id="cb293-31"><a href="difference-in-differences-did.html#cb293-31" aria-hidden="true" tabindex="-1"></a>                     <span class="at">cigsale_1980 =</span> cigsale) <span class="sc">%&gt;%</span></span>
+<span id="cb293-32"><a href="difference-in-differences-did.html#cb293-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1988</span>,</span>
+<span id="cb293-33"><a href="difference-in-differences-did.html#cb293-33" aria-hidden="true" tabindex="-1"></a>                     <span class="at">cigsale_1988 =</span> cigsale) <span class="sc">%&gt;%</span></span>
+<span id="cb293-34"><a href="difference-in-differences-did.html#cb293-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb293-35"><a href="difference-in-differences-did.html#cb293-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb293-36"><a href="difference-in-differences-did.html#cb293-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the fitted weights for the synthetic control</span></span>
+<span id="cb293-37"><a href="difference-in-differences-did.html#cb293-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_weights</span>(<span class="at">optimization_window =</span> <span class="dv">1970</span><span class="sc">:</span><span class="dv">1988</span>, <span class="co"># time to use in the optimization task</span></span>
+<span id="cb293-38"><a href="difference-in-differences-did.html#cb293-38" aria-hidden="true" tabindex="-1"></a>                   <span class="at">margin_ipop =</span> .<span class="dv">02</span>,<span class="at">sigf_ipop =</span> <span class="dv">7</span>,<span class="at">bound_ipop =</span> <span class="dv">6</span> <span class="co"># optimizer options</span></span>
+<span id="cb293-39"><a href="difference-in-differences-did.html#cb293-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb293-40"><a href="difference-in-differences-did.html#cb293-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb293-41"><a href="difference-in-differences-did.html#cb293-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Generate the synthetic control</span></span>
+<span id="cb293-42"><a href="difference-in-differences-did.html#cb293-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_control</span>()</span></code></pre></div>
 <p>Once the synthetic control is generated, one can easily assess the fit by comparing the trends of the synthetic and observed time series. The idea is that the trends in the pre-intervention period should map closely onto one another.</p>
-<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="difference-in-differences-did.html#cb252-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">plot_trends</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb294"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb294-1"><a href="difference-in-differences-did.html#cb294-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">plot_trends</span>()</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-121-1.png" width="672" /></p>
 <p>To capture the causal quantity (i.e. the difference between the observed and counterfactual), one can plot the differences using plot_differences()</p>
-<div class="sourceCode" id="cb253"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb253-1"><a href="difference-in-differences-did.html#cb253-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">plot_differences</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb295"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb295-1"><a href="difference-in-differences-did.html#cb295-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">plot_differences</span>()</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-122-1.png" width="672" /></p>
 <p>In addition, one can easily examine the weighting of the units and variables in the fit. This allows one to see which cases were used, in part, to generate the synthetic control.</p>
-<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="difference-in-differences-did.html#cb254-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">plot_weights</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb296-1"><a href="difference-in-differences-did.html#cb296-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">plot_weights</span>()</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-123-1.png" width="3000" style="display: block; margin: auto;" /></p>
 <p>Another useful way of evaluating the synthetic control is to look at how comparable the synthetic control is to the observed covariates of the treated unit.</p>
-<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="difference-in-differences-did.html#cb255-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">grab_balance_table</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb297"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb297-1"><a href="difference-in-differences-did.html#cb297-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">grab_balance_table</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 7 × 4
 ##   variable     California synthetic_California donor_sample
 ##   &lt;chr&gt;             &lt;dbl&gt;                &lt;dbl&gt;        &lt;dbl&gt;
@@ -625,10 +729,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="inference" class="section level3 hasAnchor" number="7.5.3">
 <h3><span class="header-section-number">7.5.3</span> Inference<a href="difference-in-differences-did.html#inference" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>For inference, the method relies on repeating the method for every donor in the donor pool exactly as was done for the treated unit - i.e. generating <em>placebo</em> synthetic controls). By setting <code>generate_placebos = TRUE</code> when initializing the synth pipeline with <code>synthetic_control()</code>, placebo cases are automatically generated when constructing the synthetic control of interest. This makes it easy to explore how unique difference between the observed and synthetic unit is when compared to the placebos.</p>
-<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb257-1"><a href="difference-in-differences-did.html#cb257-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">plot_placebos</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb299"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb299-1"><a href="difference-in-differences-did.html#cb299-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">plot_placebos</span>()</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-125-1.png" width="672" /></p>
 <p>there is a significance table that can be extracted with one of the many <code>grab_</code> prefix functions.</p>
-<div class="sourceCode" id="cb258"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb258-1"><a href="difference-in-differences-did.html#cb258-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">grab_significance</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb300"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb300-1"><a href="difference-in-differences-did.html#cb300-1" aria-hidden="true" tabindex="-1"></a>smoking_out <span class="sc">%&gt;%</span> <span class="fu">grab_significance</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 39 × 8
 ##    unit_name      type    pre_mspe post_mspe mspe_ratio  rank fishers_exact_pvalue z_score
 ##    &lt;chr&gt;          &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt; &lt;int&gt;                &lt;dbl&gt;   &lt;dbl&gt;

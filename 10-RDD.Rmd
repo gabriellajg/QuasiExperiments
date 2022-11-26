@@ -1,0 +1,129 @@
+# Regression Discontinuity Designs (RDD)
+
+* This lab goes over several estimators for RDD designs. 
+* Part of the R codes were adapted from Chapter 13 of: R Companion to Real Econometrics: https://bookdown.org/carillitony/bailey/chp11.html#fn20
+
+Install and load the following packages:
+
+```{r, message=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(rdd)
+```
+
+<!------------------------------>
+## Data
+<!------------------------------>
+
+* Let's estimate an RDD model using the data from a 2009 paper by Carpenter and Dobkin about the effect of increasing the drinking age on mortality rates. 
+* Carpenter, Christopher and Carlos Dobkin. “The Effects of Alcohol Consumption on Mortality: Regression Discontinuity from the Minimum Drinking Age,” American Economic Journal: Applied Econometrics, 2009, 1:1, 164-182.
+* The data are available at https://github.com/jrnold/masteringmetrics/tree/master/masteringmetrics/data in mlda.rda
+
+* First, Let's look at motor vehicle deaths (outcome) as a function of age (assignment variable). The cutoff age is 21 years old. 
+
+
+```{r}
+load("mlda.rda")
+mlda = na.omit(mlda) # removed 2 rows with missing data
+head(mlda)
+dim(mlda)
+```
+
+* assignment: minimum legal drinking age (agecell)
+* cutoff: 21 years old 
+* outcome: Motor Vehicle Accidents Death (mva) per 100,000 individuals 
+
+Plot the outcome against assignment variable (ggplot2): 
+
+```{r}
+mlda %>% 
+  select(agecell, mva) %>% 
+  mutate(Treat = as.factor(ifelse(agecell >= 21, 1, 0))) %>% 
+  ggplot(aes(x = agecell, y = mva, color = Treat)) +
+  geom_point() + 
+  geom_vline(xintercept = 21) + 
+  labs(y = "Deaths in Moving Vehicle Accidents", x = "Age")
+```
+
+Alternatively, there is a generic way of plotting using plot(): 
+
+```{r}
+plot(mlda$agecell, mlda$mva, xlab = "Age", ylab = "Deaths in Moving Vehicle Accidents")
+abline(v=21, col = 'red')
+```
+
+<!------------------------------>
+## Segmented regression
+<!------------------------------>
+
+* There appears to be a discontinuity at age 21. Let’s estimate the RD model:
+* mva = b0 + b1\*(agecell-21) + b2\*Treat + b3\*interaction1 + e
+* where Treat=1 if agecell>=21 and Treat=0 if agecell<21
+* let's call age_centered = agecell-21
+* interaction1 = \*age_centered\*Treat
+
+```{r}
+mlda$Treat = ifelse(mlda$agecell>=21, 1, 0)  # dummy variable for policy
+mlda$age_centered = mlda$agecell - 21  # "centered" age
+mlda$int1 = mlda$Treat*mlda$age_centered   # interaction with "centered" age
+```
+
+Segmented regression:
+
+```{r}
+lm1 = lm(mva ~ age_centered + Treat + int1, data = mlda)
+summary(lm1)
+# interpretation?
+```
+
+Now, note that age must be centered at the cutoff for ease of interpretation: 
+
+```{r}
+mlda$int2 = mlda$Treat*mlda$agecell        # interaction with age
+
+lm.wrong = lm(mva ~ agecell + Treat + int2, data = mlda)
+summary(lm.wrong)
+# interpretation?
+```
+
+```{r}
+stargazer::stargazer(lm1, lm.wrong, type = 'text')
+```
+
+PLOTTING: it is easier and fancier to do the plotting using ggplot2, but it's also feasible to plot using generic plot()
+
+```{r}
+# RDD - unequal slope
+mlda %>% 
+  select(agecell, mva) %>% 
+  mutate(Treat = as.factor(ifelse(agecell >= 21, 1, 0))) %>% 
+  ggplot(aes(x = agecell, y = mva, color = Treat)) +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  labs(y = "Deaths in Moving Vehicle Accidents", x = "Age")
+```
+
+
+<!------------------------------>
+## IK estimator
+<!------------------------------>
+
+Imbens-Kalyanaraman optimal bandwidth calculation:
+
+```{r}
+library(rdd)
+rd1 = RDestimate(formula = mva ~ agecell, data = mlda, cutpoint = 21)
+summary(rd1)
+```
+
+
+* In an RDD framework, we always need to balance our choice of large and small bandwidth. Larger bandwidth make the comparison between the treatment group and control group “less similar”.
+* We see that the coefficient called “LATE”, is our parameter of interest of the MLDA program on mortality.
+* We observe that deaths increase by 4.977 at the cutoff point of 21. The estimate of the treatment is slightly larger than the RDD estimate in lm1 (4.5340). 
+
+smoothed curve:
+
+```{r}
+plot(rd1)
+```
+

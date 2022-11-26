@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 5 PSM Matching Strategy | R Book for Quasi-Experimental Designs</title>
   <meta name="description" content="Chapter 5 PSM Matching Strategy | R Book for Quasi-Experimental Designs" />
-  <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.30 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 5 PSM Matching Strategy | R Book for Quasi-Experimental Designs" />
   <meta property="og:type" content="book" />
@@ -289,6 +289,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.6" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-5-check-residuals"><i class="fa fa-check"></i><b>9.6</b> Step 5: Check residuals</a></li>
 <li class="chapter" data-level="9.7" data-path="interupted-time-series-its-2.html"><a href="interupted-time-series-its-2.html#step-6-calculate-forecasts"><i class="fa fa-check"></i><b>9.7</b> Step 6: Calculate forecasts</a></li>
 </ul></li>
+<li class="chapter" data-level="10" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html"><i class="fa fa-check"></i><b>10</b> Regression Discontinuity Designs (RDD)</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#data-5"><i class="fa fa-check"></i><b>10.1</b> Data</a></li>
+<li class="chapter" data-level="10.2" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#segmented-regression"><i class="fa fa-check"></i><b>10.2</b> Segmented regression</a></li>
+<li class="chapter" data-level="10.3" data-path="regression-discontinuity-designs-rdd.html"><a href="regression-discontinuity-designs-rdd.html#ik-estimator"><i class="fa fa-check"></i><b>10.3</b> IK estimator</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="rdd-2.html"><a href="rdd-2.html"><i class="fa fa-check"></i><b>11</b> RDD (2)</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="rdd-2.html"><a href="rdd-2.html#step-1-determine-if-process-of-assigning-treatment-is-rule-based"><i class="fa fa-check"></i><b>11.1</b> Step 1: Determine if process of assigning treatment is rule-based</a></li>
+<li class="chapter" data-level="11.2" data-path="rdd-2.html"><a href="rdd-2.html#step-2-determine-if-the-design-is-fuzzy-or-sharp"><i class="fa fa-check"></i><b>11.2</b> Step 2: Determine if the design is fuzzy or sharp</a></li>
+<li class="chapter" data-level="11.3" data-path="rdd-2.html"><a href="rdd-2.html#step-3-check-for-discontinuity-in-running-variable-around-cutpoint"><i class="fa fa-check"></i><b>11.3</b> Step 3: Check for discontinuity in running variable around cutpoint</a></li>
+<li class="chapter" data-level="11.4" data-path="rdd-2.html"><a href="rdd-2.html#step-4-check-for-discontinuity-in-outcome-across-running-variable"><i class="fa fa-check"></i><b>11.4</b> Step 4: Check for discontinuity in outcome across running variable</a></li>
+<li class="chapter" data-level="11.5" data-path="rdd-2.html"><a href="rdd-2.html#step-5-measure-the-size-of-the-effect"><i class="fa fa-check"></i><b>11.5</b> Step 5: Measure the size of the effect</a>
+<ul>
+<li class="chapter" data-level="11.5.1" data-path="rdd-2.html"><a href="rdd-2.html#parametric-estimation"><i class="fa fa-check"></i><b>11.5.1</b> Parametric estimation</a></li>
+<li class="chapter" data-level="11.5.2" data-path="rdd-2.html"><a href="rdd-2.html#nonparametric-estimation"><i class="fa fa-check"></i><b>11.5.2</b> Nonparametric estimation</a></li>
+</ul></li>
+<li class="chapter" data-level="11.6" data-path="rdd-2.html"><a href="rdd-2.html#step-6-compare-all-the-effects"><i class="fa fa-check"></i><b>11.6</b> Step 6: Compare all the effects</a></li>
+</ul></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 </ul>
@@ -310,42 +329,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="psm-matching-strategy" class="section level1 hasAnchor" number="5">
 <h1><span class="header-section-number">Chapter 5</span> PSM Matching Strategy<a href="psm-matching-strategy.html#psm-matching-strategy" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="psm-matching-strategy.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matching)</span>
-<span id="cb96-2"><a href="psm-matching-strategy.html#cb96-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
-<span id="cb96-3"><a href="psm-matching-strategy.html#cb96-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(optmatch)</span>
-<span id="cb96-4"><a href="psm-matching-strategy.html#cb96-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(weights)</span>
-<span id="cb96-5"><a href="psm-matching-strategy.html#cb96-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cem)</span>
-<span id="cb96-6"><a href="psm-matching-strategy.html#cb96-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tcltk2)</span>
-<span id="cb96-7"><a href="psm-matching-strategy.html#cb96-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb96-8"><a href="psm-matching-strategy.html#cb96-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CBPS)</span>
-<span id="cb96-9"><a href="psm-matching-strategy.html#cb96-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jtools)</span>
-<span id="cb96-10"><a href="psm-matching-strategy.html#cb96-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cobalt)</span>
-<span id="cb96-11"><a href="psm-matching-strategy.html#cb96-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
-<span id="cb96-12"><a href="psm-matching-strategy.html#cb96-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich) <span class="co">#vcovCL</span></span>
-<span id="cb96-13"><a href="psm-matching-strategy.html#cb96-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rbounds) <span class="co">#gamma</span></span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="psm-matching-strategy.html#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matching)</span>
+<span id="cb93-2"><a href="psm-matching-strategy.html#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MatchIt)</span>
+<span id="cb93-3"><a href="psm-matching-strategy.html#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(optmatch)</span>
+<span id="cb93-4"><a href="psm-matching-strategy.html#cb93-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(weights)</span>
+<span id="cb93-5"><a href="psm-matching-strategy.html#cb93-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cem)</span>
+<span id="cb93-6"><a href="psm-matching-strategy.html#cb93-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tcltk2)</span>
+<span id="cb93-7"><a href="psm-matching-strategy.html#cb93-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb93-8"><a href="psm-matching-strategy.html#cb93-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CBPS)</span>
+<span id="cb93-9"><a href="psm-matching-strategy.html#cb93-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jtools)</span>
+<span id="cb93-10"><a href="psm-matching-strategy.html#cb93-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cobalt)</span>
+<span id="cb93-11"><a href="psm-matching-strategy.html#cb93-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb93-12"><a href="psm-matching-strategy.html#cb93-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich) <span class="co">#vcovCL</span></span>
+<span id="cb93-13"><a href="psm-matching-strategy.html#cb93-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rbounds) <span class="co">#gamma</span></span></code></pre></div>
 <div id="data" class="section level2 hasAnchor" number="5.1">
 <h2><span class="header-section-number">5.1</span> Data<a href="psm-matching-strategy.html#data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="psm-matching-strategy.html#cb97-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data(lalonde)</span></span>
-<span id="cb97-2"><a href="psm-matching-strategy.html#cb97-2" aria-hidden="true" tabindex="-1"></a>lalonde <span class="ot">=</span> MatchIt<span class="sc">::</span>lalonde</span>
-<span id="cb97-3"><a href="psm-matching-strategy.html#cb97-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(lalonde)</span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="psm-matching-strategy.html#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data(lalonde)</span></span>
+<span id="cb94-2"><a href="psm-matching-strategy.html#cb94-2" aria-hidden="true" tabindex="-1"></a>lalonde <span class="ot">=</span> MatchIt<span class="sc">::</span>lalonde</span>
+<span id="cb94-3"><a href="psm-matching-strategy.html#cb94-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(lalonde)</span></code></pre></div>
 <pre><code>## [1] 614   9</code></pre>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="psm-matching-strategy.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lalonde)</span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="psm-matching-strategy.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(lalonde)</span></code></pre></div>
 <pre><code>## [1] &quot;treat&quot;    &quot;age&quot;      &quot;educ&quot;     &quot;race&quot;     &quot;married&quot;  &quot;nodegree&quot; &quot;re74&quot;     &quot;re75&quot;    
 ## [9] &quot;re78&quot;</code></pre>
 <div id="create-dummy-variable-for-race-and-unemployment" class="section level3 hasAnchor" number="5.1.1">
 <h3><span class="header-section-number">5.1.1</span> Create dummy variable for race and unemployment<a href="psm-matching-strategy.html#create-dummy-variable-for-race-and-unemployment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="psm-matching-strategy.html#cb101-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>black <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>race<span class="sc">==</span><span class="st">&#39;black&#39;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb101-2"><a href="psm-matching-strategy.html#cb101-2" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>hispan <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>race<span class="sc">==</span><span class="st">&#39;hispan&#39;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb101-3"><a href="psm-matching-strategy.html#cb101-3" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>un74 <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>re74<span class="sc">==</span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
-<span id="cb101-4"><a href="psm-matching-strategy.html#cb101-4" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>un75 <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>re75<span class="sc">==</span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="psm-matching-strategy.html#cb98-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>black <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>race<span class="sc">==</span><span class="st">&#39;black&#39;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb98-2"><a href="psm-matching-strategy.html#cb98-2" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>hispan <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>race<span class="sc">==</span><span class="st">&#39;hispan&#39;</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb98-3"><a href="psm-matching-strategy.html#cb98-3" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>un74 <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>re74<span class="sc">==</span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb98-4"><a href="psm-matching-strategy.html#cb98-4" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>un75 <span class="ot">=</span> <span class="fu">ifelse</span>(lalonde<span class="sc">$</span>re75<span class="sc">==</span><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="regression-estimates" class="section level2 hasAnchor" number="5.2">
 <h2><span class="header-section-number">5.2</span> Regression Estimates<a href="psm-matching-strategy.html#regression-estimates" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="naive-t-test-estimate" class="section level3 hasAnchor" number="5.2.1">
 <h3><span class="header-section-number">5.2.1</span> naive t-test estimate<a href="psm-matching-strategy.html#naive-t-test-estimate" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="psm-matching-strategy.html#cb102-1" aria-hidden="true" tabindex="-1"></a>reglm <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat, <span class="at">data =</span> lalonde)</span>
-<span id="cb102-2"><a href="psm-matching-strategy.html#cb102-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(reglm)</span></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="psm-matching-strategy.html#cb99-1" aria-hidden="true" tabindex="-1"></a>reglm <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat, <span class="at">data =</span> lalonde)</span>
+<span id="cb99-2"><a href="psm-matching-strategy.html#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(reglm)</span></code></pre></div>
 <pre><code>## MODEL INFO:
 ## Observations: 614
 ## Dependent Variable: re78
@@ -366,8 +385,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="regression-with-covariates-2" class="section level3 hasAnchor" number="5.2.2">
 <h3><span class="header-section-number">5.2.2</span> regression with covariates<a href="psm-matching-strategy.html#regression-with-covariates-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="psm-matching-strategy.html#cb104-1" aria-hidden="true" tabindex="-1"></a>reglm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat <span class="sc">+</span> educ <span class="sc">+</span> age <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> nodegree <span class="sc">+</span> un74 <span class="sc">+</span> un75 <span class="sc">+</span> re74 <span class="sc">+</span> re75, <span class="at">data =</span> lalonde)</span>
-<span id="cb104-2"><a href="psm-matching-strategy.html#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(reglm1)</span></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="psm-matching-strategy.html#cb101-1" aria-hidden="true" tabindex="-1"></a>reglm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat <span class="sc">+</span> educ <span class="sc">+</span> age <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> nodegree <span class="sc">+</span> un74 <span class="sc">+</span> un75 <span class="sc">+</span> re74 <span class="sc">+</span> re75, <span class="at">data =</span> lalonde)</span>
+<span id="cb101-2"><a href="psm-matching-strategy.html#cb101-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(reglm1)</span></code></pre></div>
 <pre><code>## MODEL INFO:
 ## Observations: 614
 ## Dependent Variable: re78
@@ -401,23 +420,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">5.3</span> PSM Steps<a href="psm-matching-strategy.html#psm-steps" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div id="selection-of-covariates-in-x" class="section level3 hasAnchor" number="5.3.1">
 <h3><span class="header-section-number">5.3.1</span> Selection of covariates in X<a href="psm-matching-strategy.html#selection-of-covariates-in-x" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="psm-matching-strategy.html#cb106-1" aria-hidden="true" tabindex="-1"></a>fm1 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> educ <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span>
-<span id="cb106-2"><a href="psm-matching-strategy.html#cb106-2" aria-hidden="true" tabindex="-1"></a>fm2 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> educ <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span>
-<span id="cb106-3"><a href="psm-matching-strategy.html#cb106-3" aria-hidden="true" tabindex="-1"></a>fm3 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> educ <span class="sc">+</span> <span class="fu">I</span>(educ<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="psm-matching-strategy.html#cb103-1" aria-hidden="true" tabindex="-1"></a>fm1 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> educ <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span>
+<span id="cb103-2"><a href="psm-matching-strategy.html#cb103-2" aria-hidden="true" tabindex="-1"></a>fm2 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> educ <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span>
+<span id="cb103-3"><a href="psm-matching-strategy.html#cb103-3" aria-hidden="true" tabindex="-1"></a>fm3 <span class="ot">=</span> treat <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(age<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> educ <span class="sc">+</span> <span class="fu">I</span>(educ<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> black <span class="sc">+</span> hispan <span class="sc">+</span> married <span class="sc">+</span> <span class="fu">I</span>(re74<span class="sc">/</span><span class="dv">1000</span>) <span class="sc">+</span> <span class="fu">I</span>(re75<span class="sc">/</span><span class="dv">1000</span>)</span></code></pre></div>
 </div>
 <div id="calculation-of-propensity-scores-p-scores" class="section level3 hasAnchor" number="5.3.2">
 <h3><span class="header-section-number">5.3.2</span> Calculation of propensity scores (p-scores)<a href="psm-matching-strategy.html#calculation-of-propensity-scores-p-scores" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="psm-matching-strategy.html#cb107-1" aria-hidden="true" tabindex="-1"></a>pscore <span class="ot">&lt;-</span> <span class="fu">glm</span>(fm2, <span class="at">data =</span> lalonde, <span class="at">family =</span> <span class="st">&#39;binomial&#39;</span>)</span>
-<span id="cb107-2"><a href="psm-matching-strategy.html#cb107-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pscore<span class="sc">$</span>fitted.values)</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="psm-matching-strategy.html#cb104-1" aria-hidden="true" tabindex="-1"></a>pscore <span class="ot">&lt;-</span> <span class="fu">glm</span>(fm2, <span class="at">data =</span> lalonde, <span class="at">family =</span> <span class="st">&#39;binomial&#39;</span>)</span>
+<span id="cb104-2"><a href="psm-matching-strategy.html#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pscore<span class="sc">$</span>fitted.values)</span></code></pre></div>
 <pre><code>##      NSW1      NSW2      NSW3      NSW4      NSW5      NSW6 
 ## 0.5871794 0.3014102 0.9056376 0.9020139 0.9069395 0.8230760</code></pre>
-<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="psm-matching-strategy.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">0</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="psm-matching-strategy.html#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">0</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
-<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="psm-matching-strategy.html#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">1</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="psm-matching-strategy.html#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pscore<span class="sc">$</span>fitted.values[lalonde<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">1</span>],<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>))</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-51-2.png" width="672" /></p>
-<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="psm-matching-strategy.html#cb111-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>pscore <span class="ot">=</span> pscore<span class="sc">$</span>fitted.values</span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="psm-matching-strategy.html#cb108-1" aria-hidden="true" tabindex="-1"></a>lalonde<span class="sc">$</span>pscore <span class="ot">=</span> pscore<span class="sc">$</span>fitted.values</span></code></pre></div>
 <p>Logistic regression:</p>
-<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="psm-matching-strategy.html#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(pscore)</span></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="psm-matching-strategy.html#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(pscore)</span></code></pre></div>
 <pre><code>## MODEL INFO:
 ## Observations: 614
 ## Dependent Variable: treat
@@ -451,17 +470,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="matching-based-on-p-sores" class="section level3 hasAnchor" number="5.3.3">
 <h3><span class="header-section-number">5.3.3</span> Matching based on p-sores<a href="psm-matching-strategy.html#matching-based-on-p-sores" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>all in one function matchit():</p>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="psm-matching-strategy.html#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb114-2"><a href="psm-matching-strategy.html#cb114-2" aria-hidden="true" tabindex="-1"></a>m.out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
-<span id="cb114-3"><a href="psm-matching-strategy.html#cb114-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm1,</span>
-<span id="cb114-4"><a href="psm-matching-strategy.html#cb114-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
-<span id="cb114-5"><a href="psm-matching-strategy.html#cb114-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>,</span>
-<span id="cb114-6"><a href="psm-matching-strategy.html#cb114-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb114-7"><a href="psm-matching-strategy.html#cb114-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">caliper =</span> <span class="fl">0.2</span>, </span>
-<span id="cb114-8"><a href="psm-matching-strategy.html#cb114-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">discard =</span> <span class="st">&#39;both&#39;</span></span>
-<span id="cb114-9"><a href="psm-matching-strategy.html#cb114-9" aria-hidden="true" tabindex="-1"></a>                 )</span></code></pre></div>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="psm-matching-strategy.html#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb111-2"><a href="psm-matching-strategy.html#cb111-2" aria-hidden="true" tabindex="-1"></a>m.out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
+<span id="cb111-3"><a href="psm-matching-strategy.html#cb111-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm1,</span>
+<span id="cb111-4"><a href="psm-matching-strategy.html#cb111-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
+<span id="cb111-5"><a href="psm-matching-strategy.html#cb111-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>,</span>
+<span id="cb111-6"><a href="psm-matching-strategy.html#cb111-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb111-7"><a href="psm-matching-strategy.html#cb111-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">caliper =</span> <span class="fl">0.2</span>, </span>
+<span id="cb111-8"><a href="psm-matching-strategy.html#cb111-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">discard =</span> <span class="st">&#39;both&#39;</span></span>
+<span id="cb111-9"><a href="psm-matching-strategy.html#cb111-9" aria-hidden="true" tabindex="-1"></a>                 )</span></code></pre></div>
 <p>summary of matching results:</p>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="psm-matching-strategy.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.out)</span></code></pre></div>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="psm-matching-strategy.html#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.out)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## matchit(formula = fm1, data = lalonde, method = &quot;nearest&quot;, distance = &quot;logit&quot;, 
@@ -477,7 +496,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## married             0.1892        0.5128         -0.8263          .    0.3236   0.3236
 ## I(re74/1000)        2.0956        5.6192         -0.7211     0.5181    0.2248   0.4470
 ## I(re75/1000)        1.5321        2.4665         -0.2903     0.9563    0.1342   0.2876
-## 
 ## 
 ## Summary of Balance for Matched Data:
 ##              Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max
@@ -519,26 +537,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">5.3.4</span> Checking balance on covariates:<a href="psm-matching-strategy.html#checking-balance-on-covariates" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="balance-for-formula-1" class="section level4 hasAnchor" number="5.3.4.1">
 <h4><span class="header-section-number">5.3.4.1</span> Balance for formula 1:<a href="psm-matching-strategy.html#balance-for-formula-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="psm-matching-strategy.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m.out))</span></code></pre></div>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="psm-matching-strategy.html#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m.out))</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-55-1.png" width="672" /></p>
 </div>
 <div id="balance-for-formula-2" class="section level4 hasAnchor" number="5.3.4.2">
 <h4><span class="header-section-number">5.3.4.2</span> Balance for formula 2:<a href="psm-matching-strategy.html#balance-for-formula-2" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="psm-matching-strategy.html#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb118-2"><a href="psm-matching-strategy.html#cb118-2" aria-hidden="true" tabindex="-1"></a>m.out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
-<span id="cb118-3"><a href="psm-matching-strategy.html#cb118-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm2,</span>
-<span id="cb118-4"><a href="psm-matching-strategy.html#cb118-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
-<span id="cb118-5"><a href="psm-matching-strategy.html#cb118-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>,</span>
-<span id="cb118-6"><a href="psm-matching-strategy.html#cb118-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb118-7"><a href="psm-matching-strategy.html#cb118-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">caliper =</span> <span class="fl">0.2</span>, </span>
-<span id="cb118-8"><a href="psm-matching-strategy.html#cb118-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">discard =</span> <span class="st">&#39;both&#39;</span></span>
-<span id="cb118-9"><a href="psm-matching-strategy.html#cb118-9" aria-hidden="true" tabindex="-1"></a>                 )</span>
-<span id="cb118-10"><a href="psm-matching-strategy.html#cb118-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m.out))</span></code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="psm-matching-strategy.html#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb115-2"><a href="psm-matching-strategy.html#cb115-2" aria-hidden="true" tabindex="-1"></a>m.out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
+<span id="cb115-3"><a href="psm-matching-strategy.html#cb115-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm2,</span>
+<span id="cb115-4"><a href="psm-matching-strategy.html#cb115-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
+<span id="cb115-5"><a href="psm-matching-strategy.html#cb115-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>,</span>
+<span id="cb115-6"><a href="psm-matching-strategy.html#cb115-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb115-7"><a href="psm-matching-strategy.html#cb115-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">caliper =</span> <span class="fl">0.2</span>, </span>
+<span id="cb115-8"><a href="psm-matching-strategy.html#cb115-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">discard =</span> <span class="st">&#39;both&#39;</span></span>
+<span id="cb115-9"><a href="psm-matching-strategy.html#cb115-9" aria-hidden="true" tabindex="-1"></a>                 )</span>
+<span id="cb115-10"><a href="psm-matching-strategy.html#cb115-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m.out))</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-56-1.png" width="672" /></p>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="psm-matching-strategy.html#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">love.plot</span>(m.out, <span class="at">binary =</span> <span class="st">&quot;std&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="psm-matching-strategy.html#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">love.plot</span>(m.out, <span class="at">binary =</span> <span class="st">&quot;std&quot;</span>)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-56-2.png" width="672" /></p>
 <p>Standardized mean differences (SMD):</p>
-<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="psm-matching-strategy.html#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.out)</span></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="psm-matching-strategy.html#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.out)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## matchit(formula = fm2, data = lalonde, method = &quot;nearest&quot;, distance = &quot;logit&quot;, 
@@ -556,7 +574,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## married             0.1892        0.5128         -0.8263          .    0.3236   0.3236
 ## I(re74/1000)        2.0956        5.6192         -0.7211     0.5181    0.2248   0.4470
 ## I(re75/1000)        1.5321        2.4665         -0.2903     0.9563    0.1342   0.2876
-## 
 ## 
 ## Summary of Balance for Matched Data:
 ##              Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max
@@ -589,20 +606,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Matched         78.       169
 ## Unmatched      229.         0
 ## Discarded      122.        16</code></pre>
-<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="psm-matching-strategy.html#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co">#out = summary(m.out)</span></span>
-<span id="cb122-2"><a href="psm-matching-strategy.html#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="co">#round(out$sum.all, 3)</span></span>
-<span id="cb122-3"><a href="psm-matching-strategy.html#cb122-3" aria-hidden="true" tabindex="-1"></a><span class="co">#round(out$sum.matched, 3)</span></span></code></pre></div>
-<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="psm-matching-strategy.html#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m.out, <span class="at">type =</span> <span class="st">&quot;hist&quot;</span>, <span class="at">interactive =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="psm-matching-strategy.html#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="co">#out = summary(m.out)</span></span>
+<span id="cb119-2"><a href="psm-matching-strategy.html#cb119-2" aria-hidden="true" tabindex="-1"></a><span class="co">#round(out$sum.all, 3)</span></span>
+<span id="cb119-3"><a href="psm-matching-strategy.html#cb119-3" aria-hidden="true" tabindex="-1"></a><span class="co">#round(out$sum.matched, 3)</span></span></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="psm-matching-strategy.html#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m.out, <span class="at">type =</span> <span class="st">&quot;hist&quot;</span>, <span class="at">interactive =</span> F)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-58-1.png" width="672" /></p>
-<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="psm-matching-strategy.html#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m.out, <span class="at">type =</span> <span class="st">&quot;jitter&quot;</span>, <span class="at">interactive =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="psm-matching-strategy.html#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(m.out, <span class="at">type =</span> <span class="st">&quot;jitter&quot;</span>, <span class="at">interactive =</span> F)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-58-2.png" width="672" /></p>
-<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb125-1"><a href="psm-matching-strategy.html#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">love.plot</span>(m.out, <span class="at">binary =</span> <span class="st">&quot;std&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="psm-matching-strategy.html#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="fu">love.plot</span>(m.out, <span class="at">binary =</span> <span class="st">&quot;std&quot;</span>)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-58-3.png" width="672" /></p>
-<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="psm-matching-strategy.html#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bal.plot</span>(m.out, <span class="at">var.name =</span> <span class="st">&quot;distance&quot;</span>, <span class="at">which =</span> <span class="st">&quot;both&quot;</span>,</span>
-<span id="cb126-2"><a href="psm-matching-strategy.html#cb126-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">type =</span> <span class="st">&quot;histogram&quot;</span>, <span class="at">mirror =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="psm-matching-strategy.html#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bal.plot</span>(m.out, <span class="at">var.name =</span> <span class="st">&quot;distance&quot;</span>, <span class="at">which =</span> <span class="st">&quot;both&quot;</span>,</span>
+<span id="cb123-2"><a href="psm-matching-strategy.html#cb123-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">type =</span> <span class="st">&quot;histogram&quot;</span>, <span class="at">mirror =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-58-4.png" width="672" /></p>
 <p>who matched to whom?</p>
-<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="psm-matching-strategy.html#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(m.out<span class="sc">$</span>match.matrix, <span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="psm-matching-strategy.html#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(m.out<span class="sc">$</span>match.matrix, <span class="dv">10</span>)</span></code></pre></div>
 <pre><code>##       [,1]     
 ## NSW1  &quot;PSID15&quot; 
 ## NSW2  &quot;PSID76&quot; 
@@ -617,16 +634,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="balance-for-formula-3" class="section level4 hasAnchor" number="5.3.4.3">
 <h4><span class="header-section-number">5.3.4.3</span> Balance for formula 3:<a href="psm-matching-strategy.html#balance-for-formula-3" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="psm-matching-strategy.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb129-2"><a href="psm-matching-strategy.html#cb129-2" aria-hidden="true" tabindex="-1"></a>m.out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
-<span id="cb129-3"><a href="psm-matching-strategy.html#cb129-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm3,</span>
-<span id="cb129-4"><a href="psm-matching-strategy.html#cb129-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
-<span id="cb129-5"><a href="psm-matching-strategy.html#cb129-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>,</span>
-<span id="cb129-6"><a href="psm-matching-strategy.html#cb129-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb129-7"><a href="psm-matching-strategy.html#cb129-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">caliper =</span> <span class="fl">0.2</span>, </span>
-<span id="cb129-8"><a href="psm-matching-strategy.html#cb129-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">discard =</span> <span class="st">&#39;both&#39;</span></span>
-<span id="cb129-9"><a href="psm-matching-strategy.html#cb129-9" aria-hidden="true" tabindex="-1"></a>                 )</span></code></pre></div>
-<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="psm-matching-strategy.html#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.out)</span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="psm-matching-strategy.html#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb126-2"><a href="psm-matching-strategy.html#cb126-2" aria-hidden="true" tabindex="-1"></a>m.out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
+<span id="cb126-3"><a href="psm-matching-strategy.html#cb126-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm3,</span>
+<span id="cb126-4"><a href="psm-matching-strategy.html#cb126-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
+<span id="cb126-5"><a href="psm-matching-strategy.html#cb126-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>,</span>
+<span id="cb126-6"><a href="psm-matching-strategy.html#cb126-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb126-7"><a href="psm-matching-strategy.html#cb126-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">caliper =</span> <span class="fl">0.2</span>, </span>
+<span id="cb126-8"><a href="psm-matching-strategy.html#cb126-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">discard =</span> <span class="st">&#39;both&#39;</span></span>
+<span id="cb126-9"><a href="psm-matching-strategy.html#cb126-9" aria-hidden="true" tabindex="-1"></a>                 )</span></code></pre></div>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb127-1"><a href="psm-matching-strategy.html#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m.out)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## matchit(formula = fm3, data = lalonde, method = &quot;nearest&quot;, distance = &quot;logit&quot;, 
@@ -645,7 +662,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## married             0.1892        0.5128         -0.8263          .    0.3236   0.3236
 ## I(re74/1000)        2.0956        5.6192         -0.7211     0.5181    0.2248   0.4470
 ## I(re75/1000)        1.5321        2.4665         -0.2903     0.9563    0.1342   0.2876
-## 
 ## 
 ## Summary of Balance for Matched Data:
 ##              Means Treated Means Control Std. Mean Diff. Var. Ratio eCDF Mean eCDF Max
@@ -679,54 +695,54 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## Matched       100     100
 ## Unmatched     208      77
 ## Discarded     121       8</code></pre>
-<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="psm-matching-strategy.html#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m.out))</span></code></pre></div>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb129-1"><a href="psm-matching-strategy.html#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m.out))</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-62-1.png" width="672" /></p>
-<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="psm-matching-strategy.html#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="fu">love.plot</span>(m.out, <span class="at">binary =</span> <span class="st">&quot;std&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="psm-matching-strategy.html#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="fu">love.plot</span>(m.out, <span class="at">binary =</span> <span class="st">&quot;std&quot;</span>)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-62-2.png" width="672" /></p>
 </div>
 </div>
 <div id="estimation-of-treatment-effect" class="section level3 hasAnchor" number="5.3.5">
 <h3><span class="header-section-number">5.3.5</span> Estimation of treatment effect<a href="psm-matching-strategy.html#estimation-of-treatment-effect" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>I will use the matching results with fm3 because it yielded the best balance on the covariates between the matched groups. I also kept ratio = 1 and replace = FALSE to avoid the specification of weights for now:</p>
-<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="psm-matching-strategy.html#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb134-2"><a href="psm-matching-strategy.html#cb134-2" aria-hidden="true" tabindex="-1"></a>m.out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
-<span id="cb134-3"><a href="psm-matching-strategy.html#cb134-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm3,</span>
-<span id="cb134-4"><a href="psm-matching-strategy.html#cb134-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
-<span id="cb134-5"><a href="psm-matching-strategy.html#cb134-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>,</span>
-<span id="cb134-6"><a href="psm-matching-strategy.html#cb134-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb134-7"><a href="psm-matching-strategy.html#cb134-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ratio =</span> <span class="dv">1</span>, </span>
-<span id="cb134-8"><a href="psm-matching-strategy.html#cb134-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">caliper =</span> <span class="fl">0.2</span>, </span>
-<span id="cb134-9"><a href="psm-matching-strategy.html#cb134-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">discard =</span> <span class="st">&#39;both&#39;</span>,</span>
-<span id="cb134-10"><a href="psm-matching-strategy.html#cb134-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">&#39;ATC&#39;</span></span>
-<span id="cb134-11"><a href="psm-matching-strategy.html#cb134-11" aria-hidden="true" tabindex="-1"></a>                 )</span>
-<span id="cb134-12"><a href="psm-matching-strategy.html#cb134-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m.out))</span></code></pre></div>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb131-1"><a href="psm-matching-strategy.html#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb131-2"><a href="psm-matching-strategy.html#cb131-2" aria-hidden="true" tabindex="-1"></a>m.out <span class="ot">&lt;-</span> <span class="fu">matchit</span>(<span class="at">data =</span> lalonde,</span>
+<span id="cb131-3"><a href="psm-matching-strategy.html#cb131-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">formula =</span> fm3,</span>
+<span id="cb131-4"><a href="psm-matching-strategy.html#cb131-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">distance =</span> <span class="st">&quot;logit&quot;</span>,</span>
+<span id="cb131-5"><a href="psm-matching-strategy.html#cb131-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>,</span>
+<span id="cb131-6"><a href="psm-matching-strategy.html#cb131-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">replace =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb131-7"><a href="psm-matching-strategy.html#cb131-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">ratio =</span> <span class="dv">1</span>, </span>
+<span id="cb131-8"><a href="psm-matching-strategy.html#cb131-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">caliper =</span> <span class="fl">0.2</span>, </span>
+<span id="cb131-9"><a href="psm-matching-strategy.html#cb131-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">discard =</span> <span class="st">&#39;both&#39;</span>,</span>
+<span id="cb131-10"><a href="psm-matching-strategy.html#cb131-10" aria-hidden="true" tabindex="-1"></a>                 <span class="at">estimand =</span> <span class="st">&#39;ATC&#39;</span></span>
+<span id="cb131-11"><a href="psm-matching-strategy.html#cb131-11" aria-hidden="true" tabindex="-1"></a>                 )</span>
+<span id="cb131-12"><a href="psm-matching-strategy.html#cb131-12" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">summary</span>(m.out))</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-63-1.png" width="672" /></p>
-<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb135-1"><a href="psm-matching-strategy.html#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">love.plot</span>(m.out, <span class="at">binary =</span> <span class="st">&quot;std&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="psm-matching-strategy.html#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="fu">love.plot</span>(m.out, <span class="at">binary =</span> <span class="st">&quot;std&quot;</span>)</span></code></pre></div>
 <p><img src="bookdownproj_files/figure-html/unnamed-chunk-63-2.png" width="672" /></p>
 <p>Extract matched data:</p>
-<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="psm-matching-strategy.html#cb136-1" aria-hidden="true" tabindex="-1"></a>m.data <span class="ot">&lt;-</span> <span class="fu">match.data</span>(m.out)</span>
-<span id="cb136-2"><a href="psm-matching-strategy.html#cb136-2" aria-hidden="true" tabindex="-1"></a><span class="co"># m.data &lt;- get_matches(m.out)</span></span>
-<span id="cb136-3"><a href="psm-matching-strategy.html#cb136-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(m.data)</span></code></pre></div>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb133-1"><a href="psm-matching-strategy.html#cb133-1" aria-hidden="true" tabindex="-1"></a>m.data <span class="ot">&lt;-</span> <span class="fu">match.data</span>(m.out)</span>
+<span id="cb133-2"><a href="psm-matching-strategy.html#cb133-2" aria-hidden="true" tabindex="-1"></a><span class="co"># m.data &lt;- get_matches(m.out)</span></span>
+<span id="cb133-3"><a href="psm-matching-strategy.html#cb133-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(m.data)</span></code></pre></div>
 <pre><code>## [1] 200  17</code></pre>
-<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="psm-matching-strategy.html#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(m.data)</span></code></pre></div>
-<pre><code>##       treat age educ   race married nodegree re74 re75      re78 black hispan un74 un75
-## NSW2      1  22    9 hispan       0        1    0    0  3595.894     0      1    1    1
-## NSW6      1  22    9  black       0        1    0    0  4056.494     1      0    1    1
-## NSW9      1  22   16  black       0        0    0    0  2164.022     1      0    1    1
-## NSW10     1  33   12  white       1        0    0    0 12418.070     0      0    1    1
-## NSW12     1  21   13  black       0        0    0    0 17094.640     1      0    1    1
-## NSW13     1  18    8  black       0        1    0    0     0.000     1      0    1    1
-##           pscore  distance weights subclass
-## NSW2  0.30141015 0.3896185       1       97
-## NSW6  0.82307603 0.8771158       1       35
-## NSW9  0.77887748 0.3024290       1       59
-## NSW10 0.09238612 0.1029728       1       95
-## NSW12 0.75335020 0.6782126       1       81
-## NSW13 0.56957065 0.5923959       1       77</code></pre>
+<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb135-1"><a href="psm-matching-strategy.html#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(m.data)</span></code></pre></div>
+<pre><code>##       treat age educ   race married nodegree re74 re75      re78 black hispan un74 un75     pscore
+## NSW2      1  22    9 hispan       0        1    0    0  3595.894     0      1    1    1 0.30141015
+## NSW6      1  22    9  black       0        1    0    0  4056.494     1      0    1    1 0.82307603
+## NSW9      1  22   16  black       0        0    0    0  2164.022     1      0    1    1 0.77887748
+## NSW10     1  33   12  white       1        0    0    0 12418.070     0      0    1    1 0.09238612
+## NSW12     1  21   13  black       0        0    0    0 17094.640     1      0    1    1 0.75335020
+## NSW13     1  18    8  black       0        1    0    0     0.000     1      0    1    1 0.56957065
+##        distance weights subclass
+## NSW2  0.3896185       1       97
+## NSW6  0.8771158       1       35
+## NSW9  0.3024290       1       59
+## NSW10 0.1029728       1       95
+## NSW12 0.6782126       1       81
+## NSW13 0.5923959       1       77</code></pre>
 <div id="linear-model-without-covariates" class="section level4 hasAnchor" number="5.3.5.1">
 <h4><span class="header-section-number">5.3.5.1</span> Linear model without covariates:<a href="psm-matching-strategy.html#linear-model-without-covariates" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="psm-matching-strategy.html#cb140-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat, <span class="at">data =</span> m.data)</span>
-<span id="cb140-2"><a href="psm-matching-strategy.html#cb140-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(fit1)</span></code></pre></div>
+<div class="sourceCode" id="cb137"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb137-1"><a href="psm-matching-strategy.html#cb137-1" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat, <span class="at">data =</span> m.data)</span>
+<span id="cb137-2"><a href="psm-matching-strategy.html#cb137-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(fit1)</span></code></pre></div>
 <pre><code>## MODEL INFO:
 ## Observations: 200
 ## Dependent Variable: re78
@@ -745,7 +761,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## treat                557.46   941.33     0.59   0.55
 ## ----------------------------------------------------</code></pre>
 <p>Cluster-robust standard errors:</p>
-<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="psm-matching-strategy.html#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(fit1, <span class="at">vcov. =</span> vcovCL)</span></code></pre></div>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb139-1"><a href="psm-matching-strategy.html#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(fit1, <span class="at">vcov. =</span> vcovCL)</span></code></pre></div>
 <pre><code>## 
 ## t test of coefficients:
 ## 
@@ -758,11 +774,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="weighted-t-test" class="section level4 hasAnchor" number="5.3.5.2">
 <h4><span class="header-section-number">5.3.5.2</span> Weighted t-test<a href="psm-matching-strategy.html#weighted-t-test" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Alternatively, we use weighted Student’s t-test if ratio &gt; 1 or replacement is allowed:</p>
-<div class="sourceCode" id="cb144"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="psm-matching-strategy.html#cb144-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">wtd.t.test</span>(m.data<span class="sc">$</span>re78[m.data<span class="sc">$</span>treat <span class="sc">==</span> <span class="dv">1</span>],</span>
-<span id="cb144-2"><a href="psm-matching-strategy.html#cb144-2" aria-hidden="true" tabindex="-1"></a>                  m.data<span class="sc">$</span>re78[m.data<span class="sc">$</span>treat <span class="sc">==</span> <span class="dv">0</span>],</span>
-<span id="cb144-3"><a href="psm-matching-strategy.html#cb144-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">weight =</span> m.data<span class="sc">$</span>weights[m.data<span class="sc">$</span>treat <span class="sc">==</span> <span class="dv">1</span>],</span>
-<span id="cb144-4"><a href="psm-matching-strategy.html#cb144-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">weighty =</span> m.data<span class="sc">$</span>weights[m.data<span class="sc">$</span>treat <span class="sc">==</span> <span class="dv">0</span>])</span>
-<span id="cb144-5"><a href="psm-matching-strategy.html#cb144-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(res)</span></code></pre></div>
+<div class="sourceCode" id="cb141"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb141-1"><a href="psm-matching-strategy.html#cb141-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">wtd.t.test</span>(m.data<span class="sc">$</span>re78[m.data<span class="sc">$</span>treat <span class="sc">==</span> <span class="dv">1</span>],</span>
+<span id="cb141-2"><a href="psm-matching-strategy.html#cb141-2" aria-hidden="true" tabindex="-1"></a>                  m.data<span class="sc">$</span>re78[m.data<span class="sc">$</span>treat <span class="sc">==</span> <span class="dv">0</span>],</span>
+<span id="cb141-3"><a href="psm-matching-strategy.html#cb141-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">weight =</span> m.data<span class="sc">$</span>weights[m.data<span class="sc">$</span>treat <span class="sc">==</span> <span class="dv">1</span>],</span>
+<span id="cb141-4"><a href="psm-matching-strategy.html#cb141-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">weighty =</span> m.data<span class="sc">$</span>weights[m.data<span class="sc">$</span>treat <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb141-5"><a href="psm-matching-strategy.html#cb141-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(res)</span></code></pre></div>
 <pre><code>## $test
 ## [1] &quot;Two Sample Weighted T-Test (Welch)&quot;
 ## 
@@ -773,17 +789,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## $additional
 ## Difference     Mean.x     Mean.y   Std. Err 
 ##   557.4575  6223.3714  5665.9139   941.3332</code></pre>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="psm-matching-strategy.html#cb146-1" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> res<span class="sc">$</span>additional[<span class="dv">1</span>]</span>
-<span id="cb146-2"><a href="psm-matching-strategy.html#cb146-2" aria-hidden="true" tabindex="-1"></a>std <span class="ot">&lt;-</span> res<span class="sc">$</span>additional[<span class="dv">4</span>]</span>
-<span id="cb146-3"><a href="psm-matching-strategy.html#cb146-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Confidence interval: &quot;</span>, <span class="fu">sapply</span>(<span class="fu">qt</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="fu">coef</span>(res)[<span class="st">&quot;df&quot;</span>]), <span class="cf">function</span>(x){<span class="fu">return</span>(mu<span class="sc">+</span>x<span class="sc">*</span>std)}), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb143"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb143-1"><a href="psm-matching-strategy.html#cb143-1" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> res<span class="sc">$</span>additional[<span class="dv">1</span>]</span>
+<span id="cb143-2"><a href="psm-matching-strategy.html#cb143-2" aria-hidden="true" tabindex="-1"></a>std <span class="ot">&lt;-</span> res<span class="sc">$</span>additional[<span class="dv">4</span>]</span>
+<span id="cb143-3"><a href="psm-matching-strategy.html#cb143-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Confidence interval: &quot;</span>, <span class="fu">sapply</span>(<span class="fu">qt</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="fu">coef</span>(res)[<span class="st">&quot;df&quot;</span>]), <span class="cf">function</span>(x){<span class="fu">return</span>(mu<span class="sc">+</span>x<span class="sc">*</span>std)}), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
 <pre><code>## Confidence interval:  -1298.87 2413.785</code></pre>
 </div>
 <div id="linear-model-with-covariates-double-robust-include-just-a-few-imbalanced-covariates" class="section level4 hasAnchor" number="5.3.5.3">
 <h4><span class="header-section-number">5.3.5.3</span> Linear model with covariates: double robust (include just a few imbalanced covariates)<a href="psm-matching-strategy.html#linear-model-with-covariates-double-robust-include-just-a-few-imbalanced-covariates" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="psm-matching-strategy.html#cb148-1" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat <span class="sc">+</span> educ, <span class="at">data =</span> m.data)</span>
-<span id="cb148-2"><a href="psm-matching-strategy.html#cb148-2" aria-hidden="true" tabindex="-1"></a><span class="co"># include only the covariate that is not balanced</span></span>
-<span id="cb148-3"><a href="psm-matching-strategy.html#cb148-3" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat <span class="sc">+</span> <span class="fu">I</span>(educ<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> m.data)</span>
-<span id="cb148-4"><a href="psm-matching-strategy.html#cb148-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(fit2)</span></code></pre></div>
+<div class="sourceCode" id="cb145"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb145-1"><a href="psm-matching-strategy.html#cb145-1" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat <span class="sc">+</span> educ, <span class="at">data =</span> m.data)</span>
+<span id="cb145-2"><a href="psm-matching-strategy.html#cb145-2" aria-hidden="true" tabindex="-1"></a><span class="co"># include only the covariate that is not balanced</span></span>
+<span id="cb145-3"><a href="psm-matching-strategy.html#cb145-3" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(re78 <span class="sc">~</span> treat <span class="sc">+</span> <span class="fu">I</span>(educ<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> m.data)</span>
+<span id="cb145-4"><a href="psm-matching-strategy.html#cb145-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summ</span>(fit2)</span></code></pre></div>
 <pre><code>## MODEL INFO:
 ## Observations: 200
 ## Dependent Variable: re78
@@ -802,7 +818,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 ## treat                591.81    919.14     0.64   0.52
 ## I(educ^2)             35.41     10.82     3.27   0.00
 ## -----------------------------------------------------</code></pre>
-<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="psm-matching-strategy.html#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(fit2, <span class="at">vcov. =</span> vcovCL)</span></code></pre></div>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="psm-matching-strategy.html#cb147-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coeftest</span>(fit2, <span class="at">vcov. =</span> vcovCL)</span></code></pre></div>
 <pre><code>## 
 ## t test of coefficients:
 ## 
@@ -817,9 +833,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="hidden-bias-analysis" class="section level3 hasAnchor" number="5.3.6">
 <h3><span class="header-section-number">5.3.6</span> Hidden bias analysis<a href="psm-matching-strategy.html#hidden-bias-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>extract matched treatment and control units from m.data:</p>
-<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="psm-matching-strategy.html#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">psens</span>(<span class="at">x =</span> m.data<span class="sc">$</span>re78[m.data<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">1</span>], </span>
-<span id="cb152-2"><a href="psm-matching-strategy.html#cb152-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> m.data<span class="sc">$</span>re78[m.data<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">0</span>], </span>
-<span id="cb152-3"><a href="psm-matching-strategy.html#cb152-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">Gamma =</span> <span class="dv">3</span>, <span class="at">GammaInc=</span><span class="fl">0.1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="psm-matching-strategy.html#cb149-1" aria-hidden="true" tabindex="-1"></a><span class="fu">psens</span>(<span class="at">x =</span> m.data<span class="sc">$</span>re78[m.data<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">1</span>], </span>
+<span id="cb149-2"><a href="psm-matching-strategy.html#cb149-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> m.data<span class="sc">$</span>re78[m.data<span class="sc">$</span>treat<span class="sc">==</span><span class="dv">0</span>], </span>
+<span id="cb149-3"><a href="psm-matching-strategy.html#cb149-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">Gamma =</span> <span class="dv">3</span>, <span class="at">GammaInc=</span><span class="fl">0.1</span>)</span></code></pre></div>
 <pre><code>## 
 ##  Rosenbaum Sensitivity Test for Wilcoxon Signed Rank P-Value 
 ##  

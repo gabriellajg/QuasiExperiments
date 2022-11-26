@@ -1,3 +1,4 @@
+tab:all-models
 course
 regression-approach-to-treatment-effect-estimation
 regression-w-no-confounder
@@ -106,3 +107,16 @@ step-3-view-acfpacf-plots-of-differencedseasonally-differenced-data
 step-4-build-arima-model
 step-5-check-residuals
 step-6-calculate-forecasts
+regression-discontinuity-designs-rdd
+data-5
+segmented-regression
+ik-estimator
+rdd-2
+step-1-determine-if-process-of-assigning-treatment-is-rule-based
+step-2-determine-if-the-design-is-fuzzy-or-sharp
+step-3-check-for-discontinuity-in-running-variable-around-cutpoint
+step-4-check-for-discontinuity-in-outcome-across-running-variable
+step-5-measure-the-size-of-the-effect
+parametric-estimation
+nonparametric-estimation
+step-6-compare-all-the-effects
